@@ -68,6 +68,8 @@
                                                         v-for="(serial, index) in company.serials"
                                                         :key="index">
                                                     <v-text-field
+                                                            dark
+                                                            color="dark"
                                                             :label="'Product Serial ' +  (Number(index) + 1)"
                                                             v-model="company.serials[index]"
                                                     ></v-text-field>
@@ -639,6 +641,7 @@
                     axios.post(url, form)
                         .then((response) => {
                             Object.assign(this.items[this.editedIndex], this.editedItem);
+                            this.initialize();
                             this.snackbar_message = 'Product ' + this.editedItem.name + ' successfully updated.';
                             this.snackbar = true;
                             this.close()
@@ -648,6 +651,7 @@
                     axios.post(url, form)
                         .then((response) => {
                             this.items.push(response.data);
+                            this.initialize();
                             this.snackbar_message = 'Product ' + this.editedItem.name + ' successfully created.';
                             this.snackbar = true;
                             // update total product & stock

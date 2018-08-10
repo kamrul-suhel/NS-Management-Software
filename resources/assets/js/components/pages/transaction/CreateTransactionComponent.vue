@@ -37,15 +37,7 @@
                                 </v-flex>
                             </v-layout>
 
-                            <v-layout row wrap v-if="isWarranty">
-                                <v-flex xs6>
-                                    <v-text-field
-                                            dark
-                                            color="dark"
-                                        label="Serial number"
-                                    v-model="serial_number">
-                                    </v-text-field>
-                                </v-flex>
+                            <v-layout row wrap>
                                     <v-text-field
                                             dark
                                             color="dark"
@@ -58,6 +50,7 @@
                             </v-layout>
 
                             <product-component
+                                    label="Serial Number"
                                     v-for="(product, index) in total_product"
                                     :key="index"
                                     :index="index"
@@ -273,7 +266,6 @@
 
                 form.append('payment_status', this.selectedPaymentStatus);
                 form.append('discount', this.discount);
-                form.append('serial_number', this.serial_number);
                 form.append('length_warranty', this.length_warranty);
                 form.append('total', total);
 
