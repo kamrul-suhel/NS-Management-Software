@@ -54,29 +54,35 @@
                 height="1000px"
                 persistent>
             <v-card class="px-2 py-2">
-                <v-card-title>
-                    <span class="headline">{{ formTitle }}</span>
-                </v-card-title>
-
-                <v-card-text class="pt-0">
-                    <v-container grid-list-md>
+                <v-card-text>
+                    <v-container grid-list-lg class="pa-0">
                         <v-layout wrap>
+                            <v-flex xs12>
+                                <h2 class="headline">{{ formTitle }}</h2>
+                            </v-flex>
+
                             <v-flex xs6>
                                 <v-text-field
-                                        label="Customer Name"
+                                        dark
+                                        color="dark"
+                                        label="Company Name"
                                         v-model="editedItem.name"></v-text-field>
                             </v-flex>
 
                             <v-flex xs6>
                                 <v-text-field
-                                        label="Email"
+                                        dark
+                                        color="dark"
+                                        label="Company Email"
                                         v-model="editedItem.email"
                                 ></v-text-field>
                             </v-flex>
 
                             <v-flex xs6>
                                 <v-text-field
-                                        label="Phone"
+                                        dark
+                                        color="dark"
+                                        label="Company Phone"
                                         type="phone"
                                         hint="Phone number"
                                         v-model="editedItem.phone"
@@ -85,6 +91,8 @@
 
                             <v-flex xs6>
                                 <v-text-field
+                                    dark
+                                    color="dark"
                                     label="mobile"
                                     type="mobile"
                                     hint="Mobile number"
@@ -94,6 +102,8 @@
 
                             <v-flex xs6>
                                 <v-text-field
+                                        dark
+                                        color="dark"
                                         label="Fax"
                                         hint="Fax number"
                                         v-model="editedItem.fax">
@@ -102,6 +112,8 @@
 
                             <v-flex xs6>
                                 <v-text-field
+                                        dark
+                                        color="dark"
                                         label="website"
                                         hint="Web site URL"
                                         v-model="editedItem.websiteurl">
@@ -111,6 +123,8 @@
 
                             <v-flex xs6>
                                 <v-textarea
+                                        dark
+                                        color="dark"
                                     v-model="editedItem.address"
                                     label="Address"
                                 ></v-textarea>
@@ -118,6 +132,8 @@
 
                             <v-flex xs6>
                                 <v-textarea
+                                        dark
+                                        color="dark"
                                         v-model="editedItem.description"
                                         label="Description"
                                 ></v-textarea>
@@ -125,6 +141,8 @@
 
                             <v-flex xs6>
                                 <v-text-field
+                                        dark
+                                        color="dark"
                                         label="City"
                                         hint="Location of company"
                                         v-model="editedItem.city">
@@ -133,25 +151,25 @@
 
                             <v-flex xs6>
                                 <v-select
+                                        color="dark"
+                                        dark
                                         :items="active"
                                         label="Status"
                                         hint="Company status"
                                         v-model="editedItem.status">
                                 </v-select>
                             </v-flex>
+
+                            <v-flex xs12 class="text-xs-right">
+                                <v-btn dark color="dark" raised @click.native="close">Cancel</v-btn>
+
+                                <v-btn dark color="dark" raised @click.native="save">{{ editedIndex == -1 ? 'Create Company' :
+                                    'Update Company' }}
+                                </v-btn>
+                            </v-flex>
                         </v-layout>
                     </v-container>
                 </v-card-text>
-
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-
-                    <v-btn dark color="dark" raised @click.native="close">Cancel</v-btn>
-
-                    <v-btn dark color="dark" raised @click.native="save">{{ editedIndex == -1 ? 'Create Company' :
-                        'Update Company' }}
-                    </v-btn>
-                </v-card-actions>
             </v-card>
         </v-dialog>
 
@@ -176,8 +194,11 @@
                         raised
                         width="100%">
                     <v-card-title class="pb-0 pt-0">
-                        <v-btn dark fab small color="dark" @click="dialog = true">
-                            <v-icon>add</v-icon>
+                        <v-btn dark
+                               medium
+                               color="dark"
+                               @click="dialog = true">
+                            Add Company
                         </v-btn>
 
                         <v-spacer></v-spacer>
@@ -302,15 +323,15 @@
             editedIndex: -1,
             editedItem: {
                 id: '',
-                name: 'Name title',
-                address: 'address',
-                description: 'description',
-                email: 'email',
-                phone: '01622296755',
-                mobile: '075493188',
-                fax: 'fax',
-                websiteurl: 'kam-port.co.uk',
-                city: 'london',
+                name: '',
+                address: '',
+                description: '',
+                email: '',
+                phone: '',
+                mobile: '',
+                fax: '',
+                websiteurl: '',
+                city: '',
                 status: 'Active'
             },
             active: ['Active', 'Inactive'],

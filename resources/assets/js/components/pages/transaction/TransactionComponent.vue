@@ -32,98 +32,6 @@
             </v-layout>
         </v-container>
 
-        <v-dialog
-                v-model="dialog"
-                persistent>
-            <v-card class="px-2 py-2">
-                <v-card-title>
-                    <v-container grid-list-xl pa-0>
-                        <v-layout wrap>
-                            <v-flex>
-                                <span class="headline">{{ formTitle }}</span>
-                            </v-flex>
-                        </v-layout>
-                    </v-container>
-
-                </v-card-title>
-                <v-card-text class="pt-0">
-                    <v-container grid-list-md>
-                        <v-layout wrap>
-                            <v-flex xs6>
-                                <v-select
-                                        label="Select Customer"
-                                        :items="customers"
-                                        v-model="selectedCustomer"
-                                        append-icon="account_circle"
-                                        chips
-                                        persistent-hint
-                                >
-                                </v-select>
-                            </v-flex>
-
-                            <v-flex xs6>
-                                <v-select
-                                        label="Select Product"
-                                        :items="products"
-                                        append-icon="add_shopping_cart"
-                                        v-model="selectedProduct"
-                                        chips
-                                        persistent-hint
-                                ></v-select>
-                            </v-flex>
-
-                            <v-flex xs6>
-                                <v-text-field
-                                        label="Quantity"
-                                        type="number"
-                                        :placeholder="'You have '+ current_product_quantity + ' in your stock'"
-                                        :hint="'How much you want to sale. your stock is : ' + current_product_quantity"
-                                        persistent-hint
-                                        v-model="editedItem.quantity"
-                                ></v-text-field>
-                            </v-flex>
-
-                            <v-flex xs6>
-                                <v-select
-                                    label="Payment Status"
-                                    hint="What is the payment status."
-                                    :items="paymentStatus"
-                                    v-model="selectedPaymentStatus"
-                                    ></v-select>
-                            </v-flex>
-
-                                <v-flex xs6 v-if="selectedPaymentStatus > 1">
-                                    <v-text-field
-                                      name="payment_due"
-                                      label="Payment left"
-                                      v-model="payment_due"
-                                    ></v-text-field>
-                                </v-flex>
-
-                                <v-flex xs6 v-if="selectedPaymentStatus > 1">
-                                    <v-text-field
-                                        label="How much paid"
-                                        v-model="paid"
-                                        hint="Put how much paid">
-
-                                    </v-text-field>
-                                </v-flex>
-
-                        </v-layout>
-                    </v-container>
-                </v-card-text>
-
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-
-                    <v-btn dark color="dark" raised @click.native="close">Cancel</v-btn>
-
-                    <v-btn dark color="dark" raised @click.native="save">{{ editedIndex == -1 ? 'Create Transaction' :
-                        'Update Transaction' }}
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
 
         <v-dialog v-model="deleteDialog" persistent max-width="290">
             <v-card color="error">
@@ -145,10 +53,16 @@
                         raised
                         width="100%">
                     <v-card-title class="pb-0 pt-0">
-                        <v-btn dark fab small color="dark" @click="onGotoCreateTransaction()">
+                        <v-btn
+                                :disabled="!createTransaction"
+                                dark
+                                fab
+                                small
+                                color="dark"
+                                @click="onGotoCreateTransaction()">
                             <v-icon>add</v-icon>
                         </v-btn>
-
+                        <p class="red--text" v-if="!createTransaction">To make a transaction please first make a customer & product</p>
                         <v-spacer></v-spacer>
                         <v-text-field
                                 prepend-icon="search"
@@ -234,6 +148,8 @@
             total_amount_transactions: 0,
             deleteDialog:false,
             deleteItem:{},
+            companyExists : true,
+            productExists: true,
 
             search: '',
             pagination: {
@@ -328,6 +244,11 @@
         computed: {
             formTitle() {
                 return this.editedIndex === -1 ? 'New Transaction' : 'Edit Transaction'
+            },
+
+            createTransaction(){
+                console.log(this.companyExists && this.productExists ? true : false);
+                return this.companyExists && this.productExists ? true : false;
             }
         },
 
@@ -360,7 +281,9 @@
                 // get all transaction
                 axios.get('/api/transactions')
                     .then((response) => {
-                        this.items = response.data.transactions;
+                        if(response.data.transactions){
+                            this.items = response.data.transactions;
+                        }
                         this.total_transactions = response.data.total_transactions;
                         this.total_amount_transactions = response.data.total_tk;
                     })
@@ -371,14 +294,18 @@
                 //get all product
                 axios.get('/api/products')
                     .then((response) => {
-                        this.products = response.data.products;
-                        this.allProductData = response.data.products;
-                        var array_products = [];
-                        this.products.forEach((product)=> {
-                            var product = { text: product.name, value : product.id};
-                            array_products.push(product);
-                        })
-                        this.products = array_products;
+                        if(response.data.products.length > 0){
+                            this.products = response.data.products;
+                            this.allProductData = response.data.products;
+                            var array_products = [];
+                            this.products.forEach((product)=> {
+                                var product = { text: product.name, value : product.id};
+                                array_products.push(product);
+                            })
+                            this.products = array_products;
+                        }else{
+                            this.productExists = false;
+                        }
                     })
                     .catch((error) => {
                         console.log(error)
@@ -388,13 +315,17 @@
                 // get all customers
                 axios.get('/customers')
                     .then((response) => {
-                        this.customers = response.data;
-                        var array_customer = [];
-                        this.customers.forEach((customer)=> {
-                            var customer = { text: customer.name, value : customer.id};
-                            array_customer.push(customer);
-                        })
-                        this.customers = array_customer;
+                        if(response.data.length > 0){
+                            this.customers = response.data;
+                            var array_customer = [];
+                            this.customers.forEach((customer)=> {
+                                var customer = { text: customer.name, value : customer.id};
+                                array_customer.push(customer);
+                            })
+                            this.customers = array_customer;
+                        }else{
+                            this.companyExists = false
+                        }
 
                     })
                     .catch((error) => {

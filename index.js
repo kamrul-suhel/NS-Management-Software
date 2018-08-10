@@ -1,5 +1,7 @@
 const electorn = require('electron');
 
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
+
 const {app, BrowserWindow} = electorn;
 
 app.on('ready', () => {
@@ -14,7 +16,7 @@ app.on('ready', () => {
     // 	mainWindow.show();
     // })
 
-    main_window.loadURL('http://system.test');
+    main_window.loadURL('http://system-it.test');
 });
 
 app.on('close-me', (evt, arg) => {

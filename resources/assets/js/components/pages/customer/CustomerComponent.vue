@@ -283,7 +283,9 @@
                 // get all product
                 axios.get('/customers')
                     .then((response) => {
-                        this.items = response.data
+                        if(response.data.length > 0){
+                            this.items = response.data
+                        }
                     })
                     .catch((error) => {
                         console.log(error)
