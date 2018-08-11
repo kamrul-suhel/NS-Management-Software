@@ -9,7 +9,7 @@
                         <h2>Create Transaction</h2>
                         <v-container grid-list-md>
                             <v-layout row wrap>
-                                <v-flex xs6>
+                                <v-flex xs12>
                                     <v-autocomplete
                                             dark
                                             color="dark"
@@ -22,35 +22,9 @@
                                     >
                                     </v-autocomplete>
                                 </v-flex>
-
-                                <v-flex xs6>
-                                    <v-select
-                                            dark
-                                            color="dark"
-                                            label="Is warranty product"
-                                            @input="selectedWarranty"
-                                    :items="warranty"
-                                    item-text="text"
-                                    item-value="value"
-                                    >
-                                    </v-select>
-                                </v-flex>
-                            </v-layout>
-
-                            <v-layout row wrap>
-                                    <v-text-field
-                                            dark
-                                            color="dark"
-                                        label="Length Of Warranty"
-                                        v-model="length_warranty">
-                                    </v-text-field>
-                                <v-flex xs6>
-
-                                </v-flex>
                             </v-layout>
 
                             <product-component
-                                    label="Serial Number"
                                     v-for="(product, index) in total_product"
                                     :key="index"
                                     :index="index"

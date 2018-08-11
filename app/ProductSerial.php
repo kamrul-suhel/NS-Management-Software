@@ -12,6 +12,7 @@ class ProductSerial extends Model
 
     public $fillable = [
         'product_serial',
+        'product_warranty',
         'is_sold',
         'company_id'
     ];

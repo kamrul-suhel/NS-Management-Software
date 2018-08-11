@@ -90,6 +90,7 @@ class ProductController extends ApiController
                     $serial = [];
                     $serial['is_sold'] = 0;
                     $serial['product_serial'] = $currSerial;
+                    $serial['product_warranty'] = $currCompany->product_warranty;
                     $serial['company_id'] = $currCompany->selectedCompany->id;
                     $productSerialsWithCompany[] = $serial;
                 }

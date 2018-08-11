@@ -31,6 +31,7 @@
 
         <v-flex xs6>
             <v-autocomplete
+                    label="Serial Number"
                     dark
                     color="dark"
                     :items="serials"
@@ -40,6 +41,10 @@
                     @change="onSerialChange()"
                     multiple
             ></v-autocomplete>
+        </v-flex>
+
+        <v-flex xs6 v-if="serials.length > 0">
+            <p class="light-green--text">This product has {{ serials[0].product_warranty }} warranty.</p>
         </v-flex>
     </v-layout>
 </template>
@@ -135,7 +140,8 @@
                             product.serials.forEach((serial) => {
                                 let currSerial = {
                                     'id': serial.id,
-                                    'product_serial': serial.product_serial
+                                    'product_serial': serial.product_serial,
+                                    'product_warranty': serial.product_warranty
                                 };
                                 this.serials.push(currSerial);
                             })

@@ -32,6 +32,8 @@
 
                             <v-flex xs12>
                                 <v-select
+                                        dark
+                                        color="dark"
                                         label="Is this product has serial"
                                     :items="isSerials"
                                     v-model="isSerial"></v-select>
@@ -62,7 +64,26 @@
                                                 color="dark">
                                         </v-text-field>
 
-                                        <v-flex xs12 v-if="isSerial">
+                                        <v-btn
+                                                right
+                                                fab
+                                                dark
+                                                small
+                                                color="error"
+                                                style="width:20px;height:20px;position:absolute"
+                                                @click="onRemoveCompany(totalCompanyIndex)"
+                                        ><v-icon>remove</v-icon></v-btn>
+                                    </v-flex>
+                                    <v-layout row wrap v-if="isSerial">
+                                        <v-flex xs6>
+                                            <v-autocomplete
+                                                    label="Select warranty"
+                                                    v-model="company.product_warranty"
+                                                :items="warranties"
+                                                ></v-autocomplete>
+                                        </v-flex>
+
+                                        <v-flex xs6 >
                                             <v-layout row wrap>
                                                 <v-flex xs3
                                                         v-for="(serial, index) in company.serials"
@@ -76,17 +97,7 @@
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
-
-                                        <v-btn
-                                                right
-                                                fab
-                                                dark
-                                                small
-                                                color="error"
-                                                style="width:20px;height:20px;position:absolute"
-                                                @click="onRemoveCompany(totalCompanyIndex)"
-                                        ><v-icon>remove</v-icon></v-btn>
-                                    </v-flex>
+                                    </v-layout>
                                 </v-layout>
                             </v-flex>
 
@@ -196,7 +207,7 @@
             <v-divider class="mb-3 dark"></v-divider>
 
             <v-layout row wrap>
-                <v-flex xs3>
+                <v-flex xs6>
                     <v-card flat class="cyan lighten-1 white--text">
                         <v-card-title>Total product</v-card-title>
                         <v-card-text class="pt-0">
@@ -207,7 +218,7 @@
                     </v-card>
                 </v-flex>
 
-                <v-flex xs3>
+                <v-flex xs6>
                     <v-card flat class="light-blue white--text">
                         <v-card-title>Product Available</v-card-title>
                         <v-card-text class="pt-0">
@@ -218,7 +229,7 @@
                     </v-card>
                 </v-flex>
 
-                <v-flex xs3>
+                <v-flex xs6>
                     <v-card flat class="light-green lighten-1 white--text">
                         <v-card-title>Not is stock</v-card-title>
                         <v-card-text class="pt-0">
@@ -229,7 +240,7 @@
                     </v-card>
                 </v-flex>
 
-                <v-flex xs3>
+                <v-flex xs6>
                     <v-card flat class="orange darken-1 white--text">
                         <v-card-title>Total Stock</v-card-title>
                         <v-card-text class="pt-0">
@@ -364,6 +375,8 @@
 
             snackbar: false,
             snackbar_message: '',
+
+            warranties: ['3 Month','6 Month','1 Year', '1.5 Year'],
 
             headers: [
                 {

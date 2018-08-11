@@ -62,11 +62,17 @@
                     <v-container grid-list-md>
                         <v-layout wrap>
                             <v-flex xs12>
-                                <v-text-field label="Customer Name" v-model="editedItem.name"></v-text-field>
+                                <v-text-field
+                                        dark
+                                        color="dark"
+                                        label="Customer Name"
+                                        v-model="editedItem.name"></v-text-field>
                             </v-flex>
 
                             <v-flex xs12>
                                 <v-text-field
+                                        dark
+                                        color="dark"
                                         label="Email"
                                         v-model="editedItem.email"
                                 ></v-text-field>
@@ -74,6 +80,8 @@
 
                             <v-flex xs6>
                                 <v-text-field
+                                        dark
+                                        color="dark"
                                         label="Phone"
                                         type="phone"
                                         hint="Phone number"
@@ -83,6 +91,8 @@
 
                             <v-flex xs6>
                                 <v-text-field
+                                        dark
+                                        color="dark"
                                     label="mobile"
                                     type="mobile"
                                     hint="Mobile number"
@@ -92,6 +102,8 @@
 
                             <v-flex xs6>
                                 <v-textarea
+                                        dark
+                                        color="dark"
                                     v-model="editedItem.address"
                                     label="Address"
                                     multi-line
@@ -125,6 +137,8 @@
 
                         <v-spacer></v-spacer>
                         <v-text-field
+                                dark
+                                color="dark"
                                 prepend-icon="search"
                                 label="Search"
                                 v-model="search"></v-text-field>

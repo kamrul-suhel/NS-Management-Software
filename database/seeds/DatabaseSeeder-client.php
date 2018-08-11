@@ -178,6 +178,7 @@ class DatabaseSeeder extends Seeder
         for($i = 0; $i<=$digits; $i++){
             $data = [];
             $data['product_serial'] = Faker::create()->randomNumber($nbDigits = NULL);
+            $data['product_warranty'] = Faker::create()->randomElement(['3 Month','6 Month','1 Year', '1.5 Year']);
             $data['is_sold'] = Faker::create()->numberBetween(0, 1);
             $data['company_id'] = Faker::create()->numberBetween(1, 20);
             $allData[] = $data;
