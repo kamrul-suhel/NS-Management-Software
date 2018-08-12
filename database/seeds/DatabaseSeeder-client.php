@@ -47,10 +47,10 @@ class DatabaseSeeder extends Seeder
         Company::flushEventListeners();
         CompanyTransaction::flushEventListeners();
 
-        $usersQuantity = 30;
-        $customerQuantity = 10;
-        $categoriesQuantity = 200;
-        $productsQuantity = 100;
+        $usersQuantity = 10;
+        $customerQuantity = 4;
+        $categoriesQuantity = 100;
+        $productsQuantity = 20;
         $transactionQuantity = 200;
 
         $categoryRoot = Category::create([
