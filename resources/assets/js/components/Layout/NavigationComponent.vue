@@ -85,6 +85,12 @@
                                 icon: 'people',
                                 text: 'Customers',
                                 link: 'customers'
+                            },
+
+                            {
+                                icon: 'people',
+                                text: 'Customers Laser',
+                                link: 'accounting_customer_transaction'
                             }
 
                         ]

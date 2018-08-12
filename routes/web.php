@@ -99,3 +99,7 @@ Route::get('account/transaction', function(){
  */
 
 Route::get('transaction/due/create', 'Customer\CustomerDueController@index');
+
+Route::get('account/customer', function(){
+   return view('welcome');
+});

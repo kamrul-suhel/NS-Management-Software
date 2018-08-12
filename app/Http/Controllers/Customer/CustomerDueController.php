@@ -60,12 +60,21 @@ class CustomerDueController extends Controller
     public function store(Request $request)
     {
         //
+        $customer = Customer::findOrfail($request->customer_id);
+
         if($request->transactions){
             $transactions = json_decode($request->transactions);
             foreach($transactions as $transaction){
                 $currTransaction = Transaction::find($transaction->id);
                 $payment_due = $currTransaction->payment_due - $transaction->newamount;
                 $payment_paid = $currTransaction->paid + $transaction->newamount;
+
+                $customer->duePayments()->create([
+                    'transaction_id' => $transaction->id,
+                    'paid'   => $transaction->newamount,
+                    'due'    => $payment_due
+                ]);
+
                 $currTransaction->update([
                     'payment_due' => $payment_due,
                     'paid'  => $payment_paid
@@ -73,7 +82,7 @@ class CustomerDueController extends Controller
             }
         }
 
-        $customer = Customer::findOrfail($request->customer_id);
+
         $customer_due = $customer->duePayments()->create([
            'paid'   => $request->paid,
            'due'    => $request->due
