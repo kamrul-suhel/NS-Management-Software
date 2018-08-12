@@ -26,4 +26,8 @@ class Customer extends Model
     public function transitions(){
         return $this->hasMany(Transaction::class);
     }
+
+    public function duePayments(){
+        return $this->hasMany(CustomerDue::class);
+    }
 }

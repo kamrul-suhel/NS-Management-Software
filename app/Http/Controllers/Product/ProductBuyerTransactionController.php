@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Product;
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Customer\CustomerDueController;
 use App\Product;
 use App\ProductSerial;
 use App\Seller;
@@ -27,7 +28,6 @@ class ProductBuyerTransactionController extends ApiController
      */
     public function store(Request $request, Customer $customer)
     {
-
         $transaction = DB::transaction(function() use ($request, $customer){
             $attach_product =[];
             $unique_id = $this->getUniqueId();
@@ -41,6 +41,17 @@ class ProductBuyerTransactionController extends ApiController
                 'payment_due'   => $request->payment_due ? $request->payment_due : 0,
                 'paid'         => $request->paid
             ]);
+
+            if($request->payment_due && $request->payment_due > 0){
+                $request['customer_id'] = $customer->id;
+                $customerDueController = new CustomerDueController();
+                $previousDue = $customerDueController->customerLastDueAmount($request);
+
+                $customer->duePayments()->create([
+                   'paid'   => 0,
+                   'due'    => $request->payment_due + $previousDue
+                ]);
+            }
 
             $products = json_decode($request->products);
 
@@ -78,6 +89,8 @@ class ProductBuyerTransactionController extends ApiController
 
         return $this->showOne($product);
     }
+
+
 
 
 }

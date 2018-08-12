@@ -50,6 +50,7 @@ class TransactionController extends ApiController
         return $this->showAll($collect);
     }
 
+
     public function generateRandomString($length = 11)
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

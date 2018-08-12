@@ -121,17 +121,17 @@ class DatabaseSeeder extends Seeder
 
 
         factory(User::class, $usersQuantity)->create();
-//        factory(Customer::class, $customerQuantity)->create();
+        factory(Customer::class, $customerQuantity)->create();
 //
-//        factory(Product::class, $productsQuantity)->create()->each(
-//        	function($product){
-//        		$categories = Category::all()->random(mt_rand(1, 5))->pluck('id');
-//
-//        		$product->categories()->attach($categories);
-//        		$serials = $this->generateProductSerialArray();
-//        		$product->serials()->saveMany($serials);
-//        	}
-//        );
+        factory(Product::class, $productsQuantity)->create()->each(
+        	function($product){
+        		$categories = Category::all()->random(mt_rand(1, 5))->pluck('id');
+
+        		$product->categories()->attach($categories);
+        		$serials = $this->generateProductSerialArray();
+        		$product->serials()->saveMany($serials);
+        	}
+        );
 //
 //        factory(Transaction::class, $transactionQuantity)->create()->each(
 //            function($transaction){
@@ -145,7 +145,7 @@ class DatabaseSeeder extends Seeder
 //
 //        });
 //
-//        factory(Setting::class, 1)->create();
+        factory(Setting::class, 1)->create();
 //
 //
 //        /**
@@ -160,21 +160,21 @@ class DatabaseSeeder extends Seeder
 //         * Company seeder
 //         */
 //
-//        factory(Company::class, 20)->create();
+        factory(Company::class, 20)->create();
 //
 //        factory(CompanyTransaction::class, 200)->create();
-//    }
+    }
 //
-//    private function generateProductSerialArray(){
-//        $faker = new Faker();
-//        $digits = $faker->numberBetween(3, 5);
-//        $data = [];
-//        for($i = 0; $i<=$digits; $i++){
-//            $data['product_serial'] = $faker->unique()->randomDigit;
-//            $data['is_sold'] = $faker->numberBetween(0, 1);
-//        }
+    private function generateProductSerialArray(){
+        $faker = new Faker();
+        $digits = $faker->numberBetween(3, 5);
+        $data = [];
+        for($i = 0; $i<=$digits; $i++){
+            $data['product_serial'] = $faker->unique()->randomDigit;
+            $data['is_sold'] = $faker->numberBetween(0, 1);
+        }
 //
-//        return $data;
-//
+        return $data;
+
     }
 }

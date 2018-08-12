@@ -6,6 +6,7 @@ import TransactionComponent from '../components/pages/transaction/TransactionCom
 import CustomerComponent from '../components/pages/customer/CustomerComponent'
 import SettingComponent from '../components/pages/setting/SettingComponent'
 import CreateTransaction from '../components/pages/transaction/CreateTransactionComponent'
+import CreateDueTransaction from '../components/pages/transaction/CreateDueTransactionComponent'
 import TransactionPrint from '../components/pages/transaction/TransactionPrintComponent'
 import EditTransactionComponent from '../components/pages/transaction/EditTransactionComponent'
 import LoginComponent from '../components/pages/login/LoginComponent'
@@ -55,6 +56,12 @@ const routes = [
         path: '/transaction/create',
         name: 'create_transaction',
         component: CreateTransaction
+    },
+
+    {
+        path: '/transaction/due/create',
+        name: 'create_due_transaction',
+        component: CreateDueTransaction
     },
 
     {

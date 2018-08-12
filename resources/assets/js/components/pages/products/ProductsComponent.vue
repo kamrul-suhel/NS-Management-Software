@@ -376,7 +376,7 @@
             snackbar: false,
             snackbar_message: '',
 
-            warranties: ['3 Month','6 Month','1 Year', '1.5 Year'],
+            warranties: ['3 Month','6 Month','1 Year', '1.5 Year', '2 Year'],
 
             headers: [
                 {

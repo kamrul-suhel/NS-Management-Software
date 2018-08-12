@@ -90,3 +90,12 @@ Route::get('account/expense', function(){
 Route::get('account/transaction', function(){
     return view('welcome');
 });
+
+
+/*
+ *
+ * Customer Due route
+ *
+ */
+
+Route::get('transaction/due/create', 'Customer\CustomerDueController@index');

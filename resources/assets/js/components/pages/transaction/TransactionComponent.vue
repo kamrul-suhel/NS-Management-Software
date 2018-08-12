@@ -56,13 +56,20 @@
                         <v-btn
                                 :disabled="!createTransaction"
                                 dark
-                                fab
-                                small
                                 color="dark"
-                                @click="onGotoCreateTransaction()">
-                            <v-icon>add</v-icon>
+                                @click="onGotoCreateTransaction('create')">
+                            Create Transaction
                         </v-btn>
                         <p class="red--text" v-if="!createTransaction">To make a transaction please first make a customer & product</p>
+
+                        <v-btn
+                                :disabled="!createTransaction"
+                                dark
+                                color="dark"
+                                @click="onDueTransaction()">
+                            Crate Due Transaction
+                        </v-btn>
+
                         <v-spacer></v-spacer>
                         <v-text-field
                                 prepend-icon="search"
@@ -368,8 +375,8 @@
                 });
             },
 
-            onGotoCreateTransaction(){
-                this.$router.push({name: 'create_transaction'});
+            onGotoCreateTransaction(value){
+                this.$router.push({name: 'create_transaction', params: {type: value}});
             },
 
             onPrintTransaction(item){
@@ -387,6 +394,10 @@
                 if(value === 3){
                     return 'Half paid'
                 }
+            },
+
+            onDueTransaction(){
+                this.$router.push({name: 'create_due_transaction'});
             }
         }
     }

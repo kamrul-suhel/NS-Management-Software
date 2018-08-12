@@ -43,6 +43,7 @@ Route::resource('products.transactions','Product\ProductTransactionController',[
 Route::resource('products.buyers','Product\ProductBuyerController',['only' => ['index']]);
 Route::resource('products.categories','Product\ProductCategoryController',['except' => ['edit','show','create','store']]);
 Route::resource('customers.transactions','Product\ProductBuyerTransactionController',['only' => ['store']]);
+Route::post('customer/{customer_id}/due/transactions', 'Customer\CustomerDueController@store')->name('customer.due.transaction');
 
 
 /*
@@ -108,6 +109,7 @@ Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenContro
  */
 
 Route::resource('customers', 'Customer\CustomerController');
+
 
 
 /*
