@@ -9,7 +9,8 @@ const state = {
 
     expense:'',
     profit:'',
-    afterExpenseProfit:''
+    afterExpenseProfit:'',
+    afterDueProfit: '',
 
 }
 
@@ -51,6 +52,10 @@ const getters = {
 
     getAfterExpenseProfit(state){
         return state.afterExpenseProfit;
+    },
+
+    getAfterDueProfit(state){
+        return state.afterDueProfit;
     }
 }
 
@@ -104,6 +109,10 @@ const mutations = {
 
     setAfterExpenseProfit(state, value){
         state.afterExpenseProfit = value;
+    },
+
+    setAfterDueProfit(state, value){
+        state.afterdueProfit = value;
     }
 }
 
@@ -155,6 +164,7 @@ const actions = {
                 commit('setExpense', response.data.total_expense);
                 commit('setProfit', response.data.total_profit);
                 commit('setAfterExpenseProfit', response.data.profit_after);
+                commit('setAfterDueProfit', response.data.total_profit_after_due);
             });
     }
 }

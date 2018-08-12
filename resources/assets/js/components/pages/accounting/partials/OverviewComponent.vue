@@ -86,11 +86,11 @@
 
         <v-flex xs6>
             <v-card flat class="red darken-1 white--text">
-                <v-card-title>{{ title }}</v-card-title>
+                <v-card-title>After due profit</v-card-title>
                 <v-card-text class="pt-0">
                     <h2 class="display-2 white--text text-xs-center">
                         <span style="font-size:12px">TK.</span>
-                        <strong>{{total}}</strong>
+                        <strong>{{afterDueProfit}}</strong>
                     </h2>
                 </v-card-text>
             </v-card>
@@ -112,10 +112,10 @@
                 paid : 'getTPaid',
                 discount : 'getTDiscount',
                 total : 'getTTotal',
-                totalProfit : 'getProfit',
                 totalExpense : 'getExpense',
                 totalProfit : 'getProfit',
                 afterExpenseProfit : 'getAfterExpenseProfit',
+                afterDueProfit : 'getAfterDueProfit',
                 title:'getChartTitle'
             }),
         },

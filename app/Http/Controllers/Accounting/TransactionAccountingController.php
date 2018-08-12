@@ -122,6 +122,7 @@ class TransactionAccountingController extends Controller
         $totalProfit = $salePrice - $purchasePrice;
         $totalExpenses = $expenses->sum('amount');
         $profitAfter = $totalProfit - $totalExpenses - $discount;
+        $totalProfitAfterDue = $totalProfit - $paymentDue;
 
 
         $data = [
@@ -134,7 +135,8 @@ class TransactionAccountingController extends Controller
             'chart_data'    => $chartData,
             'total_profit' => number_format((float)$totalProfit, 2, '.', ''),
             'total_expense' => number_format((float)$totalExpenses, 2, '.', ''),
-            'profit_after' => number_format((float)$profitAfter, 2, '.', '')
+            'profit_after' => number_format((float)$profitAfter, 2, '.', ''),
+            'total_profit_after_due' => $totalProfitAfterDue
         ];
 
         return $this->successResponse($data, 200);
