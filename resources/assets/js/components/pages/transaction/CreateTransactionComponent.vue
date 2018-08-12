@@ -250,7 +250,7 @@
                 let form = new FormData()
                 let total = this.total_amount_transactions - this.discount;
 
-                let url = '/api/customers/'+this.selectedCustomer+'/transactions';
+                let url = '/api/customers/'+this.selectedCustomer.value+'/transactions';
 
                 form.append('payment_status', this.selectedPaymentStatus);
                 form.append('discount', this.discount);
