@@ -68,7 +68,7 @@ class CustomerDueController extends Controller
                 $payment_paid = $currTransaction->paid + $transaction->newamount;
                 $currTransaction->update([
                     'payment_due' => $payment_due,
-                    'paid'  => $payment_paid    
+                    'paid'  => $payment_paid
                 ]);
             }
         }

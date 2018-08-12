@@ -12,17 +12,17 @@
             </v-card>
         </v-flex>
 
-        <v-flex xs6>
-            <v-card flat class="light-blue white--text">
-                <v-card-title>Paid {{ title }}</v-card-title>
-                <v-card-text class="pt-0">
-                    <h2 class="display-2 white--text text-xs-center">
-                        <span style="font-size:12px">TK.</span>
-                        <strong>{{paid}}</strong>
-                    </h2>
-                </v-card-text>
-            </v-card>
-        </v-flex>
+        <!--<v-flex xs6>-->
+            <!--<v-card flat class="light-blue white&#45;&#45;text">-->
+                <!--<v-card-title>Paid {{ title }}</v-card-title>-->
+                <!--<v-card-text class="pt-0">-->
+                    <!--<h2 class="display-2 white&#45;&#45;text text-xs-center">-->
+                        <!--<span style="font-size:12px">TK.</span>-->
+                        <!--<strong>{{paid}}</strong>-->
+                    <!--</h2>-->
+                <!--</v-card-text>-->
+            <!--</v-card>-->
+        <!--</v-flex>-->
 
         <v-flex xs6>
             <v-card flat class="light-green lighten-1 white--text">
