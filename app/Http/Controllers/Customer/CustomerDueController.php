@@ -65,7 +65,11 @@ class CustomerDueController extends Controller
             foreach($transactions as $transaction){
                 $currTransaction = Transaction::find($transaction->id);
                 $payment_due = $currTransaction->payment_due - $transaction->newamount;
-                $currTransaction->update(['payment_due' => $payment_due]);
+                $payment_paid = $currTransaction->paid + $transaction->newamount;
+                $currTransaction->update([
+                    'payment_due' => $payment_due,
+                    'paid'  => $payment_paid    
+                ]);
             }
         }
 
