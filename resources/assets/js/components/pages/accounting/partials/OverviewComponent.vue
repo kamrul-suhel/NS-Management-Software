@@ -78,7 +78,7 @@
                 <v-card-text class="pt-0">
                     <h2 class="display-2 white--text text-xs-center">
                         <span style="font-size:12px">TK.</span>
-                        <strong>{{afterExpenseProfit - payment_due }}</strong>
+                        <strong>{{ totalProfiteAll }}</strong>
                     </h2>
                 </v-card-text>
             </v-card>
@@ -118,6 +118,10 @@
                 afterDueProfit : 'getAfterDueProfit',
                 title:'getChartTitle'
             }),
+
+            totalProfiteAll(){
+                return Number(this.afterExpenseProfit) - Number(this.paymentDue);
+            }
         },
 
         created(){
