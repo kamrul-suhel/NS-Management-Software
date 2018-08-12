@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer;
 
 use App\Customer;
 use App\Traits\ApiResponser;
+use App\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -19,10 +20,21 @@ class CustomerDueController extends Controller
     {
         //
         if($request->customer_id){
-            $previous_due = $this->customerLastDueAmount($request);
-            $data = [
-              'previousDue' => $previous_due
-            ];
+            $customer_transactions = Customer::where('id', $request->customer_id)
+                ->with(['transitions' => function($query){
+                    $query->where('payment_due', '>', 0);
+                }])
+                ->get()
+                ->pluck('transitions')
+                ->collapse();
+
+            $transactions = [];
+            if($customer_transactions->count() > 0){
+                $transactions = $customer_transactions;
+            }
+
+            $data['previous_record'] = $this->customerLastDueAmount($request);
+            $data['transactions'] = $transactions;
             return $this->successResponse($data, 200);
         }
 
@@ -48,6 +60,15 @@ class CustomerDueController extends Controller
     public function store(Request $request)
     {
         //
+        if($request->transactions){
+            $transactions = json_decode($request->transactions);
+            foreach($transactions as $transaction){
+                $currTransaction = Transaction::find($transaction->id);
+                $payment_due = $currTransaction->payment_due - $transaction->newamount;
+                $currTransaction->update(['payment_due' => $payment_due]);
+            }
+        }
+
         $customer = Customer::findOrfail($request->customer_id);
         $customer_due = $customer->duePayments()->create([
            'paid'   => $request->paid,
@@ -114,7 +135,10 @@ class CustomerDueController extends Controller
             ->first();
 
         if($duPayment){
-            return $duPayment->due;
+            return [
+                'previousDue' => $duPayment->due,
+                'transaction_id' => $duPayment->transaction_id
+                ];
         }
 
         return 0;

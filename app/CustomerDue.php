@@ -10,6 +10,7 @@ class CustomerDue extends Model
 
     protected $fillable = [
         'paid',
-        'due'
+        'due',
+        'transaction_id'
     ];
 }

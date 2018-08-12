@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Product;
+
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Customer\CustomerDueController;
 use App\Product;
@@ -23,53 +24,63 @@ class ProductBuyerTransactionController extends ApiController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, Customer $customer)
     {
-        $transaction = DB::transaction(function() use ($request, $customer){
-            $attach_product =[];
+        $transaction = DB::transaction(function () use ($request, $customer) {
+            $attach_product = [];
             $unique_id = $this->getUniqueId();
 
             $transaction = Transaction::create([
-                'customer_id'      => $customer->id,
-                'invoice_number'         => $unique_id,
-                'discount_amount'          => $request->discount,
-                'total'          => $request->total,
-                'payment_status'=> $request->payment_status,
-                'payment_due'   => $request->payment_due ? $request->payment_due : 0,
-                'paid'         => $request->paid
+                'customer_id' => $customer->id,
+                'invoice_number' => $unique_id,
+                'discount_amount' => $request->discount,
+                'total' => $request->total,
+                'payment_status' => $request->payment_status,
+                'payment_due' => $request->payment_due ? $request->payment_due : 0,
+                'paid' => $request->paid
             ]);
 
-            if($request->payment_due && $request->payment_due > 0){
+
+            if ($request->payment_due && $request->payment_due > 0) {
                 $request['customer_id'] = $customer->id;
                 $customerDueController = new CustomerDueController();
-                $previousDue = $customerDueController->customerLastDueAmount($request);
+                $previousDue = 0;
+
+                $previousTransaction = $customerDueController->customerLastDueAmount($request);
+                if($previousTransaction['previousDue']){
+                    $previousDue = $previousTransaction['previousDue'];
+                }
+
+                $transaction_id = $transaction->id;
+                $due = $request->payment_due + $previousDue;
 
                 $customer->duePayments()->create([
-                   'paid'   => 0,
-                   'due'    => $request->payment_due + $previousDue
+                    'transaction_id' => $transaction_id,
+                    'paid' => 0,
+                    'due' => $due
                 ]);
             }
 
             $products = json_decode($request->products);
 
 
-            foreach($products as $product){
+            foreach ($products as $product) {
                 // check if has selected serials
-                if($product->selectedSerials){
+                if ($product->selectedSerials) {
                     // Find the serials key
                     $serials = ProductSerial::where('product_id', $product->product->id)
-                        ->whereIn('product_serial',$product->selectedSerials)->get();
-                    foreach($serials as $serial){
+                        ->whereIn('product_serial', $product->selectedSerials)->get();
+                    foreach ($serials as $serial) {
                         $serial->is_sold = 1;
                         $serial->transaction_id = $transaction->id;
                         $serial->update();
                     }
                 }
 
-                $cur_product= Product::find($product->product->id);
+                $cur_product = Product::find($product->product->id);
                 $selected_quantity = $product->selected_quantity;
                 $cur_product->quantity -= $selected_quantity;
 
@@ -89,8 +100,6 @@ class ProductBuyerTransactionController extends ApiController
 
         return $this->showOne($product);
     }
-
-
 
 
 }

@@ -27,12 +27,52 @@
                                 <v-flex xs12 v-if="previousDue > 0">
                                     <p class="red--text">This customer has TK.{{ previousDue }} due.</p>
                                 </v-flex>
+                                <v-flex xs12 v-else>
+                                    <p class="light-green--text" v-if="iniState">This customer do not have any previous due.</p>
+                                </v-flex>
+                            </v-layout>
+
+                            <v-layout
+                                    row
+                                    wrap
+                                    v-if="previousDue > 0"
+                                    v-for="(transaction, index) in transactions"
+                                    :key="index">
+                                <v-flex xs12>
+                                    <h2 class="title">{{transaction.created_at}}</h2>
+                                </v-flex>
+
+                                <v-flex xs3>
+                                    Invoice number<br/>
+                                    {{ transaction.invoice_number}}
+                                </v-flex>
+                                <v-flex xs3>
+                                    Total<br/>
+                                    TK.{{ transaction.total }}
+                                </v-flex>
+                                <v-flex xs3>
+                                    Due<br/>
+                                    TK.{{ transaction.payment_due }}
+                                </v-flex>
+                                <v-flex xs3>
+                                    <v-text-field
+                                            dark
+                                            color="dark"
+                                            label="How much he paying from this?"
+                                            v-model="transaction.newamount"
+                                            @input="calculateNewAmount()"
+                                        ></v-text-field>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <v-divider></v-divider>
+                                </v-flex>
 
                                 <v-flex xs6>
                                     <v-text-field
                                             dark
                                             color="dark"
                                             label="Amount of pay"
+                                            disabled
                                             v-model="paid">
                                     </v-text-field>
                                 </v-flex>
@@ -46,9 +86,7 @@
                                             v-model="newAmountDue"
                                     ></v-text-field>
                                 </v-flex>
-                            </v-layout>
 
-                            <v-layout row wrap>
                                 <v-flex xs12 class="text-xs-right">
                                     <v-btn dark color="dark" raised @click.native="onCancelTransaction()">Cancel</v-btn>
 
@@ -77,9 +115,14 @@
             paid: 0,
             previousDue: 0,
             newAmountDue:0,
+
+            transactions: [],
+
+            iniState: false,
         }),
 
         computed: {
+
         },
 
         watch: {
@@ -87,12 +130,28 @@
                 this.previousDue = 0;
                 let url = '/transaction/due/create?customer_id='+val.value;
                 axios.get(url).then((response)=>{
-                    this.previousDue = response.data.previousDue;
+                    this.previousDue = 0;
+                    if(response.data.previous_record.previousDue){
+                        this.previousDue = response.data.previous_record.previousDue;
+                    }
+
+                    this.transactions = [];
+                    if(response.data.transactions && response.data.transactions.length > 0){
+                        response.data.transactions.forEach((transaction)=>{
+                            transaction.newamount = 0;
+                            this.transactions.push(transaction);
+                        })
+                    }
+                    this.iniState = true;
                 })
             },
 
             paid(val){
-                this.newAmountDue = this.previousDue - val;
+                this.newAmountDue = Number(this.previousDue) - Number(val);
+            },
+
+            transactions(value){
+
             }
         },
 
@@ -127,6 +186,8 @@
                 let form = new FormData()
                 let url = '/api/customer/'+this.selectedCustomer.value+'/due/transactions';
 
+                form.append('transactions', JSON.stringify(this.transactions));
+
                 form.append('paid', this.paid);
                 form.append('due', this.newAmountDue);
 
@@ -141,6 +202,14 @@
 
             onCancelTransaction(){
               this.$router.push({name: 'transaction'});
+            },
+
+            calculateNewAmount(){
+                let totalPay = 0;
+                this.transactions.forEach((transaction)=>{
+                    totalPay += +transaction.newamount;
+                })
+                this.paid = totalPay;
             }
         }
     }
