@@ -136,7 +136,7 @@ class TransactionAccountingController extends Controller
             'total_profit' => number_format((float)$totalProfit, 2, '.', ''),
             'total_expense' => number_format((float)$totalExpenses, 2, '.', ''),
             'profit_after' => number_format((float)$profitAfter, 2, '.', ''),
-            'total_profit_after_due' => $totalProfitAfterDue
+            'total_profit_after_due' => number_format($totalProfitAfterDue, 2, '.', '')
         ];
 
         return $this->successResponse($data, 200);

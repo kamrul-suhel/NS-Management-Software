@@ -10,7 +10,7 @@ const state = {
     expense:'',
     profit:'',
     afterExpenseProfit:'',
-    afterDueProfit: '',
+    afterDueProfit: 0,
 
 }
 
@@ -112,7 +112,7 @@ const mutations = {
     },
 
     setAfterDueProfit(state, value){
-        state.afterdueProfit = value;
+        state.afterDueProfit = value;
     }
 }
 
@@ -155,6 +155,7 @@ const actions = {
 
         axios.post('/api/accounting/transaction', payload)
             .then((response) => {
+                console.log(response);
                 commit('setTPaymentDue', response.data.payment_due);
                 commit('setTPaid',response.data.paid);
                 commit('setTDiscount', response.data.discount);
