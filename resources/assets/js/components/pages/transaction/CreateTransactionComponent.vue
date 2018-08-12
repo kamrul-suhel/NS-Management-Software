@@ -19,8 +19,13 @@
                                             append-icon="account_circle"
                                             chips
                                             persistent-hint
+                                            return-object
                                     >
                                     </v-autocomplete>
+                                </v-flex>
+
+                                <v-flex xs12 v-if="previousDue > 0">
+                                    <p class="red--text">This customer has TK. {{ previousDue }} due.</p>
                                 </v-flex>
                             </v-layout>
 
@@ -129,7 +134,8 @@
             total_product: 1,
 
             customers: [{text: 'No customer', value: 1}],
-            selectedCustomer:[],
+            selectedCustomer:{},
+            previousDue: 0,
             payment_due:'',
             paid:'',
             discount:0,
@@ -160,7 +166,15 @@
                     }
                 });
                 this.current_product_quantity = change_product.quantity;
-            }
+            },
+
+            selectedCustomer(val) {
+                this.previousDue = 0;
+                let url = '/transaction/due/create?customer_id='+val.value;
+                axios.get(url).then((response)=>{
+                    this.previousDue = response.data.previousDue;
+                })
+            },
         },
 
         created() {

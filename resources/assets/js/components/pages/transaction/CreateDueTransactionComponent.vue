@@ -25,7 +25,7 @@
                                 </v-flex>
 
                                 <v-flex xs12 v-if="previousDue > 0">
-                                    <p class="red--text">This customer has {{ previousDue }} due.</p>
+                                    <p class="red--text">This customer has TK.{{ previousDue }} due.</p>
                                 </v-flex>
 
                                 <v-flex xs6>
@@ -84,6 +84,7 @@
 
         watch: {
             selectedCustomer(val) {
+                this.previousDue = 0;
                 let url = '/transaction/due/create?customer_id='+val.value;
                 axios.get(url).then((response)=>{
                     this.previousDue = response.data.previousDue;

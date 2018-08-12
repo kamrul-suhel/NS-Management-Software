@@ -56,13 +56,15 @@
                         <v-btn
                                 :disabled="!createTransaction"
                                 dark
+                                small
                                 color="dark"
                                 @click="onGotoCreateTransaction('create')">
-                            Create Transaction
+                            Create new Transaction
                         </v-btn>
                         <p class="red--text" v-if="!createTransaction">To make a transaction please first make a customer & product</p>
 
                         <v-btn
+                                small
                                 :disabled="!createTransaction"
                                 dark
                                 color="dark"

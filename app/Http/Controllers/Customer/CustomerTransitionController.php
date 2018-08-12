@@ -20,7 +20,7 @@ class CustomerTransitionController extends ApiController
         ->get()
         ->pluck('product')
         ->unique()
-            ->values()
+        ->values()
         ->sortByDesc('created_at');
         return $transactions;
         $total_transition = $transactions->count();
