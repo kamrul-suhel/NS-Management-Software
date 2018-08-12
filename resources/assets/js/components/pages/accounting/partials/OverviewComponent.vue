@@ -78,23 +78,23 @@
                 <v-card-text class="pt-0">
                     <h2 class="display-2 white--text text-xs-center">
                         <span style="font-size:12px">TK.</span>
-                        <strong>{{afterExpenseProfit}}</strong>
+                        <strong>{{afterExpenseProfit - payment_due }}</strong>
                     </h2>
                 </v-card-text>
             </v-card>
         </v-flex>
 
-        <v-flex xs6>
-            <v-card flat class="red darken-1 white--text">
-                <v-card-title>After due profit</v-card-title>
-                <v-card-text class="pt-0">
-                    <h2 class="display-2 white--text text-xs-center">
-                        <span style="font-size:12px">TK.</span>
-                        <strong>{{afterDueProfit}}</strong>
-                    </h2>
-                </v-card-text>
-            </v-card>
-        </v-flex>
+        <!--<v-flex xs6>-->
+            <!--<v-card flat class="red darken-1 white&#45;&#45;text">-->
+                <!--<v-card-title>After due profit</v-card-title>-->
+                <!--<v-card-text class="pt-0">-->
+                    <!--<h2 class="display-2 white&#45;&#45;text text-xs-center">-->
+                        <!--<span style="font-size:12px">TK.</span>-->
+                        <!--<strong>{{afterDueProfit}}</strong>-->
+                    <!--</h2>-->
+                <!--</v-card-text>-->
+            <!--</v-card>-->
+        <!--</v-flex>-->
     </v-layout>
 </template>
 
