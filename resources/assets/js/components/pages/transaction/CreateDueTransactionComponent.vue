@@ -86,7 +86,12 @@
                                             v-model="newAmountDue"
                                     ></v-text-field>
                                 </v-flex>
+                            </v-layout>
 
+                            <v-layout
+                                    row
+                                    wrap
+                                    v-if="previousDue > 0">
                                 <v-flex xs12 class="text-xs-right">
                                     <v-btn dark color="dark" raised @click.native="onCancelTransaction()">Cancel</v-btn>
 
