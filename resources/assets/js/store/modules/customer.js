@@ -1,71 +1,79 @@
 const state = {
-    allCustomers:[],
+    allCustomers: [],
     totalTransaction: 0,
-    allTransactions:[],
-    customerTransactionTotal:0,
-    customerTransactionDue:0
+    allTransactions: [],
+    customerTransactionTotal: 0,
+    customerTransactionDue: 0
 }
 
 const getters = {
-    getAllCustomers(state){
+    getAllCustomers(state) {
         return state.allCustomers;
     },
 
-    getTotalTransaction(state){
+    getTotalTransaction(state) {
         return state.totalTransaction;
     },
 
-    getAllTransaction(state){
+    getAllTransaction(state) {
         return state.allTransactions;
     },
 
-    getCustomerTransactionTotal(state){
+    getCustomerTransactionTotal(state) {
         return state.customerTransactionTotal;
     },
 
-    getCustomerTransactionDue(state){
+    getCustomerTransactionDue(state) {
         return state.customerTransactionDue;
     }
 
 }
 
 const mutations = {
-    setAllCustomers(state, customers){
+    setAllCustomers(state, customers) {
         state.allCustomers = customers;
     },
 
-    setTotalTransaction(state, totalTransaction){
+    setTotalTransaction(state, totalTransaction) {
         state.totalTransaction = totalTransaction;
     },
 
-    setAllTransaction(state, transactions){
+    setAllTransaction(state, transactions) {
         state.allTransactions = transactions;
     },
 
-    setCustomerTransactionTotal(state, total){
+    setCustomerTransactionTotal(state, total) {
         state.customerTransactionTotal = total;
     },
 
-    setCustomerTransactionDue(state, due){
+    setCustomerTransactionDue(state, due) {
         state.customerTransactionDue = due;
+    },
+
+    setResetAllCustomerTransactionData(state) {
+        state.allCustomers = [];
+        state.totalTransaction = 0;
+        state.allTransactions = [];
+        state.customerTransactionTotal = 0;
+        state.customerTransactionDue = 0;
     }
 }
 
 const actions = {
-    fetchAllCustomers({commit}){
+    fetchAllCustomers({commit}) {
         let url = '/api/customers';
 
-        axios.get(url).then((response)=>{
-            if(response.data){
+        axios.get(url).then((response) => {
+            if (response.data) {
                 commit('setAllCustomers', response.data);
             }
         })
     },
 
-    fetchSelectedCustomerTransactions({commit}, customer){
-        let url = '/customers/'+customer.id+'/transactions';
+    fetchSelectedCustomerTransactions({commit}, customer) {
+        let url = '/customers/' + customer.id + '/transactions';
 
-        axios.get(url).then((response)=> {
+        axios.get(url).then((response) => {
             commit('setTotalTransaction', response.data.total_transactions);
             commit('setAllTransaction', response.data.transactions);
             commit('setCustomerTransactionTotal', response.data.total);

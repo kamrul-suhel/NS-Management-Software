@@ -196,6 +196,10 @@
                     return 'Half paid'
                 }
             }
+        },
+
+        destroyed(){
+            this.$store.commit('setResetAllCustomerTransactionData');
         }
     }
 </script>

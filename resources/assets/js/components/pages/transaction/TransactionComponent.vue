@@ -256,7 +256,6 @@
             },
 
             createTransaction(){
-                console.log(this.companyExists && this.productExists ? true : false);
                 return this.companyExists && this.productExists ? true : false;
             }
         },
