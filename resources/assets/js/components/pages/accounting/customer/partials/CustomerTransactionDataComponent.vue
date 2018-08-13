@@ -12,6 +12,7 @@
                                 v-model="search"></v-text-field>
 
                         <v-data-table
+                                hide-actions
                                 :headers="headers"
                                 :items="items"
                                 :search="search"
@@ -35,6 +36,7 @@
                             </template>
 
                             <template slot="items" slot-scope="props">
+                                <td class="text-xs-center">{{ props.item.created_at | convertDate }}</td>
                                 <td class="text-xs-center">{{ props.item.invoice_number.toUpperCase() }}</td>
                                 <td class="text-xs-center">{{ props.item.products.length ? props.item.products.length : 0 }}</td>
                                 <td class="text-xs-center">{{ getPaymentStatus(props.item.payment_status) }}</td>
@@ -50,6 +52,29 @@
 
                             <template slot="no-data">
                                 Sorry this customer do not have transition.
+                            </template>
+
+                            <template slot="footer">
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-xs-right"><strong>Total Transactions:</strong></td>
+                                    <td class="text-xs-left"><strong>{{ totalTransaction }}</strong></td>
+                                    <td class="text-xs-right"><strong>Total due</strong></td>
+                                    <td class="text-xs-right"><strong>TK. {{ due }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-xs-right"><strong>Grand total</strong></td>
+                                    <td class="text-xs-right"><strong>TK. {{ total }}</strong></td>
+                                </tr>
                             </template>
                         </v-data-table>
                     </v-card-text>
@@ -72,6 +97,12 @@
             },
 
             headers: [
+                {
+                    text: 'Date',
+                    value: 'created_at',
+                    sortable: true
+                },
+
                 {
                     text: 'Invoice number',
                     value: 'invoice_number',
@@ -124,38 +155,20 @@
 
         computed: {
             ...mapGetters({
-                items: 'getAllTransaction'
+                items: 'getAllTransaction',
+                totalTransaction: 'getTotalTransaction',
+                total: 'getCustomerTransactionTotal',
+                due: 'getCustomerTransactionDue'
             })
         },
 
         watch: {
-            items(){
-                console.log(this.items);
-            }
         },
 
         created() {
-            // this.initialize()
         },
 
         methods: {
-            initialize() {
-                // get all transaction
-                axios.get('/api/transactions')
-                    .then((response) => {
-                        if(response.data.transactions){
-                            this.items = response.data.transactions;
-                        }
-                        this.total_transactions = response.data.total_transactions;
-                        this.total_amount_transactions = response.data.total_tk;
-                    })
-                    .catch((error) => {
-                        console.log(error)
-                    })
-
-            },
-
-
             changeSort(column) {
                 if (this.pagination.sortBy === column) {
                     this.pagination.descending = !this.pagination.descending

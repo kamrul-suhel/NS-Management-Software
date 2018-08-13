@@ -2,6 +2,8 @@ const state = {
     allCustomers:[],
     totalTransaction: 0,
     allTransactions:[],
+    customerTransactionTotal:0,
+    customerTransactionDue:0
 }
 
 const getters = {
@@ -15,7 +17,16 @@ const getters = {
 
     getAllTransaction(state){
         return state.allTransactions;
+    },
+
+    getCustomerTransactionTotal(state){
+        return state.customerTransactionTotal;
+    },
+
+    getCustomerTransactionDue(state){
+        return state.customerTransactionDue;
     }
+
 }
 
 const mutations = {
@@ -29,6 +40,14 @@ const mutations = {
 
     setAllTransaction(state, transactions){
         state.allTransactions = transactions;
+    },
+
+    setCustomerTransactionTotal(state, total){
+        state.customerTransactionTotal = total;
+    },
+
+    setCustomerTransactionDue(state, due){
+        state.customerTransactionDue = due;
     }
 }
 
@@ -49,6 +68,8 @@ const actions = {
         axios.get(url).then((response)=> {
             commit('setTotalTransaction', response.data.total_transactions);
             commit('setAllTransaction', response.data.transactions);
+            commit('setCustomerTransactionTotal', response.data.total);
+            commit('setCustomerTransactionDue', response.data.due);
         });
     }
 }

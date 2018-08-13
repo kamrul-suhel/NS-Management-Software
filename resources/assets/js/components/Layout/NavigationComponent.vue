@@ -89,7 +89,7 @@
 
                             {
                                 icon: 'people',
-                                text: 'Customers Laser',
+                                text: 'Customer Laser',
                                 link: 'accounting_customer_transaction'
                             }
 

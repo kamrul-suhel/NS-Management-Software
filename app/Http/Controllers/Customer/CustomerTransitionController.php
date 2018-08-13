@@ -24,9 +24,14 @@ class CustomerTransitionController extends ApiController
             ->pluck('transitions')
             ->collapse();
             $total_transition = $transactions->count();
+            $total = number_format($transactions->sum('total'), '2','.',',');
+            $due = number_format($transactions->sum('payment_due'), '2','.',',');
+
 //        $last_transition = $transactions->sortBy('id')->last();
 
         $data = [
+            'total' => $total,
+            'due'   => $due,
             'total_transactions' => $total_transition,
             'transactions' => $transactions
         ];
