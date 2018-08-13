@@ -18,7 +18,7 @@
                                 :search="search"
                                 :pagination.sync="pagination"
                                 :rows-per-page-items="row_per_page"
-                                item-key="name"
+                                item-key="invoice_number"
                         >
 
                             <template slot="headers" slot-scope="props">
@@ -36,14 +36,35 @@
                             </template>
 
                             <template slot="items" slot-scope="props">
-                                <td class="text-xs-center">{{ props.item.created_at | convertDate }}</td>
-                                <td class="text-xs-center">{{ props.item.invoice_number.toUpperCase() }}</td>
-                                <td class="text-xs-center">{{ props.item.products.length ? props.item.products.length : 0 }}</td>
-                                <td class="text-xs-center">{{ getPaymentStatus(props.item.payment_status) }}</td>
-                                <td class="text-xs-center">TK. {{ props.item.discount_amount? price_format(props.item.discount_amount): 0 }}</td>
-                                <td class="text-xs-center">TK. {{ props.item.paid ? price_format(props.item.paid): 0 }}</td>
-                                <td class="text-xs-center">TK. {{ props.item.payment_due? price_format(props.item.payment_due): 0 }}</td>
-                                <td class="text-xs-center">TK. {{ props.item.total? price_format(props.item.total): 0 }}</td>
+                                <tr @click="props.expanded = !props.expanded">
+                                    <td class="text-xs-center">{{ props.item.created_at | convertDate }}</td>
+                                    <td class="text-xs-center">{{ props.item.invoice_number.toUpperCase() }}</td>
+                                    <td class="text-xs-center">{{ props.item.products.length ? props.item.products.length : 0 }}</td>
+                                    <td class="text-xs-center">{{ getPaymentStatus(props.item.payment_status) }}</td>
+                                    <td class="text-xs-center">TK. {{ props.item.discount_amount? price_format(props.item.discount_amount): 0 }}</td>
+                                    <td class="text-xs-center">TK. {{ props.item.paid ? price_format(props.item.paid): 0 }}</td>
+                                    <td class="text-xs-center">TK. {{ props.item.payment_due? price_format(props.item.payment_due): 0 }}</td>
+                                    <td class="text-xs-center">TK. {{ props.item.total? price_format(props.item.total): 0 }}</td>
+                                </tr>
+                            </template>
+
+                            <template slot="expand" slot-scope="props">
+                                <v-card flat>
+                                    <v-card-text>
+                                        <table style="width:100%">
+                                            <thead>
+                                                <th>Product name</th>
+                                                <th>Product Description</th>
+                                                <th>Product Sale price</th>
+                                            </thead>
+                                            <tr v-for="(product, index) in props.item.products" :key="index">
+                                                <td class="text-xs-center">{{ product.name }}</td>
+                                                <td class="text-xs-center">{{ product.description }}</td>
+                                                <td class="text-xs-center">TK. {{ product.sale_price }}</td>
+                                            </tr>
+                                        </table>
+                                    </v-card-text>
+                                </v-card>
                             </template>
 
                             <v-alert slot="no-results" :value="true" color="error" icon="warning">
