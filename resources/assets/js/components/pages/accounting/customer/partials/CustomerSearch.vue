@@ -4,20 +4,18 @@
             <v-card>
                 <v-card-text>
                     <v-layout row wrap>
-                        <v-flex xs6>
-                            <v-select
+                        <v-flex xs12>
+                            <v-autocomplete
                                     dark
                                     color="white"
-                                    v-model="selected"
+                                    v-model="selectedCustomer"
                                     :items="customers"
-                                    item-text="state"
-                                    item-value="abbr"
-                                    label="Choose a field"
+                                    item-text="name"
+                                    label="Select Customer"
                                     persistent-hint
                                     @input="onSelected()"
                                     return-object
-                                    single-line
-                            ></v-select>
+                            ></v-autocomplete>
                         </v-flex>
                     </v-layout>
                 </v-card-text>
@@ -31,7 +29,7 @@
     export default {
         data(){
             return {
-                selected: ''
+                selectedCustomer: {}
             }
         },
 
@@ -47,7 +45,7 @@
 
         methods: {
             onSelected(){
-
+                this.$store.dispatch('fetchSelectedCustomerTransactions', this.selectedCustomer);
             }
         }
     }

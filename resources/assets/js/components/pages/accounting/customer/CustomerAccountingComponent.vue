@@ -9,15 +9,19 @@
 
         <customer-search></customer-search>
 
+        <customer-transaction-data-component></customer-transaction-data-component>
+
 
     </v-container>
 </template>
 
 <script>
     import CustomerSearch from './partials/CustomerSearch'
+    import CustomerTransactionDataComponent from './partials/CustomerTransactionDataComponent'
     export default {
         components: {
-            CustomerSearch
+            CustomerSearch,
+            CustomerTransactionDataComponent
         },
 
         data(){

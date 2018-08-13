@@ -48,7 +48,7 @@ class DatabaseSeeder extends Seeder
         CompanyTransaction::flushEventListeners();
 
         $usersQuantity = 10;
-        $customerQuantity = 4;
+        $customerQuantity = 10;
         $categoriesQuantity = 100;
         $productsQuantity = 20;
         $transactionQuantity = 200;
@@ -133,17 +133,17 @@ class DatabaseSeeder extends Seeder
         	}
         );
 
-//        factory(Transaction::class, $transactionQuantity)->create()->each(
-//            function($transaction){
-//            $products = Product::all()->random(mt_rand(1,5))->pluck('id');
-//            $transaction->products()->attach($products,
-//                [
-//                    'sale_quantity' => Faker::create()->numberBetween(1, 5),
-//                    'created_at'    => Faker::create()->dateTimeBetween($startDate = '-12 month', $endDate = 'now'),
-//                    'updated_at'    => Faker::create()->dateTimeBetween($startDate = '-5 month', $endDate = 'now')
-//                ]);
-//
-//        });
+        factory(Transaction::class, $transactionQuantity)->create()->each(
+            function($transaction){
+            $products = Product::all()->random(mt_rand(1,5))->pluck('id');
+            $transaction->products()->attach($products,
+                [
+                    'sale_quantity' => Faker::create()->numberBetween(1, 5),
+                    'created_at'    => Faker::create()->dateTimeBetween($startDate = '-12 month', $endDate = 'now'),
+                    'updated_at'    => Faker::create()->dateTimeBetween($startDate = '-5 month', $endDate = 'now')
+                ]);
+
+        });
 
         factory(Setting::class, 1)->create();
 

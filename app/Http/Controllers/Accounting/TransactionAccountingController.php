@@ -19,7 +19,7 @@ class TransactionAccountingController extends Controller
         $transactions = Transaction::with(['products', 'customer']);
         $expenses = new Expense();
 
-        if($request->select['abbr'] === 'TDT'){
+        if ($request->select['abbr'] === 'TDT') {
             $transactions = $transactions->where('created_at', '>', Carbon::now()->startOfDay())
                 ->where('created_at', '<', Carbon::now()->endOfDay());
 
@@ -27,16 +27,16 @@ class TransactionAccountingController extends Controller
                 ->where('created_at', '<', Carbon::now()->endOfDay());
         }
 
-        if($request->select['abbr'] === 'YDT'){
-            $transactions =  $transactions->where('created_at', '>', Carbon::yesterday());
-            $expenses =  $expenses->where('created_at', '>', Carbon::yesterday());
+        if ($request->select['abbr'] === 'YDT') {
+            $transactions = $transactions->where('created_at', '>', Carbon::yesterday());
+            $expenses = $expenses->where('created_at', '>', Carbon::yesterday());
         }
 
-        if($request->select['abbr'] === 'TWT'){
-            $transactions = $transactions->where('created_at','>', Carbon::now()->startOfWeek());
-            $expenses = $expenses->where('created_at','>', Carbon::now()->startOfWeek());
+        if ($request->select['abbr'] === 'TWT') {
+            $transactions = $transactions->where('created_at', '>', Carbon::now()->startOfWeek());
+            $expenses = $expenses->where('created_at', '>', Carbon::now()->startOfWeek());
         }
-        if($request->select['abbr'] === 'LWT'){
+        if ($request->select['abbr'] === 'LWT') {
             $currentDate = Carbon::now();
             $agoDate = $currentDate->subDays($currentDate->dayOfWeek)->subWeek();
             $currentDate = Carbon::now();
@@ -46,7 +46,7 @@ class TransactionAccountingController extends Controller
             $expenses = $expenses->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
-        if($request->select['abbr'] === 'TMT'){
+        if ($request->select['abbr'] === 'TMT') {
             $currentDate = Carbon::now();
             $agoDate = $currentDate->startOfMonth();
             $currentDate = Carbon::now();
@@ -55,12 +55,12 @@ class TransactionAccountingController extends Controller
             $expenses = $expenses->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
-        if($request->select['abbr'] === 'LMT'){
+        if ($request->select['abbr'] === 'LMT') {
             $transactions = $transactions->whereMonth('created_at', Carbon::now()->subMonth()->month);
             $expenses = $expenses->whereMonth('created_at', Carbon::now()->subMonth()->month);
         }
 
-        if($request->select['abbr'] === 'TYT'){
+        if ($request->select['abbr'] === 'TYT') {
             $currentDate = Carbon::now();
             $agoDate = $currentDate->startOfYear();
             $currentDate = Carbon::now();
@@ -69,14 +69,14 @@ class TransactionAccountingController extends Controller
             $expenses = $expenses->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
-        if($request->customdate){
+        if ($request->customdate) {
             $begainDate = Carbon::parse($request->startdate)->startOfDay();
             $endDate = Carbon::parse($request->startdate)->endOfDay();
             $transactions = $transactions->whereBetween('created_at', [$begainDate, $endDate]);
             $expenses = $expenses->whereBetween('created_at', [$begainDate, $endDate]);
         }
 
-        if($request->customdate && $request->customrangerate){
+        if ($request->customdate && $request->customrangerate) {
             $agoDate = Carbon::parse($request->startdate)->startOfDay();
             $endDate = Carbon::parse($request->enddate)->endOfDay();
             $transactions = $transactions->whereBetween('created_at', [$agoDate, $endDate]);
@@ -94,28 +94,28 @@ class TransactionAccountingController extends Controller
 
         $chartData = [];
 
-        $transactions->each(function($transaction) use (&$chartData){
+        $transactions->each(function ($transaction) use (&$chartData) {
             $data = [];
             $data['total'] = $transaction->total;
             $data['date'] = Carbon::parse($transaction->created_at)->toFormattedDateString();
             $productName = '';
-            if($transaction->products->count()){
-                $transaction->products->each(function($product) use (&$productName){
-                    $productName .= $product->name. ', ';
+            if ($transaction->products->count()) {
+                $transaction->products->each(function ($product) use (&$productName) {
+                    $productName .= $product->name . ', ';
                 });
             }
-            $data['products'] = $productName . '('. $transaction->products->count(). ')';
+            $data['products'] = $productName . '(' . $transaction->products->count() . ')';
             $data['color'] = $this->rand_color();
             $chartData[] = $data;
         });
 
         $totalProduct = $transactions->pluck('products')->collapse();
 
-        $salePrice = $totalProduct->sum(function($product){
+        $salePrice = $totalProduct->sum(function ($product) {
             return $product->pivot->sale_quantity * $product->sale_price;
         });
 
-        $purchasePrice = $totalProduct->sum(function($product){
+        $purchasePrice = $totalProduct->sum(function ($product) {
             return $product->pivot->sale_quantity * $product->purchase_price;
         });
 
@@ -132,7 +132,7 @@ class TransactionAccountingController extends Controller
             'total_product' => $total_product,
             'paid' => number_format((float)$paid, 2, '.', ''),
             'transactions' => $transactions,
-            'chart_data'    => $chartData,
+            'chart_data' => $chartData,
             'total_profit' => number_format((float)$totalProfit, 2, '.', ''),
             'total_expense' => number_format((float)$totalExpenses, 2, '.', ''),
             'profit_after' => number_format((float)$profitAfter, 2, '.', ''),
