@@ -264,6 +264,8 @@
 
                         <v-spacer></v-spacer>
                         <v-text-field
+                                dark
+                                color="dark"
                                 prepend-icon="search"
                                 label="Search"
                                 v-model="search"></v-text-field>
@@ -276,6 +278,7 @@
                                 :search="search"
                                 :pagination.sync="pagination"
                                 :rows-per-page-items="row_per_page"
+                                :custom-filter="customFilter"
                         >
 
                             <!--<template slot="headers" slot-scope="props">-->
@@ -293,21 +296,24 @@
                             <!--</template>-->
 
                             <template slot="items" slot-scope="props">
-                                <td>{{ props.index +=1 }}</td>
-                                <td class="text-xs-center">{{ props.item.name }}</td>
-                                <td class="text-xs-center">{{ props.item.quantity }}</td>
-                                <td class="text-xs-center">{{ props.item.quantity_type }}</td>
-                                <td class="text-xs-center">TK. {{ props.item.sale_price }}</td>
-                                <td class="text-xs-center">TK. {{ props.item.purchase_price }}</td>
-                                <td class="text-xs-center">{{ props.item.status }}</td>
-                                <td class="justify-start layout px-0">
-                                    <v-btn icon class="mx-0" @click="editItem(props.item)">
-                                        <v-icon color="primary">edit</v-icon>
-                                    </v-btn>
-                                    <v-btn icon class="mx-0" @click="openDeleteDialog(props.item)">
-                                        <v-icon color="pink">delete</v-icon>
-                                    </v-btn>
-                                </td>
+                                <tr>
+                                    <td>{{ props.index +=1 }}</td>
+                                    <td class="text-xs-center">{{ props.item.name }}</td>
+                                    <td class="text-xs-center">{{ props.item.quantity }}</td>
+                                    <td class="text-xs-center">{{ props.item.quantity_type }}</td>
+                                    <td class="text-xs-center">TK. {{ props.item.sale_price }}</td>
+                                    <td class="text-xs-center">TK. {{ props.item.purchase_price }}</td>
+                                    <td class="text-xs-center">{{ props.item.status }}</td>
+                                    <td class="justify-start layout px-0">
+                                        <v-btn icon class="mx-0" @click="editItem(props.item)">
+                                            <v-icon color="primary">edit</v-icon>
+                                        </v-btn>
+                                        <v-btn icon class="mx-0" @click="openDeleteDialog(props.item)">
+                                            <v-icon color="pink">delete</v-icon>
+                                        </v-btn>
+                                    </td>
+                                </tr>
+
                             </template>
 
                             <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -385,6 +391,7 @@
                     sortable: true,
                     value: 'id'
                 },
+
                 {
                     text: 'Title',
                     value: 'name',
@@ -686,6 +693,23 @@
                     this.pagination.sortBy = column
                     this.pagination.descending = false
                 }
+            },
+
+            customFilter(items, search, filter) {
+                search = search.toString().toLowerCase();
+                let filterItem = [];
+                items.forEach((item)=>{
+                    if(item.serials.length > 0){
+                        item.serials.forEach((serial)=>{
+                            if(serial.product_serial.includes(search) || item.name.includes(search)){
+                                filterItem.push(item);
+                            }
+                        })
+                    }else{
+                    }
+                })
+                return filterItem;
+
             }
         }
     }

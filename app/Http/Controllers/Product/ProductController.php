@@ -22,11 +22,15 @@ class ProductController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with(['serials' => function($quary){
-            $quary->where('is_sold', 0);
+    	$allSerial = $request->allSerial;
+        $products = Product::with(['serials' => function($quary) use ($allSerial) {
+        	if(!$allSerial){
+				$quary->where('is_sold', 0);
+			}
         }])->get();
+
         $totalProduct = $products->count();
         $totalStock = $products->sum(function($product){
             return $product->purchase_price * $product->quantity;
