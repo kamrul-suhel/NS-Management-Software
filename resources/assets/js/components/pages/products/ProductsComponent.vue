@@ -702,15 +702,19 @@
                 }
                 let filterItem = [];
                 items.forEach((item)=>{
+                    let isItem = false;
                     if(item.serials.length > 0){
                         item.serials.forEach((serial)=>{
                             if(serial.product_serial.includes(search) || item.name.includes(search)){
-                                filterItem.push(item);
+                                isItem = true;
                                 console.log(filterItem);
                                 return;
                             }
                         })
-                    }else{
+                    }
+
+                    if(isItem){
+                        filterItem.push(item);
                     }
                 })
                 return filterItem;
