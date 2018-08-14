@@ -697,6 +697,9 @@
 
             customFilter(items, search, filter) {
                 search = search.toString().toLowerCase();
+                if(search === ''){
+                    return items;
+                }
                 let filterItem = [];
                 items.forEach((item)=>{
                     if(item.serials.length > 0){
