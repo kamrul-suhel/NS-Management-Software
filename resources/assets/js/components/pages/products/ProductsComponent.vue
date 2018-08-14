@@ -706,6 +706,7 @@
                         item.serials.forEach((serial)=>{
                             if(serial.product_serial.includes(search) || item.name.includes(search)){
                                 filterItem.push(item);
+                                return;
                             }
                         })
                     }else{
