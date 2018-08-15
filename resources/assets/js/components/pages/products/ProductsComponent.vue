@@ -281,23 +281,9 @@
                                 :custom-filter="customFilter"
                         >
 
-                            <!--<template slot="headers" slot-scope="props">-->
-                            <!--<tr>-->
-                            <!--<th-->
-                            <!--v-for="header in props.headers"-->
-                            <!--:key="header.value"-->
-                            <!--:class="['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']"-->
-                            <!--@click="changeSort(header.value)"-->
-                            <!--&gt;-->
-                            <!--<v-icon small>arrow_upward</v-icon>-->
-                            <!--{{ header.text}}-->
-                            <!--</th>-->
-                            <!--</tr>-->
-                            <!--</template>-->
-
                             <template slot="items" slot-scope="props">
                                 <tr>
-                                    <td>{{ props.index +=1 }}</td>
+                                    <td>{{ props.item.created_at | convertDate }}</td>
                                     <td class="text-xs-center">{{ props.item.name }}</td>
                                     <td class="text-xs-center">{{ props.item.quantity }}</td>
                                     <td class="text-xs-center">{{ props.item.quantity_type }}</td>
@@ -305,11 +291,19 @@
                                     <td class="text-xs-center">TK. {{ props.item.purchase_price }}</td>
                                     <td class="text-xs-center">{{ props.item.status }}</td>
                                     <td class="justify-start layout px-0">
-                                        <v-btn icon class="mx-0" @click="editItem(props.item)">
-                                            <v-icon color="primary">edit</v-icon>
+                                        <v-btn dark
+                                               color="dark"
+                                                icon
+                                                class="mx-0"
+                                                @click="editItem(props.item)">
+                                            <v-icon color="white">edit</v-icon>
                                         </v-btn>
-                                        <v-btn icon class="mx-0" @click="openDeleteDialog(props.item)">
-                                            <v-icon color="pink">delete</v-icon>
+                                        <v-btn icon
+                                               dark
+                                               color="dark"
+                                               class="mx-0"
+                                               @click="openDeleteDialog(props.item)">
+                                            <v-icon color="white">delete</v-icon>
                                         </v-btn>
                                     </td>
                                 </tr>
@@ -386,10 +380,10 @@
 
             headers: [
                 {
-                    text: 'Id',
+                    text: 'Date',
                     align: 'left',
                     sortable: true,
-                    value: 'id'
+                    value: 'created_at'
                 },
 
                 {

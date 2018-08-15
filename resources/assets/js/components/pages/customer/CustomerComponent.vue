@@ -10,41 +10,41 @@
             <v-divider class="mb-3 dark"></v-divider>
 
             <v-layout row wrap>
-                <v-flex xs3>
+                <v-flex xs6>
                     <v-card flat class="cyan lighten-1 white--text">
                         <v-card-title>Total Customers</v-card-title>
                         <v-card-text class="pt-0">
-                            <h2 class="display-2 white--text text-xs-center"><strong>350</strong></h2>
+                            <h2 class="display-2 white--text text-xs-center"><strong>{{ totalCustomer }}</strong></h2>
                         </v-card-text>
                     </v-card>
                 </v-flex>
 
-                <v-flex xs3>
+                <v-flex xs6>
                     <v-card flat class="light-blue white--text">
                         <v-card-title>Active Customers</v-card-title>
                         <v-card-text class="pt-0">
-                            <h2 class="display-2 white--text text-xs-center"><strong>350</strong></h2>
+                            <h2 class="display-2 white--text text-xs-center"><strong>{{ activeCustomer }}</strong></h2>
                         </v-card-text>
                     </v-card>
                 </v-flex>
 
-                <v-flex xs3>
-                    <v-card flat class="light-green lighten-1 white--text">
-                        <v-card-title>Deactive Customer</v-card-title>
-                        <v-card-text class="pt-0">
-                            <h2 class="display-2 white--text text-xs-center"><strong>350</strong></h2>
-                        </v-card-text>
-                    </v-card>
-                </v-flex>
+                <!--<v-flex xs3>-->
+                    <!--<v-card flat class="light-green lighten-1 white&#45;&#45;text">-->
+                        <!--<v-card-title>Deactive Customer</v-card-title>-->
+                        <!--<v-card-text class="pt-0">-->
+                            <!--<h2 class="display-2 white&#45;&#45;text text-xs-center"><strong>350</strong></h2>-->
+                        <!--</v-card-text>-->
+                    <!--</v-card>-->
+                <!--</v-flex>-->
 
-                <v-flex xs3>
-                    <v-card flat class="orange darken-1 white--text">
-                        <v-card-title>Highest Customer</v-card-title>
-                        <v-card-text class="pt-0">
-                            <h2 class="display-2 white--text text-xs-center"><strong>350</strong></h2>
-                        </v-card-text>
-                    </v-card>
-                </v-flex>
+                <!--<v-flex xs3>-->
+                    <!--<v-card flat class="orange darken-1 white&#45;&#45;text">-->
+                        <!--<v-card-title>Highest Customer</v-card-title>-->
+                        <!--<v-card-text class="pt-0">-->
+                            <!--<h2 class="display-2 white&#45;&#45;text text-xs-center"><strong>350</strong></h2>-->
+                        <!--</v-card-text>-->
+                    <!--</v-card>-->
+                <!--</v-flex>-->
             </v-layout>
         </v-container>
 
@@ -178,10 +178,10 @@
                                         <v-icon color="dark">edit</v-icon>
                                     </v-btn>
                                     <v-btn icon class="mx-0" @click="viewTransition(props.item)">
-                                        <v-icon clor="dark">view_comfy</v-icon>
+                                        <v-icon color="dark">view_comfy</v-icon>
                                     </v-btn>
                                     <v-btn icon class="mx-0" @click="deleteItem(props.item)">
-                                        <v-icon color="pink">delete</v-icon>
+                                        <v-icon color="dark">delete</v-icon>
                                     </v-btn>
                                 </td>
                             </template>
@@ -211,8 +211,6 @@
     </div>
 </template>
 <script>
-    /* eslint-disable no-unreachable */
-
     import axios from 'axios'
 
     export default {
@@ -222,6 +220,8 @@
             pagination: {
                 sortBy: 'name'
             },
+            totalCustomer : 0,
+            activeCustomer: 0,
 
             snackbar: false,
             snackbar_message: '',
@@ -298,7 +298,14 @@
                 axios.get('/customers')
                     .then((response) => {
                         if(response.data.length > 0){
-                            this.items = response.data
+                            this.items = response.data;
+                            this.totalCustomer = this.items.length;
+
+                            this.items.forEach((customer)=>{
+                                if(customer.active === 1){
+                                    this.activeCustomer++;
+                                }
+                            })
                         }
                     })
                     .catch((error) => {
