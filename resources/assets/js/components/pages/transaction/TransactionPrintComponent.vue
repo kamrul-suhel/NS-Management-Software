@@ -73,7 +73,8 @@
                                 <p>Subtotal: {{ subtotal | price_format(true) }}</p>
                                 <p>Discount: {{ data.transaction.discount_amount | price_format }}</p>
                                 <p>Balance Due: {{ data.transaction.payment_due | price_format }}</p>
-                                <p>Total Pay: {{ subtotal - discount | price_format }}</p>
+                                <p>Add Installation /Service Charge: {{ servicesCharge | price_format }}</p>
+                                <p>Total Pay: {{ (subtotal + servicesCharge)  - discount | price_format }}</p>
                             </v-flex>
                         </v-layout>
 
@@ -115,7 +116,8 @@
                 data: '',
                 initialize: false,
                 subtotal:0,
-                discount:0
+                discount:0,
+                servicesCharge :0
             }
         },
 
@@ -130,6 +132,7 @@
                 axios.get(url).then((response) => {
                     this.data = response.data;
                     this.discount = response.data.transaction.discount_amount;
+                    this.servicesCharge = response.data.transaction.service_charge;
                     this.initializeSubtotal();
                     this.initialize = true;
                 });
