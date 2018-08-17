@@ -86,7 +86,9 @@ class TransactionAccountingController extends Controller
         $transactions = $transactions->orderBy('created_at', 'desc')->get();
         $expenses = $expenses->orderBy('created_at', 'desc')->get();
 
-        $total = $transactions->sum('total');
+        $total = $transactions->sum(function($transaction){
+        	return$transaction->total + $transaction->service_charge;
+		});
         $paymentDue = $transactions->sum('payment_due');
         $discount = $transactions->sum('discount_amount');
         $paid = $transactions->sum('paid');
