@@ -35,14 +35,14 @@
                                         dark
                                         color="dark"
                                         label="Is this product has serial"
-                                    :items="isSerials"
-                                    v-model="isSerial"></v-select>
+                                        :items="isSerials"
+                                        v-model="isSerial"></v-select>
                             </v-flex>
 
                             <v-flex xs12 v-for="(company, totalCompanyIndex) in totalCompanies"
                                     :key="totalCompanyIndex">
                                 <v-layout row wrap
-                                          >
+                                >
                                     <v-flex xs6>
                                         <v-select
                                                 dark
@@ -72,18 +72,20 @@
                                                 color="error"
                                                 style="width:20px;height:20px;position:absolute"
                                                 @click="onRemoveCompany(totalCompanyIndex)"
-                                        ><v-icon>remove</v-icon></v-btn>
+                                        >
+                                            <v-icon>remove</v-icon>
+                                        </v-btn>
                                     </v-flex>
                                     <v-layout row wrap v-if="isSerial">
                                         <v-flex xs6>
                                             <v-autocomplete
                                                     label="Select warranty"
                                                     v-model="company.product_warranty"
-                                                :items="warranties"
-                                                ></v-autocomplete>
+                                                    :items="warranties"
+                                            ></v-autocomplete>
                                         </v-flex>
 
-                                        <v-flex xs6 >
+                                        <v-flex xs6>
                                             <v-layout row wrap>
                                                 <v-flex xs3
                                                         v-for="(serial, index) in company.serials"
@@ -293,9 +295,9 @@
                                     <td class="justify-start layout px-0">
                                         <v-btn dark
                                                color="dark"
-                                                icon
-                                                class="mx-0"
-                                                @click="editItem(props.item)">
+                                               icon
+                                               class="mx-0"
+                                               @click="editItem(props.item)">
                                             <v-icon color="white">edit</v-icon>
                                         </v-btn>
                                         <v-btn icon
@@ -314,7 +316,9 @@
                                     <v-card-text>
                                         <h3>Serials:</h3>
                                         <ul>
-                                            <li v-for="(serial, index) in props.item.serials" :key="index">{{ serial.product_serial }}</li>
+                                            <li v-for="(serial, index) in props.item.serials" :key="index">{{
+                                                serial.product_serial }}
+                                            </li>
                                         </ul>
                                     </v-card-text>
                                 </v-card>
@@ -386,7 +390,7 @@
             snackbar: false,
             snackbar_message: '',
 
-            warranties: ['3 Month','6 Month','1 Year', '1.5 Year', '2 Year'],
+            warranties: ['3 Month', '6 Month', '1 Year', '1.5 Year', '2 Year'],
 
             headers: [
                 {
@@ -471,9 +475,9 @@
             purchase_price_field: false,
 
             companies: [],
-            selectedCompanies:[],
+            selectedCompanies: [],
 
-            isSerials : [{text: 'yes', value: true}, {text: 'No', value: false}],
+            isSerials: [{text: 'yes', value: true}, {text: 'No', value: false}],
             isSerial: false,
             productSerials: [],
 
@@ -488,18 +492,18 @@
             totalCompanies() {
                 let quantity = 0;
                 let serials = [];
-                this.selectedCompanies.forEach((company)=>{
-                    if(company.serials){
+                this.selectedCompanies.forEach((company) => {
+                    if (company.serials) {
                         serials = company.serials;
                     }
 
                     quantity += Number(company.quantity)
                     company.serials = [];
-                    for(let i =0; i < company.quantity; i++){
-                        if(this.isSerial){
-                            if(serials.length > 0){
+                    for (let i = 0; i < company.quantity; i++) {
+                        if (this.isSerial) {
+                            if (serials.length > 0) {
                                 company.serials.push(serials[i]);
-                            }else{
+                            } else {
                                 company.serials.push('');
                             }
                         }
@@ -518,21 +522,21 @@
                 val || this.close()
             },
 
-            isSerial(value){
+            isSerial(value) {
                 this.productSerials = [];
-                if(value){
+                if (value) {
                     let count = Number(this.editedItem.quantity);
-                    for(let i = 0; i < count; i++){
+                    for (let i = 0; i < count; i++) {
                         this.productSerials.push('0');
                     }
                 }
             },
 
-            editedItem(value){
-                if(value.quantity){
+            editedItem(value) {
+                if (value.quantity) {
                     this.productSerials = [];
                     let count = Number(this.editedItem.quantity);
-                    for(let i = 0; i < count; i++){
+                    for (let i = 0; i < count; i++) {
                         this.productSerials.push('0');
                     }
                 }
@@ -632,12 +636,12 @@
             },
 
             onAddCompany() {
-                let newcompany = {quantity: 0, companies: this.companies, selectedCompany:{}};
+                let newcompany = {quantity: 0, companies: this.companies, selectedCompany: {}};
                 this.selectedCompanies.push(newcompany);
                 console.log(this.totalCompanies);
             },
 
-            onRemoveCompany(index){
+            onRemoveCompany(index) {
                 this.selectedCompanies.splice(index, 1);
             },
 
@@ -701,23 +705,21 @@
 
             customFilter(items, search, filter) {
                 search = search.toString().toLowerCase();
-                if(search === ''){
+                if (search === '') {
                     return items;
                 }
                 let filterItem = [];
-                items.forEach((item)=>{
+                items.forEach((item) => {
                     let isItem = false;
-                    if(item.serials.length > 0){
-                        item.serials.forEach((serial)=>{
-                            if(serial.product_serial.includes(search) || item.name.includes(search)){
+                    if (item.serials.length > 0) {
+                        item.serials.forEach((serial) => {
+                            if (serial.product_serial.includes(search) || item.name.includes(search)) {
                                 isItem = true;
-                                console.log(filterItem);
                                 return;
                             }
                         })
                     }
-
-                    if(isItem){
+                    if (isItem) {
                         filterItem.push(item);
                     }
                 })
