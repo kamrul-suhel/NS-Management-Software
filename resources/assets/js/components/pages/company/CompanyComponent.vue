@@ -14,7 +14,7 @@
                     <v-card flat class="cyan lighten-1 white--text">
                         <v-card-title>Total Companies</v-card-title>
                         <v-card-text class="pt-0">
-                            <h2 class="display-2 white--text text-xs-center"><strong>350</strong></h2>
+                            <h2 class="display-2 white--text text-xs-center"><strong>{{ totalCompany }}</strong></h2>
                         </v-card-text>
                     </v-card>
                 </v-flex>
@@ -291,6 +291,8 @@
             snackbar: false,
             snackbar_message: '',
 
+            totalCompany: 0,
+
             headers: [
                 {
                     text: 'Name',
@@ -368,7 +370,8 @@
                 // get all product
                 axios.get('/company')
                     .then((response) => {
-                        this.items = response.data
+                        this.items = response.data.companies;
+                        this.totalCompany = response.data.totalCompany
                     })
                     .catch((error) => {
                         console.log(error)

@@ -63,6 +63,8 @@
                         <v-layout wrap>
                             <v-flex xs6>
                                 <v-select
+                                        dark
+                                        color="dark"
                                         :items="companies"
                                         item-text="name"
                                         item-value="id"
@@ -74,6 +76,8 @@
 
                             <v-flex xs6>
                                 <v-select
+                                        dark
+                                        color="dark"
                                         :items="payment_type"
                                         label="Payment type"
                                         v-model="editedItem.payment_type"
@@ -82,6 +86,8 @@
 
                             <v-flex xs6>
                                 <v-text-field
+                                        dark
+                                        color="dark"
                                         label="Reference"
                                         disabled
                                         hint="Reference number will auto generate"
@@ -92,6 +98,8 @@
 
                             <v-flex xs6>
                                 <v-text-field
+                                        dark
+                                        color="dark"
                                         label="Remarks"
                                         hint="Remarks"
                                         v-model="editedItem.remarks">
@@ -100,6 +108,8 @@
 
                             <v-flex xs6>
                                 <v-text-field
+                                        dark
+                                        color="dark"
                                         label="Debit"
                                         type="number"
                                         hint="How much"
@@ -110,6 +120,8 @@
 
                             <v-flex xs6>
                                 <v-text-field
+                                        dark
+                                        color="dark"
                                         label="Credit"
                                         hint="Credit"
                                         type="number"
@@ -121,6 +133,8 @@
 
                             <v-flex xs6>
                                 <v-text-field
+                                        dark
+                                        color="dark"
                                         v-model="editedItem.balance"
                                         disabled
                                         label="Balance"
@@ -129,6 +143,8 @@
 
                             <v-flex xs6>
                                 <v-text-field
+                                        dark
+                                        color="dark"
                                         v-model="editedItem.manuel_date"
                                         label="Manuel date"
                                 ></v-text-field>
