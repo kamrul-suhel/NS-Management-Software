@@ -24,7 +24,7 @@ class TransactionController extends ApiController
      */
     public function index()
     {
-        $transactions = Transaction::with('products.seller')
+        $transactions = Transaction::with(['products', 'serials'])
             ->with('customer')
             ->orderBy('id', 'DESC')
             ->get();

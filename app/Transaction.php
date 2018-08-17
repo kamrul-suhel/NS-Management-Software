@@ -56,6 +56,10 @@ class Transaction extends Model
         ];
      }
 
+     public function serials(){
+     	return $this->hasMany(ProductSerial::class);
+	 }
+
      public function getCreatedAtAttribute($value){
         $dt = date("F j, Y, g:i a", strtotime($value));
         return $dt;

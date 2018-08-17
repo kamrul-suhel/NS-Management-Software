@@ -312,9 +312,9 @@
                             <template slot="expand" slot-scope="props">
                                 <v-card flat>
                                     <v-card-text>
-                                        <h3>Serials: </h3>
+                                        <h3>Serials:</h3>
                                         <ul>
-                                            <li v-for="(serial, index) in props.item.serials">{{ serial.product_serial }}</li>
+                                            <li v-for="(serial, index) in props.item.serials" :key="index">{{ serial.product_serial }}</li>
                                         </ul>
                                     </v-card-text>
                                 </v-card>
