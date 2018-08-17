@@ -99,12 +99,30 @@ class TransactionController extends ApiController
     public function showPrint(Request $request, int $id)
     {
         if ($request->ajax()) {
-            $transaction = Transaction::with('products')
-                ->with('customer')
+            $transaction = Transaction::with(['products.serials','serials', 'customer'])
                 ->where('id', '=', $id)
                 ->first();
-
             foreach ($transaction->products as $product) {
+
+            	$serials = $transaction->serials;
+				$productSaleSerial = [];
+				$warranty = '';
+            	if($serials->count() > 0){
+            		foreach($serials as $serial){
+            			$isSerial = false;
+            			$warranty = $serial->product_warranty;
+            			foreach($product->serials as $productSerial){
+            				if($serial->product_id === $productSerial->product_id){
+								$isSerial = true;
+							}
+						}
+						if($isSerial){
+							$productSaleSerial[] = $serial;
+						}
+					}
+				}
+				$product->productWarranty = $warranty;
+				$product->productSaleSerial = $productSaleSerial;
                 $product->sale_quantity = $product->pivot->sale_quantity;
             }
             $setting = Setting::find(1);

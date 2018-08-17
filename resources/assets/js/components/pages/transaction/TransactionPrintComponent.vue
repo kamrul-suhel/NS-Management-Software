@@ -46,19 +46,21 @@
                             <v-flex xs12>
                                 <table width="100%">
                                     <thead>
-                                        <td>Qty</td>
                                         <td>Item</td>
-                                        <td>Description</td>
+                                        <td>S.N - Description</td>
+                                        <td>Warranty</td>
                                         <td>Unit Price<br/>(Taka)</td>
+                                        <td>Qty</td>
                                         <td>Total (Taka)</td>
                                     </thead>
 
                                     <tbody>
                                         <tr v-for="product in data.transaction.products" :key="product.id">
-                                            <td>{{ product.sale_quantity }}</td>
                                             <td>{{ product.name }}</td>
-                                            <td>{{ product.description }}</td>
+                                            <td><span v-for="(serial, index) in product.productSaleSerial" :key="index">{{ serial.product_serial }} </span></td>
+                                            <td>{{ product.productWarranty}}</td>
                                             <td>TK. {{ product.sale_price | price_format }}</td>
+                                            <td>{{ product.sale_quantity }}</td>
                                             <td>TK. {{ product.sale_price * product.sale_quantity }}</td>
                                         </tr>
                                     </tbody>
