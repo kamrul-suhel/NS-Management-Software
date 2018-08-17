@@ -89,6 +89,7 @@ class TransactionAccountingController extends Controller
         $total = $transactions->sum(function($transaction){
         	return$transaction->total + $transaction->service_charge;
 		});
+        $totalServices = $transactions->sum('service_charge');
         $paymentDue = $transactions->sum('payment_due');
         $discount = $transactions->sum('discount_amount');
         $paid = $transactions->sum('paid');
@@ -121,7 +122,7 @@ class TransactionAccountingController extends Controller
             return $product->pivot->sale_quantity * $product->purchase_price;
         });
 
-        $totalProfit = $salePrice - $purchasePrice;
+        $totalProfit = $salePrice - $purchasePrice + $totalServices;
         $totalExpenses = $expenses->sum('amount');
         $profitAfter = $totalProfit - $totalExpenses - $discount;
         $totalProfitAfterDue = $totalProfit - $paymentDue;
