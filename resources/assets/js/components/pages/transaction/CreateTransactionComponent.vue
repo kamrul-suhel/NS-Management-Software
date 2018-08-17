@@ -69,6 +69,17 @@
                             </v-layout>
 
                             <v-layout row wrap>
+                                <v-flex xs6>
+                                    <v-text-field
+                                            dark
+                                            color="dark"
+                                            label="Service charge"
+                                            v-model="service_charge"
+                                    ></v-text-field>
+                                </v-flex>
+                            </v-layout>
+
+                            <v-layout row wrap>
                                 <v-flex xs6 v-if="selectedPaymentStatus > 1">
                                     <v-text-field
                                             dark
@@ -148,7 +159,9 @@
             warranty: [{text: 'Yes', value:1 }, {text: 'No', value :0}],
 
             serial_number:'',
-            length_warranty:''
+            length_warranty:'',
+
+            service_charge: 0
         }),
 
         computed: {
@@ -256,6 +269,7 @@
                 form.append('discount', this.discount);
                 form.append('length_warranty', this.length_warranty);
                 form.append('total', total);
+                form.append('service_charge', this.service_charge);
 
                 if(this.selectedPaymentStatus > 1){
                     form.append('payment_due', total - this.paid);

@@ -26,6 +26,7 @@ class Transaction extends Model
     	'customer_id',
     	'product_id',
         'payment_status',
+        'service_charge',
         'payment_due',
         'paid',
         'discount_amount',

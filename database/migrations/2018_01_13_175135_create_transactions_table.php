@@ -18,6 +18,7 @@ class CreateTransactionsTable extends Migration
             $table->integer('customer_id')->unsigned();
             $table->integer('payment_status')->unsigned()->nullable();
             $table->float('payment_due')->unsigned()->nullable();
+            $table->float('service_charge')->unsigned()->nullable()->index();
             $table->enum('type',['paid', 'due-paid'])->index();
             $table->float('paid')->unsigned()->nullable();
             $table->string('invoice_number')->index();
