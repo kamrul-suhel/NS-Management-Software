@@ -17,6 +17,7 @@ import CompanyTransaction from '../components/pages/company/CompanyTransitionsCo
 import AccountExpenseComponent from '../components/pages/accounting/expense/ExpenseAccountingComponent'
 import ProductTransaction from '../components/pages/accounting/product_transaction/TransactionAccountingComponent'
 import CustomerAccountingTransaction from '../components/pages/accounting/customer/CustomerAccountingComponent'
+import UserComponent from '../components/pages/user/UserComponent'
 
 
 
@@ -134,6 +135,12 @@ const routes = [
         path: '/settings',
         name: 'settings',
         component: SettingComponent
+    },
+
+    {
+        path: '/user',
+        name: 'user',
+        component: UserComponent
     }
 ]
 

@@ -282,7 +282,7 @@
                         >
 
                             <template slot="items" slot-scope="props">
-                                <tr>
+                                <tr @click="props.expanded = !props.expanded">
                                     <td>{{ props.item.created_at | convertDate }}</td>
                                     <td class="text-xs-center">{{ props.item.name }}</td>
                                     <td class="text-xs-center">{{ props.item.quantity }}</td>
@@ -307,7 +307,17 @@
                                         </v-btn>
                                     </td>
                                 </tr>
+                            </template>
 
+                            <template slot="expand" slot-scope="props">
+                                <v-card flat>
+                                    <v-card-text>
+                                        <h3>Serials: </h3>
+                                        <ul>
+                                            <li v-for="(serial, index) in props.item.serials">{{ serial.product_serial }}</li>
+                                        </ul>
+                                    </v-card-text>
+                                </v-card>
                             </template>
 
                             <v-alert slot="no-results" :value="true" color="error" icon="warning">
