@@ -51,7 +51,7 @@
                                         <td>Warranty</td>
                                         <td>Unit Price<br/>(Taka)</td>
                                         <td>Qty</td>
-                                        <td>Total (Taka)</td>
+                                        <td class="text-xs-right">Total (Taka)</td>
                                     </thead>
 
                                     <tbody>
@@ -61,7 +61,7 @@
                                             <td>{{ product.productWarranty}}</td>
                                             <td>TK. {{ product.sale_price | price_format }}</td>
                                             <td>{{ product.sale_quantity }}</td>
-                                            <td>TK. {{ product.sale_price * product.sale_quantity }}</td>
+                                            <td class="text-xs-right">TK. {{ product.sale_price * product.sale_quantity }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
