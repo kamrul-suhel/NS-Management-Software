@@ -18,12 +18,7 @@ class LoginController extends Controller
             'password' => $request->input('password')
         ];
 
-        $username_login = [
-            'username' => $request->input('email'),
-            'password' => $request->input('password')
-        ];
-
-        if ((!Auth::attempt($email_login)) && (!Auth::attempt($username_login))) {
+        if ((!Auth::attempt($email_login))) {
             $redirect = ($request->input('redirect')) ? '?redirect=' . $request->input('redirect') : '';
 
             $error = [
@@ -38,32 +33,11 @@ class LoginController extends Controller
             return Redirect::to('login' . $redirect)->with($error);
         }
 
-        $redirect_route = '';
-        $client = '';
-        $user = '';
-        $offers = '';
-
-//        if (key_exists(Auth::user()->role, config('roles.admins'))) {
-//            $redirect_route = '/admin';
-//        } elseif (key_exists(Auth::user()->role, config('roles.clients'))) {
-//
-//            $user = Auth::user();
-//            $client = Auth::user()->client();
-//            $offers = $user->userOffers();
-//        }
-
-        $redirect = ($request->input('redirect')) ?: $redirect_route;
-
         if ($request->ajax() || $request->isJson()) {
-            $response_data['redirect_url'] = $redirect;
-            $response_data['error'] = false;
-            $response_data['client'] = $client;
-            $response_data['user'] = $user;
-            $response_data['user_offers'] = $offers;
+            $response_data['user'] = Auth::user();
             return $this->successResponse($response_data, 200);
         }
 
-        return Redirect::to($redirect);
     }
 
     public function isLogin(Request $request){

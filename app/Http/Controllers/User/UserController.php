@@ -14,11 +14,11 @@ class UserController extends ApiController
 
     public function __construct()
     {
-        $this->middleware('client.credentials')->only(['store','resend']);
-
-        $this->middleware('auth:api')->except(['store','resend','verify']);
-
-        $this->middleware('transform.input:'.UserTransformer::class)->only(['store','update']);
+//        $this->middleware('client.credentials')->only(['store','resend']);
+//
+//        $this->middleware('auth:api')->except(['store','resend','verify']);
+//
+//        $this->middleware('transform.input:'.UserTransformer::class)->only(['store','update']);
     }
 
     /**
@@ -68,9 +68,15 @@ class UserController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show(Request $request)
     {
-        return $this->showOne($user, 200);
+    	if($request->ajax()){
+//			return $this->showOne($user, 200);
+			$user = User::findOrfail($request->id);
+			return $this->showOne($user);
+		}
+
+		return view('welcome');
     }
 
 
@@ -83,7 +89,6 @@ class UserController extends ApiController
      */
     public function update(Request $request, User $user)
     {
-
         $rules =[
             'email'     => 'email|unique:users, email'.$user->id,
             'password'  => 'min:6|confirmed',
@@ -95,8 +100,7 @@ class UserController extends ApiController
         }
 
         if($request->has('email') && $request->email != $user->email){
-            $user->verified = User::UNVERIFIED_USER;
-            $user->verification_token = User::generateVerificationCode();
+            $user->verified = User::VERIFIED_USER;
             $user->email = $request->email;
         }
 
@@ -104,27 +108,22 @@ class UserController extends ApiController
             $user->password = bcrypt($request->password);
         }
 
-        if($request->has('admin')){
-            if(!$user->isVerified()){
-                return $this->errorResponse('Only verified user can modify the admin field', 409);
-            }
-
-            $user->admin = $request->admin;
-        }
+//        if($request->has('admin')){
+//            if(!$user->isVerified()){
+//                return $this->errorResponse('Only verified user can modify the admin field', 409);
+//            }
+//
+//            $user->admin = $request->admin;
+//        }
 
 
         if(!$user->isDirty()){
             return $this->errorResponse('You need to specify a different value', 422);
         }
 
-
         $user->save();
 
         return $this->showOne($user);
-
-
-
-
     }
 
     /**

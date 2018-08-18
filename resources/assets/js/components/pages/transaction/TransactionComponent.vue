@@ -74,6 +74,8 @@
 
                         <v-spacer></v-spacer>
                         <v-text-field
+                                dark
+                                color="dark"
                                 prepend-icon="search"
                                 label="Search"
                                 v-model="search"></v-text-field>
@@ -86,7 +88,7 @@
                                 :search="search"
                                 :pagination.sync="pagination"
                                 :rows-per-page-items="row_per_page"
-                                item-key="name"
+                                :custom-filter="customFilter"
                         >
 
                             <template slot="headers" slot-scope="props">
@@ -104,31 +106,46 @@
                             </template>
 
                             <template slot="items" slot-scope="props">
-                                <td class="text-xs-center">{{ props.item.customer.name }}</td>
-                                <td class="text-xs-center">{{ props.item.invoice_number.toUpperCase() }}</td>
-                                <td class="text-xs-center">{{ props.item.products.length ? props.item.products.length : 0 }}</td>
-                                <td class="text-xs-center">{{ getPaymentStatus(props.item.payment_status) }}</td>
-                                <td class="text-xs-center">TK. {{ props.item.total? price_format(props.item.total): 0 }}</td>
-                                <td class="text-xs-center">TK. {{ props.item.discount_amount? price_format(props.item.discount_amount): 0 }}</td>
-                                <td class="text-xs-center">TK. {{ props.item.paid ? price_format(props.item.paid): 0 }}</td>
-                                <td class="text-xs-center">TK. {{ props.item.payment_due? price_format(props.item.payment_due): 0 }}</td>
-                                <td class="justify-start layout px-0">
-                                    <!--<v-btn icon class="mx-0" @click="editItem(props.item)">-->
-                                        <!--<v-icon color="dark">edit</v-icon>-->
-                                    <!--</v-btn>-->
+                                <tr @click="props.expanded = !props.expanded">
+                                    <td class="text-xs-center">{{ props.item.created_at | convertDate }}</td>
+                                    <td class="text-xs-center">{{ props.item.customer.name }}</td>
+                                    <td class="text-xs-center">{{ props.item.invoice_number.toUpperCase() }}</td>
+                                    <td class="text-xs-center">{{ props.item.products.length ? props.item.products.length : 0 }}</td>
+                                    <td class="text-xs-center">{{ getPaymentStatus(props.item.payment_status) }}</td>
+                                    <td class="text-xs-center">TK. {{ props.item.discount_amount? price_format(props.item.discount_amount): 0 }}</td>
+                                    <td class="text-xs-center">TK. {{ props.item.paid ? price_format(props.item.paid): 0 }}</td>
+                                    <td class="text-xs-center">TK. {{ props.item.payment_due? price_format(props.item.payment_due): 0 }}</td>
+                                    <td class="text-xs-center">TK. {{ props.item.service_charge? price_format(props.item.service_charge): 0 }}</td>
+                                    <td class="text-xs-center">TK. {{ props.item.total? price_format(props.item.total): 0 }}</td>
+                                    <td class="justify-start layout px-0">
+                                        <!--<v-btn icon class="mx-0" @click="editItem(props.item)">-->
+                                            <!--<v-icon color="dark">edit</v-icon>-->
+                                        <!--</v-btn>-->
 
-                                    <v-btn icon class="mx-0" @click="viewTransition(props.item)">
-                                        <v-icon clor="dark">view_comfy</v-icon>
-                                    </v-btn>
+                                        <v-btn icon class="mx-0" @click="viewTransition(props.item)">
+                                            <v-icon clor="dark">view_comfy</v-icon>
+                                        </v-btn>
 
-                                    <v-btn icon class="mx-0" @click="openDeleteDialog(props.item)">
-                                        <v-icon color="dark">delete</v-icon>
-                                    </v-btn>
+                                        <v-btn icon class="mx-0" @click="openDeleteDialog(props.item)">
+                                            <v-icon color="dark">delete</v-icon>
+                                        </v-btn>
 
-                                    <v-btn icon class="mx-0" @click="onPrintTransaction(props.item)">
-                                        <v-icon color="dark">print</v-icon>
-                                    </v-btn>
-                                </td>
+                                        <v-btn icon class="mx-0" @click="onPrintTransaction(props.item)">
+                                            <v-icon color="dark">print</v-icon>
+                                        </v-btn>
+                                    </td>
+                                </tr>
+                            </template>
+
+                            <template slot="expand" slot-scope="props">
+                                <v-card flat>
+                                    <v-card-text>
+                                        <h3>Serials: </h3>
+                                        <ul>
+                                            <li v-for="(serial, index) in props.item.serials" :key="index">{{ serial.product_serial }}</li>
+                                        </ul>
+                                    </v-card-text>
+                                </v-card>
                             </template>
 
                             <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -167,6 +184,12 @@
 
             headers: [
                 {
+                    text: 'Date',
+                    value: 'created_at',
+                    sortable: true
+                },
+
+                {
                     text: 'C Name',
                     value: 'customer.name',
                     sortable: true
@@ -190,12 +213,6 @@
                 },
 
                 {
-                    text: 'Total',
-                    value: 'total',
-                    sortable: true
-                },
-
-                {
                     text: 'Discount',
                     value: 'discount',
                     sortable: true
@@ -210,6 +227,18 @@
                 {
                     text: 'Due',
                     value: 'payment_due',
+                    sortable: true
+                },
+
+                {
+                    text: 'Service charge',
+                    value: 'service_charge',
+                    sortable: true
+                },
+
+                {
+                    text: 'Total',
+                    value: 'total',
                     sortable: true
                 },
 
@@ -399,6 +428,37 @@
 
             onDueTransaction(){
                 this.$router.push({name: 'create_due_transaction'});
+            },
+
+            customFilter(items, search, filter) {
+                search = search.toString().toLowerCase();
+
+                if(search === ''){
+                    return items;
+                }
+                let filterItem = [];
+                items.forEach((item)=>{
+                    let isSerial = false;
+                    let transaction = false;
+                    if(item.serials.length > 0){
+                        item.serials.forEach((serial)=>{
+                            if(serial.product_serial.includes(search)){
+                                isSerial = true;
+                                return;
+                            }
+                        })
+                    }
+
+                    if(item.invoice_number.toString().toLowerCase().includes(search)){
+                        transaction = true;
+                    }
+
+                    if(isSerial || transaction){
+                        filterItem.push(item);
+                    }
+                })
+                return filterItem;
+
             }
         }
     }

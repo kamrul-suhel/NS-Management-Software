@@ -165,6 +165,12 @@
                                 icon: 'settings',
                                 text: 'Settings',
                                 link: 'settings'
+                            },
+
+                            {
+                                icon: 'security',
+                                text: 'Security',
+                                link: 'user'
                             }
                         ]
                     },
