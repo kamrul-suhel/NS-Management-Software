@@ -442,9 +442,9 @@
                     let transaction = false;
                     if(item.serials.length > 0){
                         item.serials.forEach((serial)=>{
-                            if(serial.product_serial.includes(search)){
+                            let itemSerial = serial.product_serial.toString().toLowerCase();
+                            if(itemSerial.includes(search)){
                                 isSerial = true;
-                                return;
                             }
                         })
                     }

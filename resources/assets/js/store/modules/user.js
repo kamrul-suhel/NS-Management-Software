@@ -8,12 +8,12 @@ const mutations = {
     setUser(state, user){
         state.userId = user.id;
         state.userName = user.name;
-        state.userEmail = user.email
+        state.userEmail = user.email;
     },
 
     resetUser(state){
-        state.userId = null;
-        state.userName = null;
+        state.userId    = null;
+        state.userName  = null;
         state.userEmail = null
     }
 }
@@ -28,7 +28,7 @@ const getters = {
     },
 
     getUserEmail(state){
-
+        return state.userEmail;
     }
 }
 

@@ -73,7 +73,7 @@ class ProductController extends ApiController
         $product = $request->except('totalCompanies');
         $product['image'] = '1.jpg';
         //change this when auth is set
-        $product['seller_id'] = 1;
+        $product['seller_id'] = $request->sellerId;
         $product = Product::create($product);
 
         // Product serials key with company

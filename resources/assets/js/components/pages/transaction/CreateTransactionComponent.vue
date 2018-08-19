@@ -270,6 +270,7 @@
                 form.append('length_warranty', this.length_warranty);
                 form.append('total', total);
                 form.append('service_charge', this.service_charge);
+                form.append('seller_id', this.$store.getters.getUserId);
 
                 if(this.selectedPaymentStatus > 1){
                     form.append('payment_due', total - this.paid);

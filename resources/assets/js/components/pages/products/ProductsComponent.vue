@@ -549,12 +549,6 @@
 
         methods: {
             initialize() {
-                axios.get('/islogin').then((response) => {
-                    if(!response.data.error){
-                        console.log(response.data);
-                    }
-                })
-
                 // get all product
                 axios.get('/api/products')
                     .then((response) => {
@@ -656,6 +650,7 @@
                 let url = '/api/products';
 
                 form.append('name', this.editedItem.name);
+                form.append('sellerId', this.$store.getters.getUserId);
                 form.append('description', this.editedItem.description);
                 form.append('purchase_price', this.editedItem.purchase_price);
                 form.append('sale_price', this.editedItem.sale_price);
@@ -717,15 +712,23 @@
                 let filterItem = [];
                 items.forEach((item) => {
                     let isItem = false;
+                    let itemSerial = false;
                     if (item.serials.length > 0) {
                         item.serials.forEach((serial) => {
-                            if (serial.product_serial.includes(search) || item.name.includes(search)) {
+                            let productSerial = serial.product_serial.toString().toLowerCase();
+                            if (productSerial.includes(search)) {
                                 isItem = true;
-                                return;
                             }
                         })
+
                     }
-                    if (isItem) {
+
+                    let itemName = item.name.toString().toLowerCase();
+                    if(itemName.includes(search)){
+                        itemSerial = true
+                    }
+
+                    if (isItem || itemSerial) {
                         filterItem.push(item);
                     }
                 })

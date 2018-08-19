@@ -44,6 +44,7 @@
             axios.get('/islogin').then((response) => {
                 if(!response.data.error){
                     this.login = true;
+                    this.$store.commit('setUser', response.data);
 
                     let route = this.$route.name;
                     if(route != 'login'){
