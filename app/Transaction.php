@@ -25,6 +25,7 @@ class Transaction extends Model
     	'quantity',
     	'customer_id',
     	'product_id',
+		'seller_id',
         'payment_status',
         'service_charge',
         'payment_due',
@@ -65,5 +66,9 @@ class Transaction extends Model
         $dt = date("F j, Y, g:i a", strtotime($value));
         return $dt;
      }
+
+     public function seller(){
+     	return $this->belongsTo(Seller::class);
+	 }
 
 }

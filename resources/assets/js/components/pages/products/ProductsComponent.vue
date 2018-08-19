@@ -549,6 +549,12 @@
 
         methods: {
             initialize() {
+                axios.get('/islogin').then((response) => {
+                    if(!response.data.error){
+                        console.log(response.data);
+                    }
+                })
+
                 // get all product
                 axios.get('/api/products')
                     .then((response) => {
