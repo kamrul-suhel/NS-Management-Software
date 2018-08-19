@@ -95,11 +95,21 @@
                         <v-divider></v-divider>
 
                         <v-layout row wrap class="print-footer">
-                            <v-flex xs6>
+                            <v-flex xs12>
                                 <p>Please Check Before You Buy. After Used No Return. Thanks For Business With Us.</p>
                                 <p>{{ data.setting.company_website }}</p>
                             </v-flex>
-                            <v-flex xs6></v-flex>
+                        </v-layout>
+
+                        <v-layout row wrap class="print-btn">
+                            <v-flex xs12>
+                                <v-btn raised
+                                       dark
+                                       color="dark"
+                                        @click="onPrint()">
+                                    Print
+                                </v-btn>
+                            </v-flex>
                         </v-layout>
 
                     </v-card-text>
@@ -144,6 +154,10 @@
                     subtotal += product.sale_quantity * product.sale_price;
                 });
                 this.subtotal = subtotal;
+            },
+
+            onPrint(){
+                window.print();
             }
         }
     }
