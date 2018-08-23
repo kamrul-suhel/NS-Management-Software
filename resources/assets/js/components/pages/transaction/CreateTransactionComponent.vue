@@ -185,7 +185,8 @@
                 this.previousDue = 0;
                 let url = '/transaction/due/create?customer_id='+val.value;
                 axios.get(url).then((response)=>{
-                    this.previousDue = response.data.previousDue;
+                    this.previousDue = response.data.previous_record;
+                    console.log(this.previous_record);
                 })
             },
         },

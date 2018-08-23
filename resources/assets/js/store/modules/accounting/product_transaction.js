@@ -155,7 +155,6 @@ const actions = {
 
         axios.post('/api/accounting/transaction', payload)
             .then((response) => {
-                console.log(response);
                 commit('setTPaymentDue', response.data.payment_due);
                 commit('setTPaid',response.data.paid);
                 commit('setTDiscount', response.data.discount);
