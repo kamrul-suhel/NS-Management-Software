@@ -19,6 +19,7 @@
                             <v-flex xs6 style="text-align:right" class="company-info-right">
                                 <p>Date: {{ new Date().toJSON().slice(0,10).split('-').reverse().join('/') }}</p>
                                 <p>Invoice : {{ data.transaction.invoice_number.toUpperCase() }}</p>
+                                <p>Sell by: {{ data.transaction.seller.name }}</p>
                             </v-flex>
                             <v-spacer></v-spacer>
                         </v-layout>

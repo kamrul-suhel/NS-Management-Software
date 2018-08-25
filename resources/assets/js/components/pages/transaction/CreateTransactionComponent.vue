@@ -185,8 +185,8 @@
                 this.previousDue = 0;
                 let url = '/transaction/due/create?customer_id='+val.value;
                 axios.get(url).then((response)=>{
-                    this.previousDue = response.data.previous_record;
-                    console.log(this.previous_record);
+                    console.log(response);
+                    this.previousDue = response.data.previous_record.previousDue ? response.data.previous_record.previousDue : 0;
                 })
             },
         },
@@ -263,7 +263,6 @@
             onCreateTransaction(){
                 let form = new FormData()
                 let total = this.total_amount_transactions - this.discount;
-
                 let url = '/api/customers/'+this.selectedCustomer.value+'/transactions';
 
                 form.append('payment_status', this.selectedPaymentStatus);

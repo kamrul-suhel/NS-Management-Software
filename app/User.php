@@ -31,7 +31,7 @@ class User extends Authenticatable
      *
      */
 
-    public $transformer = UserTransformer::class;
+//    public $transformer = UserTransformer::class;
 
 
     /**
@@ -40,8 +40,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 
-        'email', 
+        'name',
+        'email',
         'password',
         'verified',
         'verification_token',

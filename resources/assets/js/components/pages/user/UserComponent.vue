@@ -213,6 +213,11 @@
             snackbar_message:'',
             headers: [
                 {
+                    text: 'Id',
+                    value: 'id',
+                    sortable: true
+                },
+                {
                     text: 'Name',
                     value: 'name',
                     sortable: true
@@ -302,33 +307,43 @@
 
             save() {
                 let form = new FormData();
-                let url = '/api/users/'+this.editedItem.id;
+                let url = '/api/users';
 
                 form.append('name', this.editedItem.name);
                 form.append('email', this.editedItem.email);
 
                 if(this.password !== '' && this.confirm_password !== ''){
+                    form.append('_method', "POST");
                     form.append('password', this.password);
+                    form.append('password_confirmation', this.confirm_password);
                 }
-                form.append('_method', "PATCH");
+
+                if(this.editedIndex != -1){
+                    url += '/'+this.editedItem.id
+                    form.append('_method', "PATCH");
+                }
+
 
                 // create product
                 axios.post(url, form)
                     .then((response) => {
+
                         if(response.data){
-                            this.snackbar_message = 'User '+this.user.name + ' successfully updated.';
+                            this.snackbar_message = 'User '+response.data.name + ' successfully updated.';
                             this.snackbar = true;
                             setTimeout(()=> {
-                                if(this.oldEmail !== this.user.email || this.password !== ''){
-                                    axios.get('/logout').then(() => {
-                                        LoginEventBus.logoutStateChange();
-                                        this.$router.push({name: 'login'});
-                                    });
+                                console.log(response.data);
+                                if (this.editedIndex > -1) {
+                                    Object.assign(this.items[this.editedIndex], response.data);
+                                    this.editedItem = Object.assign({}, this.defaultItem);
+                                } else {
+                                    this.items.push(response.data);
+                                    this.editedItem = Object.assign({}, this.defaultItem);
                                 }
                             }, 3000)
+
                         }
                     })
-
             }
         }
     }

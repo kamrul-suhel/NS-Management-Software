@@ -33,7 +33,7 @@ class ProductBuyerTransactionController extends ApiController
 
             $transaction = Transaction::create([
                 'customer_id' => $customer->id,
-                'seller_id' => $customer->seller_id,
+                'seller_id' => $request->seller_id,
                 'invoice_number' => $unique_id,
                 'discount_amount' => $request->discount,
                 'total' => $request->total,

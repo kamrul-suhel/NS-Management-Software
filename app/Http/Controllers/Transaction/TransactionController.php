@@ -24,7 +24,7 @@ class TransactionController extends ApiController
      */
     public function index()
     {
-        $transactions = Transaction::with(['products', 'serials'])
+        $transactions = Transaction::with(['products', 'serials', 'seller'])
             ->with('customer')
             ->orderBy('id', 'DESC')
             ->get();
@@ -99,7 +99,7 @@ class TransactionController extends ApiController
     public function showPrint(Request $request, int $id)
     {
         if ($request->ajax()) {
-            $transaction = Transaction::with(['products.serials','serials', 'customer'])
+            $transaction = Transaction::with(['products.serials','serials', 'customer','seller'])
                 ->where('id', '=', $id)
                 ->first();
             foreach ($transaction->products as $product) {
