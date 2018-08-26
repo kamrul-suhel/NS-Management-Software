@@ -85,7 +85,6 @@ class ProductController extends ApiController
             $company['company_id'] = $currCompany->selectedCompany->id;
             $company['product_quantity'] = $currCompany->quantity;
             $productCompany[] = $company;
-
             if($currCompany->serials){
                 foreach($currCompany->serials as $currSerial){
                     $serial = [];
