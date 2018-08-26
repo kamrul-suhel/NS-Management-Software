@@ -643,6 +643,7 @@
 
             onRemoveCompany(index) {
                 this.selectedCompanies.splice(index, 1);
+                ths.initialize();
             },
 
             save() {
@@ -670,17 +671,16 @@
                     axios.post(url, form)
                         .then((response) => {
                             Object.assign(this.items[this.editedIndex], this.editedItem);
-                            this.initialize();
                             this.snackbar_message = 'Product ' + this.editedItem.name + ' successfully updated.';
                             this.snackbar = true;
                             this.close()
+                            this.initialize();
                         })
                 } else {
                     // create product
                     axios.post(url, form)
                         .then((response) => {
                             this.items.push(response.data);
-                            this.initialize();
                             this.snackbar_message = 'Product ' + this.editedItem.name + ' successfully created.';
                             this.snackbar = true;
                             // update total product & stock
@@ -690,6 +690,7 @@
                             // total = Number(total);
                             // this.total_stock = total + this.editedItem.quantity * this.editedItem.purchase_price;
                             this.close()
+                            this.initialize();
                         })
                 }
 
