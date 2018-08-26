@@ -623,6 +623,7 @@
                     this.items.splice(index, 1)
                     this.snackbar_message = 'You successfully delete ' + this.deleteItem.name;
                     this.snackbar = true;
+                    this.initialize();
                 });
             },
 
@@ -643,7 +644,6 @@
 
             onRemoveCompany(index) {
                 this.selectedCompanies.splice(index, 1);
-                this.initialize();
             },
 
             save() {
