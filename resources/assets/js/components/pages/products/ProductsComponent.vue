@@ -643,7 +643,7 @@
 
             onRemoveCompany(index) {
                 this.selectedCompanies.splice(index, 1);
-                ths.initialize();
+                this.initialize();
             },
 
             save() {
