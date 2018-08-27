@@ -26,7 +26,9 @@ class ProductController extends ApiController
         	if(!$allSerial){
 				$quary->where('is_sold', 0);
 			}
-        }])->get();
+        }])
+			->with('companies')
+			->get();
 
         $totalProduct = $products->count();
         $totalStock = $products->sum(function($product){

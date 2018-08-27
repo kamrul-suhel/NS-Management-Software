@@ -10,7 +10,9 @@
                 </v-card-title>
 
                 <v-card-text>
-                    <v-form ref="product_form" v-model="valid" lazy-validation>
+                    <v-form ref="product_form"
+                            v-model="valid"
+                            lazy-validation>
                         <v-container fluid grid-list-md>
                             <v-layout row wrap>
                                 <v-flex xs12>
@@ -46,7 +48,8 @@
                                             v-model="isSerial"></v-select>
                                 </v-flex>
 
-                                <v-flex xs12 v-for="(company, totalCompanyIndex) in totalCompanies"
+                                <v-flex xs12
+                                        v-for="(company, totalCompanyIndex) in totalCompanies"
                                         :key="totalCompanyIndex">
                                     <v-layout row wrap
                                     >
@@ -215,8 +218,12 @@
 
                 <v-card-actions>
                     <v-spacer></v-spacer>
-
-                    <v-btn dark color="dark" raised @click.native="close">Cancel</v-btn>
+                    <v-btn
+                            dark
+                            color="dark"
+                            raised
+                            @click.native="close"
+                    >Cancel</v-btn>
 
                     <v-btn dark
                            color="dark"
@@ -228,6 +235,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+
         <v-container grid-list-md class="pt-0">
             <v-layout row wrap>
                 <v-flex xs12 class="pt-0">
@@ -481,7 +489,7 @@
                 id: '',
                 name: '',
                 description: '',
-                quantity: '',
+                quantity: 0,
                 status: '',
                 sale_price: '',
                 purchase_price: '',
@@ -575,6 +583,10 @@
                     for (let i = 0; i < count; i++) {
                         this.productSerials.push('0');
                     }
+                }
+
+                if(value.companies){
+
                 }
             }
         },
@@ -715,6 +727,8 @@
                             this.snackbar = true;
                             this.close()
                             this.initialize();
+                            this.$refs.product_form.reset();
+                            this.selectedCompanies = [];
                         })
                 } else {
                     // create product
@@ -731,6 +745,8 @@
                             // this.total_stock = total + this.editedItem.quantity * this.editedItem.purchase_price;
                             this.close()
                             this.initialize();
+                            this.$refs.product_form.reset();
+                            this.selectedCompanies = [];
                         })
                 }
 
