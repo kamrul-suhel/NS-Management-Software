@@ -10,182 +10,207 @@
                 </v-card-title>
 
                 <v-card-text>
-                    <v-container fluid grid-list-md>
-                        <v-layout row wrap>
-                            <v-flex xs12>
-                                <v-text-field
-                                        label="Title"
-                                        v-model="editedItem.name"
-                                        dark
-                                        color="dark"
-                                ></v-text-field>
-                            </v-flex>
+                    <v-form ref="product_form" v-model="valid" lazy-validation>
+                        <v-container fluid grid-list-md>
+                            <v-layout row wrap>
+                                <v-flex xs12>
+                                    <v-text-field
+                                            label="Title"
+                                            v-model="editedItem.name"
+                                            dark
+                                            color="dark"
+                                            :rules="[v => !!v || 'Title is required']"
+                                            required
+                                    ></v-text-field>
+                                </v-flex>
 
-                            <v-flex xs12>
-                                <v-textarea
-                                        dark
-                                        color="dark"
-                                        label="Description"
-                                        v-model="editedItem.description"
-                                ></v-textarea>
-                            </v-flex>
+                                <v-flex xs12>
+                                    <v-textarea
+                                            dark
+                                            color="dark"
+                                            label="Description"
+                                            v-model="editedItem.description"
+                                            :rules="[v => !!v || 'Description is required']"
+                                            required
+                                    ></v-textarea>
+                                </v-flex>
 
-                            <v-flex xs12>
-                                <v-select
-                                        dark
-                                        color="dark"
-                                        label="Is this product has serial"
-                                        :items="isSerials"
-                                        v-model="isSerial"></v-select>
-                            </v-flex>
+                                <v-flex xs12>
+                                    <v-select
+                                            dark
+                                            color="dark"
+                                            label="Is this product has serial"
+                                            :items="isSerials"
+                                            required
+                                            :rules="[v => !!v || 'This field required']"
+                                            v-model="isSerial"></v-select>
+                                </v-flex>
 
-                            <v-flex xs12 v-for="(company, totalCompanyIndex) in totalCompanies"
-                                    :key="totalCompanyIndex">
-                                <v-layout row wrap
-                                >
-                                    <v-flex xs6>
-                                        <v-select
-                                                dark
-                                                color="dark"
-                                                label="Which company"
-                                                :items="company.companies"
-                                                v-model="company.selectedCompany"
-                                                item-text="name"
-                                                item-value="id"
-                                                return-object
-                                        ></v-select>
-                                    </v-flex>
-
-                                    <v-flex xs6>
-                                        <v-text-field
-                                                label="How many quantity"
-                                                dark
-                                                v-model="company.quantity"
-                                                color="dark">
-                                        </v-text-field>
-
-                                        <v-btn
-                                                right
-                                                fab
-                                                dark
-                                                small
-                                                color="error"
-                                                style="width:20px;height:20px;position:absolute"
-                                                @click="onRemoveCompany(totalCompanyIndex)"
-                                        >
-                                            <v-icon>remove</v-icon>
-                                        </v-btn>
-                                    </v-flex>
-                                    <v-layout row wrap v-if="isSerial">
+                                <v-flex xs12 v-for="(company, totalCompanyIndex) in totalCompanies"
+                                        :key="totalCompanyIndex">
+                                    <v-layout row wrap
+                                    >
                                         <v-flex xs6>
-                                            <v-autocomplete
-                                                    label="Select warranty"
-                                                    v-model="company.product_warranty"
-                                                    :items="warranties"
-                                            ></v-autocomplete>
+                                            <v-select
+                                                    dark
+                                                    color="dark"
+                                                    label="Which company"
+                                                    :items="company.companies"
+                                                    v-model="company.selectedCompany"
+                                                    item-text="name"
+                                                    item-value="id"
+                                                    required
+                                                    :reles="[v => !!v || 'Select A company']"
+                                                    return-object
+                                            ></v-select>
                                         </v-flex>
 
                                         <v-flex xs6>
-                                            <v-layout row wrap>
-                                                <v-flex xs3
-                                                        v-for="(serial, index) in company.serials"
-                                                        :key="index">
-                                                    <v-text-field
-                                                            dark
-                                                            color="dark"
-                                                            :label="'Product Serial ' +  (Number(index) + 1)"
-                                                            v-model="company.serials[index]"
-                                                    ></v-text-field>
-                                                </v-flex>
-                                            </v-layout>
+                                            <v-text-field
+                                                    label="How many quantity"
+                                                    dark
+                                                    v-model="company.quantity"
+                                                    required
+                                                    :reles="[v => !!v || 'Quantity is required' ]"
+                                                    color="dark">
+                                            </v-text-field>
+
+                                            <v-btn
+                                                    right
+                                                    fab
+                                                    dark
+                                                    small
+                                                    color="error"
+                                                    style="width:20px;height:20px;position:absolute"
+                                                    @click="onRemoveCompany(totalCompanyIndex)"
+                                            >
+                                                <v-icon>remove</v-icon>
+                                            </v-btn>
                                         </v-flex>
+                                        <v-layout row wrap v-if="isSerial">
+                                            <v-flex xs6>
+                                                <v-autocomplete
+                                                        label="Select warranty"
+                                                        v-model="company.product_warranty"
+                                                        :items="warranties"
+                                                ></v-autocomplete>
+                                            </v-flex>
+
+                                            <v-flex xs6>
+                                                <v-layout row wrap>
+                                                    <v-flex xs3
+                                                            v-for="(serial, index) in company.serials"
+                                                            :key="index">
+                                                        <v-text-field
+                                                                dark
+                                                                color="dark"
+                                                                :label="'Product Serial ' +  (Number(index) + 1)"
+                                                                v-model="company.serials[index]"
+                                                        ></v-text-field>
+                                                    </v-flex>
+                                                </v-layout>
+                                            </v-flex>
+                                        </v-layout>
                                     </v-layout>
-                                </v-layout>
-                            </v-flex>
+                                </v-flex>
 
 
-                            <v-flex xs12>
-                                <v-btn
-                                        dark
-                                        color="dark"
-                                        class="ml-0"
-                                        @click="onAddCompany()">Add company
-                                </v-btn>
-                            </v-flex>
+                                <v-flex xs12>
+                                    <v-btn
+                                            dark
+                                            color="dark"
+                                            class="ml-0"
+                                            @click="onAddCompany()">Add company
+                                    </v-btn>
+                                </v-flex>
 
-                            <v-flex xs6>
-                                <v-text-field
-                                        label="Quantity"
-                                        type="number"
-                                        dark
-                                        color="dark"
-                                        placeholder="00.00"
-                                        v-model="editedItem.quantity"
-                                ></v-text-field>
-                            </v-flex>
+                                <v-flex xs6>
+                                    <v-text-field
+                                            label="Quantity"
+                                            type="number"
+                                            dark
+                                            required
+                                            :rules="[v => v >! 0 || 'Please Select A company']"
+                                            color="dark"
+                                            placeholder="00.00"
+                                            disabled
+                                            v-model="editedItem.quantity"
+                                    ></v-text-field>
+                                </v-flex>
 
-                            <v-flex xs6>
-                                <v-select
-                                        dark
-                                        color="dark"
-                                        label="Quantity type"
-                                        :items="quantity_type"
-                                        v-model="editedItem.quantity_type"
-                                        auto
-                                ></v-select>
-                            </v-flex>
+                                <v-flex xs6>
+                                    <v-select
+                                            dark
+                                            color="dark"
+                                            label="Quantity type"
+                                            :items="quantity_type"
+                                            v-model="editedItem.quantity_type"
+                                            required
+                                            :rules="[v => !!v || 'Quantity type is required']"
+                                            auto
+                                    ></v-select>
+                                </v-flex>
 
-                            <v-flex xs6>
-                                <v-select
-                                        dark
-                                        color="dark"
-                                        :items="status"
-                                        v-model="editedItem.status"
-                                        label="Status"
-                                        auto
-                                ></v-select>
-                            </v-flex>
+                                <v-flex xs6>
+                                    <v-select
+                                            dark
+                                            color="dark"
+                                            :items="status"
+                                            v-model="editedItem.status"
+                                            label="Status"
+                                            required
+                                            :rules="[v => !!v || 'Status is required']"
+                                            auto
+                                    ></v-select>
+                                </v-flex>
 
-                            <v-flex xs6>
-                                <v-text-field
-                                        dark
-                                        color="dark"
-                                        label="Sale Price"
-                                        type="number"
-                                        placeholder="00.00"
-                                        prefix="TK"
-                                        v-model="editedItem.sale_price"
-                                ></v-text-field>
-                            </v-flex>
+                                <v-flex xs6>
+                                    <v-text-field
+                                            dark
+                                            color="dark"
+                                            label="Sale Price"
+                                            type="number"
+                                            placeholder="00.00"
+                                            prefix="TK"
+                                            required
+                                            :rules="[v => !!v  || 'Sale price is required']"
+                                            v-model="editedItem.sale_price"
+                                    ></v-text-field>
+                                </v-flex>
 
-                            <v-flex xs6>
-                                <v-text-field
-                                        dark
-                                        color="dark"
-                                        label="Purchase price"
-                                        type="number"
-                                        placeholder="00.00"
-                                        prefix="TK"
-                                        v-model="editedItem.purchase_price">
-                                </v-text-field>
-                            </v-flex>
+                                <v-flex xs6>
+                                    <v-text-field
+                                            dark
+                                            color="dark"
+                                            label="Purchase price"
+                                            type="number"
+                                            placeholder="00.00"
+                                            prefix="TK"
+                                            required
+                                            :rules="[v => !!v || 'Purchase price is required']"
+                                            v-model="editedItem.purchase_price">
+                                    </v-text-field>
+                                </v-flex>
 
-                            <v-flex xs6>
-                                <v-select
-                                        dark
-                                        color="dark"
-                                        label="Categories"
-                                        :items="categories"
-                                        v-model="selectedCategories"
-                                        multiple
-                                        chips
-                                        persistent-hint
-                                        return-object
-                                >
-                                </v-select>
-                            </v-flex>
-                        </v-layout>
-                    </v-container>
+                                <v-flex xs6>
+                                    <v-select
+                                            dark
+                                            color="dark"
+                                            label="Categories"
+                                            :items="categories"
+                                            v-model="selectedCategories"
+                                            multiple
+                                            chips
+                                            required
+                                            :rules="[v => !!v || 'Please select category']"
+                                            persistent-hint
+                                            return-object
+                                    >
+                                    </v-select>
+                                </v-flex>
+                            </v-layout>
+                        </v-container>
+                    </v-form>
                 </v-card-text>
 
                 <v-card-actions>
@@ -193,7 +218,11 @@
 
                     <v-btn dark color="dark" raised @click.native="close">Cancel</v-btn>
 
-                    <v-btn dark color="dark" raised @click.native="save">{{ editedIndex === -1 ? 'Create product' :
+                    <v-btn dark
+                           color="dark"
+                           raised
+                           :disabled="!valid"
+                           @click.native="save">{{ editedIndex === -1 ? 'Create product' :
                         'Update product' }}
                     </v-btn>
                 </v-card-actions>
@@ -368,7 +397,6 @@
 <script>
     /* eslint-disable no-unreachable */
 
-    import axios from 'axios'
 
     export default {
         data: () => ({
@@ -451,13 +479,13 @@
             editedIndex: -1,
             editedItem: {
                 id: '',
-                name: 'new title',
-                description: 'soe description',
-                quantity: 1,
-                status: 'available',
-                sale_price: '120',
-                purchase_price: '100',
-                quantity_type: 'pic'
+                name: '',
+                description: '',
+                quantity: '',
+                status: '',
+                sale_price: '',
+                purchase_price: '',
+                quantity_type: ''
             },
 
             quantity_type: [],
@@ -467,8 +495,14 @@
             update_form: false,
 
             defaultItem: {
+                id: '',
                 name: '',
-                descriptin: ''
+                description: '',
+                quantity: '',
+                status: '',
+                sale_price: '',
+                purchase_price: '',
+                quantity_type: ''
             },
             row_per_page: [20, 30, 50, {'text': 'All', 'value': -1}],
 
@@ -477,9 +511,11 @@
             companies: [],
             selectedCompanies: [],
 
-            isSerials: [{text: 'yes', value: true}, {text: 'No', value: false}],
-            isSerial: false,
+            isSerials: [{text: 'yes', value: 'true'}, {text: 'No', value: 'false'}],
+            isSerial: '',
             productSerials: [],
+
+            valid: true,
 
 
         }),
@@ -500,7 +536,7 @@
                     quantity += Number(company.quantity)
                     company.serials = [];
                     for (let i = 0; i < company.quantity; i++) {
-                        if (this.isSerial) {
+                        if (this.isSerial === 'true') {
                             if (serials.length > 0) {
                                 company.serials.push(serials[i]);
                             } else {
@@ -524,7 +560,7 @@
 
             isSerial(value) {
                 this.productSerials = [];
-                if (value) {
+                if (value === 'true') {
                     let count = Number(this.editedItem.quantity);
                     for (let i = 0; i < count; i++) {
                         this.productSerials.push('0');
@@ -647,6 +683,12 @@
             },
 
             save() {
+                if(!this.$refs.product_form.validate()){
+                    console.log('sldk');
+                    return;
+                }
+                return;
+
                 let form = new FormData();
                 let url = '/api/products';
 
