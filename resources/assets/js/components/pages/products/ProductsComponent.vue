@@ -684,10 +684,8 @@
 
             save() {
                 if(!this.$refs.product_form.validate()){
-                    console.log('sldk');
                     return;
                 }
-                return;
 
                 let form = new FormData();
                 let url = '/api/products';
