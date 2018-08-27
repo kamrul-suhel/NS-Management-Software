@@ -93,10 +93,14 @@
                                         <v-layout row wrap v-if="isSerial">
                                             <v-flex xs6>
                                                 <v-autocomplete
+                                                        dark
+                                                        color="white"
                                                         label="Select warranty"
                                                         v-model="company.product_warranty"
                                                         :items="warranties"
                                                 ></v-autocomplete>
+                                                <span class="red--text"
+                                                      v-if="productWarrantyError">Please select warranty</span>
                                             </v-flex>
 
                                             <v-flex xs6>
@@ -525,6 +529,8 @@
 
             valid: true,
 
+            productWarrantyError: false,
+
 
         }),
 
@@ -687,7 +693,6 @@
             onAddCompany() {
                 let newcompany = {quantity: 0, companies: this.companies, selectedCompany: {}};
                 this.selectedCompanies.push(newcompany);
-                console.log(this.totalCompanies);
             },
 
             onRemoveCompany(index) {
@@ -697,6 +702,21 @@
             save() {
                 if(!this.$refs.product_form.validate()){
                     return;
+                }
+
+                if(this.isSerial === 'true'){
+                    console.log(this.totalCompanies);
+                    let error = false;
+                    this.totalCompanies.forEach((company) => {
+                        if(company.product_warranty === undefined){
+                            this.productWarrantyError = true;
+                            error = true;
+                        }
+                    })
+
+                    if(error){
+                        return;
+                    }
                 }
 
                 let form = new FormData();
@@ -729,6 +749,7 @@
                             this.initialize();
                             this.$refs.product_form.reset();
                             this.selectedCompanies = [];
+                            this.productWarrantyError = false
                         })
                 } else {
                     // create product
@@ -747,6 +768,7 @@
                             this.initialize();
                             this.$refs.product_form.reset();
                             this.selectedCompanies = [];
+                            this.productWarrantyError = false;
                         })
                 }
 
