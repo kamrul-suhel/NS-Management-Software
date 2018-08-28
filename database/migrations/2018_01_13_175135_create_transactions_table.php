@@ -15,7 +15,7 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('customer_id')->unsigned();
+            $table->integer('customer_id')->unsigned()->index();
             $table->integer('seller_id')->unsigned()->index();
             $table->integer('payment_status')->unsigned()->nullable();
             $table->float('payment_due')->unsigned()->nullable();
@@ -28,7 +28,7 @@ class CreateTransactionsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+//            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });
     }
 
