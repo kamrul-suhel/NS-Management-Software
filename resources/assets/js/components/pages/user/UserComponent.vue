@@ -291,7 +291,7 @@
             },
 
             deleteItemD () {
-                let url = 'api/expensecategory/'+this.deleteItem.id;
+                let url = 'api/users/'+this.deleteItem.id;
                 axios.delete(url).then((response) => {
                     this.dialog = false;
                     const index = this.items.indexOf(this.deleteItem)
