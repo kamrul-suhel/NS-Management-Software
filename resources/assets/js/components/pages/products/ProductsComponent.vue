@@ -352,15 +352,44 @@
                                 </tr>
                             </template>
 
+                            <v-divider></v-divider>
+
                             <template slot="expand" slot-scope="props">
                                 <v-card flat>
                                     <v-card-text>
-                                        <h3>Serials:</h3>
-                                        <ul>
-                                            <li v-for="(serial, index) in props.item.serials" :key="index">{{
-                                                serial.product_serial }}
-                                            </li>
-                                        </ul>
+                                        <table width="100%">
+                                            <tr>
+                                                <td><strong>Serials</strong></td>
+                                            </tr>
+
+                                            <tr v-if="props.item.serials && props.item.serials.length > 0">
+                                                <td v-for="(serial, index) in props.item.serials" :key="index">
+                                                    {{ serial.product_serial }}
+                                                </td>
+                                            </tr>
+                                            <tr v-else>
+                                                <td>This product has no serial.</td>
+                                            </tr>
+                                        </table>
+
+                                        <v-divider></v-divider>
+
+                                        <table with="100%">
+                                            <tr>
+                                                <td><strong>Companies</strong></td>
+                                                <td><strong>Mobile</strong></td>
+                                                <td><strong>Phone</strong></td>
+                                                <td><strong>Quantity</strong></td>
+                                                <td><strong>Buy date</strong></td>
+                                            </tr>
+                                            <tr v-for="(company, index) in props.item.companies" :key="index">
+                                                <td>{{ company.name}}</td>
+                                                <td>{{ company.mobile }}</td>
+                                                <td>{{ company.phone }}</td>
+                                                <td>{{ company.pivot.product_quantity }}</td>
+                                                <td>{{ company.pivot.created_at | convertDate }}</td>
+                                            </tr>
+                                        </table>
                                     </v-card-text>
                                 </v-card>
                             </template>

@@ -42,4 +42,6 @@ class Company extends Model
         return $this->belongsToMany(Product::class)
             ->withPivot('product_quantity');
     }
+
+
 }
