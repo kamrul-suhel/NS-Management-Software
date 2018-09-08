@@ -7618,6 +7618,10 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
+vue-barcode-scanner@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/vue-barcode-scanner/-/vue-barcode-scanner-0.6.0.tgz#cc21949fe37f93d2ec229e364b9664decd711611"
+
 vue-hot-reload-api@^2.2.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.0.tgz#97976142405d13d8efae154749e88c4e358cf926"

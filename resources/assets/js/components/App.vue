@@ -10,6 +10,7 @@
                 <v-container fill-height :class="{'fill-height justify-center align-content-center': !login}">
                     <v-layout >
                         <v-flex>
+                            <input type="text" hidden data-barcode="barcode"/>
                             <router-view></router-view>
                         </v-flex>
                     </v-layout>

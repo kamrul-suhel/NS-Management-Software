@@ -26,6 +26,15 @@ window.axios.defaults.headers.common = {
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuex from 'vuex';
+import VueBarcodeScanner from 'vue-barcode-scanner';
+
+//Option barcode scanner
+let options = {
+    sound: true, // default is false
+    soundSrc: '', // default is blank
+    sensitivity: 300, // default is 100
+    requiredAttr: false // default is false
+}
 
 /**
  * Import filter
@@ -36,6 +45,8 @@ import "./filters/price-filter"
 import router from './router'
 Vue.use(Vuetify);
 Vue.use(Vuex);
+Vue.use(VueBarcodeScanner, options);
+
 
 
 Vue.config.productionTip = true
@@ -69,7 +80,17 @@ new Vue({
     store,
     router,
     components: {App},
-    template: '<App/>'
+    template: '<App/>',
+
+    created(){
+        this.$barcodeScanner.init(this.onBarcodeScanned);
+    },
+
+    methods: {
+        onBarcodeScanned(code){
+            console.log(code);
+        }
+    }
 })
 
 

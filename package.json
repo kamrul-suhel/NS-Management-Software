@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "amcharts3": "^3.21.13",
+    "vue-barcode-scanner": "^0.6.0",
     "yarn-upgrade-all": "^0.3.0"
   },
   "devDependencies": {
