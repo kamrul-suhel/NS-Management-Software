@@ -30,7 +30,7 @@ import VueBarcodeScanner from 'vue-barcode-scanner';
 
 //Option barcode scanner
 let options = {
-    sound: true, // default is false
+    sound: false, // default is false
     soundSrc: '', // default is blank
     sensitivity: 300, // default is 100
     requiredAttr: false // default is false
@@ -89,6 +89,12 @@ new Vue({
     methods: {
         onBarcodeScanned(code){
             console.log(code);
+        },
+
+        // Reset to the last barcode before hitting enter (whatever anything in the input box)
+        resetBarcode () {
+            let barcode = this.$barcodeScanner.getPreviousCode()
+            // do something...
         }
     }
 })
