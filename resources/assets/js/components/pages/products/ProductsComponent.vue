@@ -380,7 +380,7 @@
                                                 <td><strong>Mobile</strong></td>
                                                 <td><strong>Phone</strong></td>
                                                 <td><strong>Quantity</strong></td>
-                                                <td><strong>Buy date</strong></td>
+                                                <td><strong>Purchased date</strong></td>
                                             </tr>
                                             <tr v-for="(company, index) in props.item.companies" :key="index">
                                                 <td>{{ company.name}}</td>

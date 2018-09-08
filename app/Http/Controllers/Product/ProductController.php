@@ -150,11 +150,36 @@ class ProductController extends ApiController
             'name',
             'description',
             'purchase_price',
-            'quantity',
             'quantity_type',
             'sale_price',
             'status'
         ]));
+        $product->quantity = $product->quantity + $request->quantity;
+
+        // Product serials key with company
+        $totalCompanies = json_decode($request->totalCompanies);
+        $productSerialsWithCompany =[];
+        $productCompany = [];
+        foreach($totalCompanies as $currCompany){
+
+            $company = [];
+            $company['company_id'] = $currCompany->selectedCompany->id;
+            $company['product_quantity'] = $currCompany->quantity;
+            $productCompany[] = $company;
+            if($currCompany->serials){
+                foreach($currCompany->serials as $currSerial){
+                    $serial = [];
+                    $serial['is_sold'] = 0;
+                    $serial['product_serial'] = $currSerial;
+                    $serial['product_warranty'] = $currCompany->product_warranty;
+                    $serial['company_id'] = $currCompany->selectedCompany->id;
+                    $productSerialsWithCompany[] = $serial;
+                }
+            }
+        }
+
+        $companies = $product->companies()->syncWithoutDetaching($productCompany);
+        $serial = $product->serials()->createMany($productSerialsWithCompany);
 
         if($request->has('categories') && !empty($request->categories)){
             $categoriesId = [];
