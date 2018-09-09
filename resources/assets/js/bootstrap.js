@@ -87,15 +87,15 @@ new Vue({
     },
 
     methods: {
-        onBarcodeScanned(code){
-            console.log(code);
-        },
-
-        // Reset to the last barcode before hitting enter (whatever anything in the input box)
-        resetBarcode () {
-            let barcode = this.$barcodeScanner.getPreviousCode()
-            // do something...
-        }
+        // onBarcodeScanned(code){
+        //     console.log(code);
+        // },
+        //
+        // // Reset to the last barcode before hitting enter (whatever anything in the input box)
+        // resetBarcode () {
+        //     let barcode = this.$barcodeScanner.getPreviousCode()
+        //     // do something...
+        // }
     }
 })
 
