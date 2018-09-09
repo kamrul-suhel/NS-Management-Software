@@ -319,8 +319,6 @@
                             <v-icon>add</v-icon>
                         </v-btn>
 
-                        <v-btn @click="openDialog()">{{ barcodeDialog }}Open dialog</v-btn>
-
                         <v-spacer></v-spacer>
                         <v-text-field
                                 dark
@@ -884,10 +882,7 @@
             },
 
             openDialog(){
-                console.log('open dialog')
                 this.barcodeDialogvalue = true;
-                console.log(this.barcodeDailog);
-                console.log(this.barcode);
             },
 
             onbarcodeDialogClose(){
