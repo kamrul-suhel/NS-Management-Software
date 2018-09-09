@@ -90,7 +90,7 @@
                                                 <v-icon>remove</v-icon>
                                             </v-btn>
                                         </v-flex>
-                                        <v-layout row wrap v-if="isSerial">
+                                        <v-layout row wrap v-if="isSerial === 'true'">
                                             <v-flex xs6>
                                                 <v-autocomplete
                                                         dark
@@ -137,7 +137,7 @@
                                             type="number"
                                             dark
                                             required
-                                            :rules="[v => v >! 0 || 'Please Select A company']"
+                                            :rules="[v => !!v || 'Quantity is required']"
                                             color="dark"
                                             placeholder="00.00"
                                             disabled
