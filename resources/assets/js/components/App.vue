@@ -18,16 +18,6 @@
             </v-content>
         </v-app>
 
-        <v-dialog v-model="barcodeDialog" persistent max-width="290">
-            <v-card>
-                <v-card-title class="headline">You scanned a Barcode</v-card-title>
-                <v-card-text>Your barcode is : {{ barcode }}</v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="green darken-1" flat @click.native="onbarcodeDialogClose()">Ok</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
 
     </div>
 </template>
@@ -78,29 +68,9 @@
             LoginEventBus.$on('logoutChangeState', () => {
                 this.login = false;
             });
-
-            //Barcode scannser
-            this.$barcodeScanner.init(this.onBarcodeScanned);
         },
 
         methods: {
-            onBarcodeScanned(code){
-                console.log(code);
-                console.log('barcode scanned');
-                this.barcodeDailog = true;
-                this.barcode = code;
-                if(code !== ''){
-                    console.log('It is hiting');
-                    console.log(this.barcode);
-                    this.barcodeDailog = true;
-                    this.barcode = code;
-                }
-            },
-
-            onbarcodeDialogClose(){
-              this.barcodeDailog = false;
-              this.code = '';
-            },
 
             // Reset to the last barcode before hitting enter (whatever anything in the input box)
             resetBarcode () {

@@ -2,6 +2,20 @@
     <div class="products">
 
         <v-dialog
+                v-model="barcodeDialog"
+                persistent
+                max-width="290">
+            <v-card>
+                <v-card-title class="headline">You scanned a Barcode</v-card-title>
+                <v-card-text>Your barcode is : {{ barcode }}</v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green darken-1" flat @click.native="onbarcodeDialogClose()">Ok</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <v-dialog
                 v-model="dialog"
                 persistent>
             <v-card class="px-2 py-2">
@@ -305,6 +319,8 @@
                             <v-icon>add</v-icon>
                         </v-btn>
 
+                        <!--<v-btn @click="openDialog()">{{ barcodeDialog }}Open dialog</v-btn>-->
+
                         <v-spacer></v-spacer>
                         <v-text-field
                                 dark
@@ -560,6 +576,9 @@
 
             productWarrantyError: false,
 
+            barcodeDialogvalue: false,
+            barcode:''
+
 
         }),
 
@@ -593,6 +612,10 @@
                 this.editedItem.quantity = quantity;
 
                 return this.selectedCompanies;
+            },
+
+            barcodeDialog(){
+                return this.barcodeDialogvalue;
             }
         },
 
@@ -627,7 +650,9 @@
         },
 
         created() {
-            this.initialize()
+            this.initialize();
+            //Barcode scannser
+            this.$barcodeScanner.init(this.onBarcodeScanned);
         },
 
         methods: {
@@ -842,7 +867,33 @@
                 })
                 return filterItem;
 
-            }
+            },
+
+
+            onBarcodeScanned(code){
+                console.log(code);
+                console.log('barcode scanned');
+                this.barcodeDailog = true;
+                this.barcode = code;
+                if(code !== ''){
+                    console.log('It is hiting');
+                    console.log(this.barcode);
+                    this.barcodeDailog = true;
+                    this.barcode = code;
+                }
+            },
+
+            openDialog(){
+                console.log('open dialog')
+                this.barcodeDialogvalue = true;
+                console.log(this.barcodeDailog);
+                console.log(this.barcode);
+            },
+
+            onbarcodeDialogClose(){
+                this.barcodeDialogvalue = false;
+                this.code = '';
+            },
         }
     }
 </script>
