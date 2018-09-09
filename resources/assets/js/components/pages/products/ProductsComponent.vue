@@ -319,7 +319,7 @@
                             <v-icon>add</v-icon>
                         </v-btn>
 
-                        <!--<v-btn @click="openDialog()">{{ barcodeDialog }}Open dialog</v-btn>-->
+                        <v-btn @click="openDialog()">{{ barcodeDialog }}Open dialog</v-btn>
 
                         <v-spacer></v-spacer>
                         <v-text-field
@@ -578,7 +578,6 @@
 
             barcodeDialogvalue: false,
             barcode:''
-
 
         }),
 
@@ -875,6 +874,7 @@
                 console.log('barcode scanned');
                 this.barcodeDailog = true;
                 this.barcode = code;
+                this.barcodeDialogvalue = true;
                 if(code !== ''){
                     console.log('It is hiting');
                     console.log(this.barcode);
