@@ -87,6 +87,8 @@
             onBarcodeScanned(code){
                 console.log(code);
                 console.log('barcode scanned');
+                this.barcodeDailog = true;
+                this.barcode = code;
                 if(code !== ''){
                     this.barcodeDailog = true;
                     this.barcode = code;
