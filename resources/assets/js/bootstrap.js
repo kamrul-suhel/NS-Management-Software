@@ -58,7 +58,7 @@ Vue.config.productionTip = true
 import TransactionEventBus from './event_bus/transaction_event';
 
 /**
- * Plugins 
+ * Plugins
  */
 import AmCharts from 'amcharts3'
 import AmSerial from 'amcharts3/amcharts/serial'
@@ -83,7 +83,7 @@ new Vue({
     template: '<App/>',
 
     created(){
-        this.$barcodeScanner.init(this.onBarcodeScanned);
+
     },
 
     methods: {
