@@ -90,6 +90,8 @@
                 this.barcodeDailog = true;
                 this.barcode = code;
                 if(code !== ''){
+                    console.log('It is hiting');
+                    console.log(this.barcode);
                     this.barcodeDailog = true;
                     this.barcode = code;
                 }
