@@ -18,6 +18,7 @@ class CreateProductTransactionTable extends Migration
             $table->integer('product_id')->unsigned();
             $table->integer('transaction_id')->unsigned();
             $table->float('sale_quantity')->unsigned()->nullable();
+            $table->float('sale_feet')->unsigned()->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

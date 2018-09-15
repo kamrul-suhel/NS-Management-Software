@@ -1,6 +1,5 @@
 <template>
     <div class="products">
-
         <v-dialog
                 v-model="barcodeDialog"
                 persistent
@@ -51,7 +50,7 @@
                                     ></v-textarea>
                                 </v-flex>
 
-                                <v-flex xs12>
+                                <v-flex xs6>
                                     <v-select
                                             dark
                                             color="dark"
@@ -60,6 +59,33 @@
                                             required
                                             :rules="[v => !!v || 'This field required']"
                                             v-model="isSerial"></v-select>
+                                </v-flex>
+
+                                <v-flex xs6>
+                                    <v-select
+                                            dark
+                                            color="dark"
+                                            label="Quantity type"
+                                            :items="quantity_type"
+                                            v-model="editedItem.quantity_type"
+                                            required
+                                            :rules="[v => !!v || 'Quantity type is required']"
+                                            auto
+                                    ></v-select>
+                                </v-flex>
+
+                                <v-flex xs12  v-if="editedItem.quantity_type === 'feet'">
+                                    <v-text-field
+                                            label="How much feets = 1 coil / 1 pipe"
+                                            dark
+                                            v-model="quantityToFeet"
+                                            mask="####"
+                                            :error="quantityToFeetError"
+                                            messages="Please provide per quantity how much feets"
+                                            counter
+                                            :reles="[v => !!v && v <= 0 || 'Field is required' ]"
+                                            color="dark">
+                                    </v-text-field>
                                 </v-flex>
 
                                 <v-flex xs12
@@ -82,12 +108,27 @@
                                             ></v-select>
                                         </v-flex>
 
-                                        <v-flex xs6>
+
+                                        <v-flex  :class="{xs3: editedItem.quantity_type === 'feet', xs6: editedItem.quantity_type !== 'feet' }">
                                             <v-text-field
                                                     label="How many quantity"
                                                     dark
                                                     v-model="company.quantity"
                                                     required
+                                                    mask="####"
+                                                    :reles="[v => !!v || 'Quantity is required' ]"
+                                                    color="dark">
+                                            </v-text-field>
+                                        </v-flex>
+
+                                        <v-flex xs3 v-if="editedItem.quantity_type === 'feet'">
+                                            <v-text-field
+                                                    label="How many feet"
+                                                    dark
+                                                    v-model="company.feet"
+                                                    required
+                                                    append-icon="equalizer"
+                                                    mask="####"
                                                     :reles="[v => !!v || 'Quantity is required' ]"
                                                     color="dark">
                                             </v-text-field>
@@ -104,6 +145,7 @@
                                                 <v-icon>remove</v-icon>
                                             </v-btn>
                                         </v-flex>
+
                                         <v-layout row wrap v-if="isSerial === 'true'">
                                             <v-flex xs6>
                                                 <v-autocomplete
@@ -159,18 +201,6 @@
                                     ></v-text-field>
                                 </v-flex>
 
-                                <v-flex xs6>
-                                    <v-select
-                                            dark
-                                            color="dark"
-                                            label="Quantity type"
-                                            :items="quantity_type"
-                                            v-model="editedItem.quantity_type"
-                                            required
-                                            :rules="[v => !!v || 'Quantity type is required']"
-                                            auto
-                                    ></v-select>
-                                </v-flex>
 
                                 <v-flex xs6>
                                     <v-select
@@ -189,7 +219,7 @@
                                     <v-text-field
                                             dark
                                             color="dark"
-                                            label="Sale Price"
+                                            :label="editedItem.quantity_type === 'feet' ? 'Sale price 1 Feet' : 'Sale price 1 item'"
                                             type="number"
                                             placeholder="00.00"
                                             prefix="TK"
@@ -203,7 +233,7 @@
                                     <v-text-field
                                             dark
                                             color="dark"
-                                            label="Purchase price"
+                                            :label="editedItem.quantity_type === 'feet' ? 'Purchase price 1 Feet' : 'Purchase price 1 item'"
                                             type="number"
                                             placeholder="00.00"
                                             prefix="TK"
@@ -228,6 +258,16 @@
                                             return-object
                                     >
                                     </v-select>
+                                </v-flex>
+
+                                <v-flex xs3 v-if="editedItem.quantity_type === 'feet'">
+                                    <h4>Total feets is: </h4>
+                                    {{ totalFeets }}
+                                </v-flex>
+
+                                <v-flex xs3 v-if="editedItem.quantity_type === 'feet'">
+                                    <h4>Total Quantity is: </h4>
+                                    {{ editedItem.quantity }}
                                 </v-flex>
                             </v-layout>
                         </v-container>
@@ -475,6 +515,10 @@
 
             warranties: ['3 Month', '6 Month', '1 Year', '1.5 Year', '2 Year', '3 Year', '4 year', '5 year'],
 
+            quantityToFeetError: false,
+            quantityToFeet: 0,
+            totalFeets: 0,
+
             headers: [
                 {
                     text: 'Date',
@@ -586,11 +630,14 @@
 
             totalCompanies() {
                 let quantity = 0;
+                let feets = 0;
                 let serials = [];
                 this.selectedCompanies.forEach((company) => {
                     if (company.serials) {
                         serials = company.serials;
                     }
+
+                    feets += Number(company.feet);
 
                     quantity += Number(company.quantity)
                     company.serials = [];
@@ -607,6 +654,12 @@
                 })
 
                 this.editedItem.quantity = quantity;
+
+                if(isNaN(feets)){
+                    feets = Number(0);
+                }
+
+                this.totalFeets = (quantity * this.quantityToFeet) + feets;
 
                 return this.selectedCompanies;
             },
@@ -642,6 +695,14 @@
 
                 if(value.companies){
 
+                }
+            },
+
+            quantityToFeet(value){
+                let feetPerUnit = Number(value);
+                if(!isNaN(feetPerUnit) && value >=0){
+                    this.quantityToFeetError = false;
+                    this.valid = true;
                 }
             }
         },
@@ -787,6 +848,17 @@
                     form.append('categories', JSON.stringify(this.selectedCategories));
                 }
 
+                console.log(this.editedItem);
+
+                //check product has pipe or feet
+                if(this.editedItem.quantity_type === 'feet'){
+                    if(this.quantityToFeet <= 0){
+                        this.quantityToFeetError = true;
+                        return;
+                    }
+                }
+                return;
+
                 if (this.editedIndex > -1) {
                     // update product
                     form.append('_method', 'PATCH')
@@ -874,8 +946,6 @@
                 this.barcode = code;
                 this.barcodeDialogvalue = true;
                 if(code !== ''){
-                    console.log('It is hiting');
-                    console.log(this.barcode);
                     this.barcodeDailog = true;
                     this.barcode = code;
                 }

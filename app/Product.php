@@ -21,9 +21,7 @@ class Product extends Model
 	const UNAVAILABLE_PRODUCT = 'unavailable';
 	const ABAILABLE_PRODUCT = 'available';
 
-	const PRODUCTTYPEKG = 'kg';
-	const PRODUCTTYPLITTER = 'litter';
-	const PRODUCTTYPEITEM = 'item';
+	const PRODUCTTYPEFEET = 'feet';
 	const PRODUCTTYPEPIC = 'pic';
 
 
@@ -32,6 +30,8 @@ class Product extends Model
     	'description',
     	'status',
     	'quantity',
+        'feet',
+        'quantity_per_feet',
     	'image',
     	'seller_id',
         'quantity_type',
@@ -77,8 +77,7 @@ class Product extends Model
 
     public static function getQuantityType(){
         return [
-            self::PRODUCTTYPEKG,
-            self::PRODUCTTYPLITTER,
+            self::PRODUCTTYPEFEET,
             self::PRODUCTTYPEPIC
         ];
     }

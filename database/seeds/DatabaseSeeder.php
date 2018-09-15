@@ -25,7 +25,8 @@ class DatabaseSeeder extends Seeder
     	$this->call(
     		[
     			DatabaseSeeder::class,
-				DatabaseSeederDump::class
+    			DatabaseSeederClient::class,
+                DatabaseSeederWork::class
 			]
 		);
 

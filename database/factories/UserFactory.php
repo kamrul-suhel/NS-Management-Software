@@ -64,6 +64,7 @@ $factory->define(Product::class, function (Faker $faker) {
         'name' => $faker->word,
         'description' => $faker->paragraph(1),
         'quantity' => $faker->numberBetween(1, 10),
+        'feet' => $faker->numberBetween(10, 20),
         'sale_price' => $sale_price = $faker->numberBetween(150, 200),
         'purchase_price' => $sale_price - $faker->numberBetween(10, $sale_price),
         'status' => $faker->randomElement([Product::UNAVAILABLE_PRODUCT, Product::ABAILABLE_PRODUCT]),
