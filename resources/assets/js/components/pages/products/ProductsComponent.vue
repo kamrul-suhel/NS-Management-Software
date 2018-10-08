@@ -849,6 +849,7 @@
                 }
 
                 console.log(this.editedItem);
+                console.log(this.totalCompanies);
 
                 //check product has pipe or feet
                 if(this.editedItem.quantity_type === 'feet'){
