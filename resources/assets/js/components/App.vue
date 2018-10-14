@@ -17,14 +17,12 @@
                 </v-container>
             </v-content>
         </v-app>
-
-
     </div>
 </template>
 
 <script>
-    import  HeaderComponent  from '../components/layout/HeaderComonent.vue';
-    import  NavigationComponent  from '../components/layout/NavigationComponent.vue';
+    import  HeaderComponent  from './Layout/HeaderComonent.vue';
+    import  NavigationComponent  from './Layout/NavigationComponent.vue';
     import  LoginEventBus  from '../event_bus/login-event-bus';
 
     export default {

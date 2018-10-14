@@ -15,28 +15,42 @@ class ProductController extends ApiController
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
+
+        $shopId = $request->has('shopId') ? $request->shopId : null;
+
     	$allSerial = $request->allSerial;
         $products = Product::with(['serials' => function($quary) use ($allSerial) {
         	if(!$allSerial){
 				$quary->where('is_sold', 0);
 			}
         }])
-			->with('companies')
-			->get();
+			->with('companies');
+        if($shopId){
+            $products = $products->where('store_id', $shopId);
+        }
+
+        $products = $products->get();
 
         $totalProduct = $products->count();
         $totalStock = $products->sum(function($product){
             return $product->purchase_price * $product->quantity;
         });
 
-        $avaliable_product = Product::where('status', 'available')->count();
-        $unavaliable_product = Product::where('status', 'unavailable')->count();
+        $avaliable_product = Product::where('status', 'available');
+        if($shopId){
+            $avaliable_product  = $avaliable_product->where('store_id', $shopId);
+        }
+        $avaliable_product = $avaliable_product ->count();
+        $unavaliable_product = Product::where('status', 'unavailable');
+            if($shopId){
+                $unavaliable_product = $unavaliable_product->where('store_id', $shopId);
+            }
+        $unavaliable_product = $unavaliable_product->count();
 
         $data = collect([
             'products' => $products,

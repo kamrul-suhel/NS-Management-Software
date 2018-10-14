@@ -30,6 +30,7 @@ class Product extends Model
     	'description',
     	'status',
     	'quantity',
+        'store_id',
         'feet',
         'quantity_per_feet',
     	'image',

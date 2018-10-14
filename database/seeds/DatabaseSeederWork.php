@@ -5,7 +5,7 @@ use App\CompanyTransaction;
 use App\Customer;
 use App\Expense;
 use App\ExpenseCategory;
-use App\Setting;
+use App\Store;
 use App\User;
 use App\Product;
 use App\Category;
@@ -33,6 +33,7 @@ class DatabaseSeederWork extends Seeder
         ExpenseCategory::truncate();
         Company::truncate();
         CompanyTransaction::truncate();
+        Store::truncate();
 
         DB::table('category_product')->truncate();
         DB::table('product_transaction')->truncate();
@@ -46,15 +47,18 @@ class DatabaseSeederWork extends Seeder
         ExpenseCategory::flushEventListeners();
         Company::flushEventListeners();
         CompanyTransaction::flushEventListeners();
+        Store::flushEventListeners();
 
         $usersQuantity = 10;
         $customerQuantity = 10;
         $categoriesQuantity = 100;
         $productsQuantity = 20;
         $transactionQuantity = 200;
+        $storeQuantity = 3;
 
         $categoryRoot = Category::create([
             'name' => 'category 1',
+            'store_id' => 1,
             'description' => 'Category description',
             'parent_id'   => null,
             'lft'          => 1,
@@ -64,6 +68,7 @@ class DatabaseSeederWork extends Seeder
 
         $categoryRoot->children()->create([
             'name' => 'category 2',
+            'store_id' => 2,
             'description' => 'Category description',
             'parent_id'   => 1,
             'lft'          => 2,
@@ -73,6 +78,7 @@ class DatabaseSeederWork extends Seeder
 
         $categoryRoot->children()->create([
             'name' => 'category 3',
+            'store_id' => 3,
             'description' => 'Category description',
             'parent_id'   => 1,
             'lft'          => 4,
@@ -82,6 +88,7 @@ class DatabaseSeederWork extends Seeder
 
         $categoryRoot->children()->create([
             'name' => 'category 4',
+            'store_id' => 2,
             'description' => 'Category description',
             'parent_id'   => 1,
             'lft'          => 6,
@@ -91,6 +98,7 @@ class DatabaseSeederWork extends Seeder
 
         $categoryRoot->children()->create([
             'name' => 'category 5',
+            'store_id' => 1,
             'description' => 'Category description',
             'parent_id'   => 1,
             'lft'          => 8,
@@ -100,6 +108,7 @@ class DatabaseSeederWork extends Seeder
 
         $categoryRoot->children()->create([
             'name' => 'category 6',
+            'store_id' => 3,
             'description' => 'Category description',
             'name' => 'category 2',
             'description' => 'Category description',
@@ -109,15 +118,7 @@ class DatabaseSeederWork extends Seeder
             'depth'         => 1
         ]);
 
-//        factory(Category::class, $categoriesQuantity)->create()->each(function($category){
-//            $root = Category::root();
-//            if($category->id == 1){
-//                $category->makeRoot();
-//                return;
-//            }
-//            $category->makeChildOf($root);
-//        });
-
+        factory(Store::class, $storeQuantity)->create();
 
 
         factory(User::class, $usersQuantity)->create();
@@ -146,7 +147,7 @@ class DatabaseSeederWork extends Seeder
 
         });
 
-        factory(Setting::class, 1)->create();
+        factory(Store::class, 1)->create();
 
 
         /**

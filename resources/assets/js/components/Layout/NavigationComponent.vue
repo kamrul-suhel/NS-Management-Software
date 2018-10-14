@@ -163,8 +163,8 @@
                         navs: [
                             {
                                 icon: 'settings',
-                                text: 'Settings',
-                                link: 'settings'
+                                text: 'Shops',
+                                link: 'shops'
                             },
 
                             {

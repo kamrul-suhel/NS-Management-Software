@@ -5,7 +5,7 @@ use App\CompanyTransaction;
 use App\Customer;
 use App\Expense;
 use App\ExpenseCategory;
-use App\Setting;
+use App\Store;
 use App\User;
 use App\Product;
 use App\Category;
@@ -145,7 +145,7 @@ class DatabaseSeederClient extends Seeder
 //
 //        });
 
-        factory(Setting::class, 1)->create();
+        factory(Store::class, 1)->create();
 
 
         /**

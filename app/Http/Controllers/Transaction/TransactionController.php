@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Transaction;
 
 use App\Http\Controllers\ApiController;
-use App\Setting;
+use App\Store;
 use App\Traits\ApiResponser;
 use App\Transaction;
 use Illuminate\Http\Request;
@@ -125,7 +125,7 @@ class TransactionController extends ApiController
 				$product->productSaleSerial = $productSaleSerial;
                 $product->sale_quantity = $product->pivot->sale_quantity;
             }
-            $setting = Setting::find(1);
+            $setting = Store::find(1);
 
             $data = collect([
                 'transaction' => $transaction,

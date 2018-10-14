@@ -4,7 +4,7 @@ import CategoryComponent from '../components/pages/categories/CategoryIndexCompo
 import ProductComponent from '../components/pages/products/ProductsComponent'
 import TransactionComponent from '../components/pages/transaction/TransactionComponent'
 import CustomerComponent from '../components/pages/customer/CustomerComponent'
-import SettingComponent from '../components/pages/setting/SettingComponent'
+import ShopComponent from '../components/pages/shop/ShopComponent'
 import CreateTransaction from '../components/pages/transaction/CreateTransactionComponent'
 import CreateDueTransaction from '../components/pages/transaction/CreateDueTransactionComponent'
 import TransactionPrint from '../components/pages/transaction/TransactionPrintComponent'
@@ -132,9 +132,9 @@ const routes = [
     },
 
     {
-        path: '/settings',
-        name: 'settings',
-        component: SettingComponent
+        path: '/shops',
+        name: 'shops',
+        component: ShopComponent
     },
 
     {

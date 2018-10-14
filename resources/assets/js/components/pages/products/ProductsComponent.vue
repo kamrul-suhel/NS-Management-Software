@@ -490,8 +490,7 @@
     </div>
 </template>
 <script>
-    /* eslint-disable no-unreachable */
-
+import {mapGetters} from 'vuex'
 
     export default {
         data: () => ({
@@ -624,6 +623,10 @@
         }),
 
         computed: {
+            ...mapGetters({
+                selectedShop: 'getSelectedShop'
+            }),
+
             formTitle() {
                 return this.editedIndex === -1 ? 'New Product' : 'Edit Product'
             },
@@ -670,6 +673,10 @@
         },
 
         watch: {
+            selectedShop(){
+                this.initialize();
+            },
+
             dialog(val) {
                 val || this.close()
             },
@@ -715,8 +722,16 @@
 
         methods: {
             initialize() {
+                const shopId = this.selectedShop.id
+                let productsUrl = '/api/products'
+                let categoriesUrl = '/api/categories'
+                if(shopId){
+                    productsUrl +='?shopId='+shopId
+                    categoriesUrl += '?shopId=' + shopId
+                }
+
                 // get all product
-                axios.get('/api/products')
+                axios.get(productsUrl)
                     .then((response) => {
                         this.items = response.data.products;
                         this.quantity_type = response.data.quantity_types;
@@ -730,7 +745,7 @@
                     });
 
                 // get all categories
-                axios.get('/api/categories')
+                axios.get(categoriesUrl)
                     .then((response) => {
                         let categories = response.data;
                         categories.forEach((value) => {
