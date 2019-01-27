@@ -7,10 +7,17 @@ const state = {
     tTableData: '',
     chartTitle:'',
 
+    tCash: 0,
+    pTotalStock:0,
+
     expense:'',
     profit:'',
     afterExpenseProfit:'',
     afterDueProfit: 0,
+
+    balance: false,
+
+    grossProfit: 0,
 
 }
 
@@ -56,6 +63,22 @@ const getters = {
 
     getAfterDueProfit(state){
         return state.afterDueProfit;
+    },
+
+    getCash(state){
+        return state.tCash;
+    },
+
+    getProductTotalStock(state){
+        return state.pTotalStock;
+    },
+
+    getBalance(state){
+        return state.balance;
+    },
+
+    getGrossProfit(state){
+        return state.grossProfit;
     }
 }
 
@@ -113,6 +136,22 @@ const mutations = {
 
     setAfterDueProfit(state, value){
         state.afterDueProfit = value;
+    },
+
+    setCash(state, value){
+        state.tCash = value;
+    },
+
+    setProductTotalStock(state, value){
+        state.pTotalStock = value;
+    },
+
+    setBalance(state, value){
+        state.balance = value;
+    },
+
+    setGrossProfit(state, value){
+        state.grossProfit = value;
     }
 }
 
@@ -165,6 +204,9 @@ const actions = {
                 commit('setProfit', response.data.total_profit);
                 commit('setAfterExpenseProfit', response.data.profit_after);
                 commit('setAfterDueProfit', response.data.total_profit_after_due);
+                commit('setCash', response.data.cash);
+                commit('setProductTotalStock', response.data.total_stock);
+                commit('setGrossProfit', +response.data.payment_due + +response.data.cash + +response.data.total_stock);
             });
     }
 }

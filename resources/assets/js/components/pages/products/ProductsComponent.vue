@@ -1,18 +1,18 @@
 <template>
     <div class="products">
-        <v-dialog
-                v-model="barcodeDialog"
-                persistent
-                max-width="290">
-            <v-card>
-                <v-card-title class="headline">You scanned a Barcode</v-card-title>
-                <v-card-text>Your barcode is : {{ barcode }}</v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="green darken-1" flat @click.native="onbarcodeDialogClose()">Ok</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
+        <!--<v-dialog-->
+        <!--v-model="barcodeDialog"-->
+        <!--persistent-->
+        <!--max-width="290">-->
+        <!--<v-card>-->
+        <!--<v-card-title class="headline">You scanned a Barcode</v-card-title>-->
+        <!--<v-card-text>Your barcode is : {{ barcode }}</v-card-text>-->
+        <!--<v-card-actions>-->
+        <!--<v-spacer></v-spacer>-->
+        <!--<v-btn color="green darken-1" flat @click.native="onbarcodeDialogClose()">Ok</v-btn>-->
+        <!--</v-card-actions>-->
+        <!--</v-card>-->
+        <!--</v-dialog>-->
 
         <v-dialog
                 v-model="dialog"
@@ -74,7 +74,7 @@
                                     ></v-select>
                                 </v-flex>
 
-                                <v-flex xs12  v-if="editedItem.quantity_type === 'feet'">
+                                <v-flex xs12 v-if="editedItem.quantity_type === 'feet'">
                                     <v-text-field
                                             label="How much feets = 1 coil / 1 pipe"
                                             dark
@@ -109,7 +109,7 @@
                                         </v-flex>
 
 
-                                        <v-flex  :class="{xs3: editedItem.quantity_type === 'feet', xs6: editedItem.quantity_type !== 'feet' }">
+                                        <v-flex :class="{xs3: editedItem.quantity_type === 'feet', xs6: editedItem.quantity_type !== 'feet' }">
                                             <v-text-field
                                                     label="How many quantity"
                                                     dark
@@ -281,7 +281,8 @@
                             color="dark"
                             raised
                             @click.native="close"
-                    >Cancel</v-btn>
+                    >Cancel
+                    </v-btn>
 
                     <v-btn dark
                            color="dark"
@@ -490,7 +491,7 @@
     </div>
 </template>
 <script>
-import {mapGetters} from 'vuex'
+    import {mapGetters} from 'vuex'
 
     export default {
         data: () => ({
@@ -618,7 +619,7 @@ import {mapGetters} from 'vuex'
             productWarrantyError: false,
 
             barcodeDialogvalue: false,
-            barcode:''
+            barcode: ''
 
         }),
 
@@ -658,7 +659,7 @@ import {mapGetters} from 'vuex'
 
                 this.editedItem.quantity = quantity;
 
-                if(isNaN(feets)){
+                if (isNaN(feets)) {
                     feets = Number(0);
                 }
 
@@ -667,13 +668,13 @@ import {mapGetters} from 'vuex'
                 return this.selectedCompanies;
             },
 
-            barcodeDialog(){
-                return this.barcodeDialogvalue;
-            }
+            // barcodeDialog(){
+            //     return this.barcodeDialogvalue;
+            // }
         },
 
         watch: {
-            selectedShop(){
+            selectedShop() {
                 this.initialize();
             },
 
@@ -692,6 +693,8 @@ import {mapGetters} from 'vuex'
             },
 
             editedItem(value) {
+                console.log(value);
+                return;
                 if (value.quantity) {
                     this.productSerials = [];
                     let count = Number(this.editedItem.quantity);
@@ -700,14 +703,14 @@ import {mapGetters} from 'vuex'
                     }
                 }
 
-                if(value.companies){
+                if (value.companies) {
 
                 }
             },
 
-            quantityToFeet(value){
+            quantityToFeet(value) {
                 let feetPerUnit = Number(value);
-                if(!isNaN(feetPerUnit) && value >=0){
+                if (!isNaN(feetPerUnit) && value >= 0) {
                     this.quantityToFeetError = false;
                     this.valid = true;
                 }
@@ -725,8 +728,8 @@ import {mapGetters} from 'vuex'
                 const shopId = this.selectedShop.id
                 let productsUrl = '/api/products'
                 let categoriesUrl = '/api/categories'
-                if(shopId){
-                    productsUrl +='?shopId='+shopId
+                if (shopId) {
+                    productsUrl += '?shopId=' + shopId
                     categoriesUrl += '?shopId=' + shopId
                 }
 
@@ -773,7 +776,7 @@ import {mapGetters} from 'vuex'
             },
 
             editItem(item) {
-                // get selected categories & all categories
+                // get selected product & all categories
                 let url = '/api/products/' + item.id + '/categories';
 
                 axios.get(url)
@@ -827,21 +830,22 @@ import {mapGetters} from 'vuex'
             },
 
             save() {
-                if(!this.$refs.product_form.validate()){
+
+                if (!this.$refs.product_form.validate()) {
                     return;
                 }
 
-                if(this.isSerial === 'true'){
+                if (this.isSerial === 'true') {
                     console.log(this.totalCompanies);
                     let error = false;
                     this.totalCompanies.forEach((company) => {
-                        if(company.product_warranty === undefined){
+                        if (company.product_warranty === undefined) {
                             this.productWarrantyError = true;
                             error = true;
                         }
                     })
 
-                    if(error){
+                    if (error) {
                         return;
                     }
                 }
@@ -850,9 +854,12 @@ import {mapGetters} from 'vuex'
                 let url = '/api/products';
 
                 form.append('name', this.editedItem.name);
-                form.append('sellerId', this.$store.getters.getUserId);
+                form.append('seller_id', this.$store.getters.getUserId);
+                form.append('store_id', this.$store.getters.getSelectedShopId);
                 form.append('description', this.editedItem.description);
                 form.append('purchase_price', this.editedItem.purchase_price);
+                form.append('quantity_per_feet', this.quantityToFeet);
+                form.append('total_feet', this.totalFeets);
                 form.append('sale_price', this.editedItem.sale_price);
                 form.append('quantity', this.editedItem.quantity);
                 form.append('status', this.editedItem.status);
@@ -863,17 +870,15 @@ import {mapGetters} from 'vuex'
                     form.append('categories', JSON.stringify(this.selectedCategories));
                 }
 
-                console.log(this.editedItem);
-                console.log(this.totalCompanies);
 
-                //check product has pipe or feet
-                if(this.editedItem.quantity_type === 'feet'){
-                    if(this.quantityToFeet <= 0){
+                //check product has pice or feet
+                if (this.editedItem.quantity_type === 'feet') {
+                    if (this.quantityToFeet <= 0) {
                         this.quantityToFeetError = true;
                         return;
                     }
                 }
-                return;
+
 
                 if (this.editedIndex > -1) {
                     // update product
@@ -894,6 +899,7 @@ import {mapGetters} from 'vuex'
                     // create product
                     axios.post(url, form)
                         .then((response) => {
+
                             this.items.push(response.data);
                             this.snackbar_message = 'Product ' + this.editedItem.name + ' successfully created.';
                             this.snackbar = true;
@@ -942,7 +948,7 @@ import {mapGetters} from 'vuex'
                     }
 
                     let itemName = item.name.toString().toLowerCase();
-                    if(itemName.includes(search)){
+                    if (itemName.includes(search)) {
                         itemSerial = true
                     }
 
@@ -955,23 +961,23 @@ import {mapGetters} from 'vuex'
             },
 
 
-            onBarcodeScanned(code){
+            onBarcodeScanned(code) {
                 console.log(code);
                 console.log('barcode scanned');
                 this.barcodeDailog = true;
                 this.barcode = code;
                 this.barcodeDialogvalue = true;
-                if(code !== ''){
+                if (code !== '') {
                     this.barcodeDailog = true;
                     this.barcode = code;
                 }
             },
 
-            openDialog(){
+            openDialog() {
                 this.barcodeDialogvalue = true;
             },
 
-            onbarcodeDialogClose(){
+            onbarcodeDialogClose() {
                 this.barcodeDialogvalue = false;
                 this.code = '';
             },

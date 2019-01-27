@@ -70,6 +70,13 @@
                 },
 
                 set(value){
+                    const updateStore = {
+                        'user_id' :  this.$store.getters.getUserId,
+                        'store_id' : value.id
+                    }
+
+                    axios.post('/api/users', updateStore)
+
                     this.$store.commit('setSelectedShop', value.id)
                 }
             }

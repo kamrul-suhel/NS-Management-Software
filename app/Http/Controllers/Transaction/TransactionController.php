@@ -18,14 +18,15 @@ class TransactionController extends ApiController
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
+
         $transactions = Transaction::with(['products', 'serials', 'seller'])
             ->with('customer')
+            ->where('store_id', $request->shopId)
             ->orderBy('id', 'DESC')
             ->get();
 
@@ -100,6 +101,7 @@ class TransactionController extends ApiController
     {
         if ($request->ajax()) {
             $transaction = Transaction::with(['products.serials','serials', 'customer','seller'])
+                ->with('products')
                 ->where('id', '=', $id)
                 ->first();
             foreach ($transaction->products as $product) {
@@ -124,8 +126,10 @@ class TransactionController extends ApiController
 				$product->productWarranty = $warranty;
 				$product->productSaleSerial = $productSaleSerial;
                 $product->sale_quantity = $product->pivot->sale_quantity;
+                $product->sale_feet = $product->pivot->sale_feet;
+                $product->discount_percentage = $product->pivot->discount_percentage;
             }
-            $setting = Store::find(1);
+            $setting = Store::find($transaction->store_id);
 
             $data = collect([
                 'transaction' => $transaction,

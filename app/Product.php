@@ -56,7 +56,7 @@ class Product extends Model
 
     public function companies(){
         return $this->belongsToMany(Company::class)
-            ->withPivot('product_quantity')
+            ->withPivot('product_quantity', 'product_feet')
             ->withTimestamps();
     }
 
@@ -85,6 +85,28 @@ class Product extends Model
 
     public function serials(){
         return $this->hasMany(ProductSerial::class);
+    }
+
+    public static function generateBarcode($length = 11) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        $randomString = '';
+
+        while(true){
+            $charactersLength = strlen($characters);
+            for ($i = 0; $i < $length; $i++) {
+                $randomString .= $characters[rand(0, $charactersLength - 1)];
+            }
+            $product = self::where('barcode', $randomString)
+                ->first();
+
+            if(!$product){
+                break;
+            }
+        }
+
+        return $randomString;
+
     }
 
 }

@@ -151,6 +151,12 @@
 
                             {
                                 icon: 'timeline',
+                                text: 'Balance',
+                                link: 'account_balance'
+                            },
+
+                            {
+                                icon: 'timeline',
                                 text: 'A Product',
                                 link: 'expenses'
                             }

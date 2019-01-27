@@ -26,6 +26,10 @@ const getters = {
 
     getSelectedShop(state){
         return state.selectedShop;
+    },
+
+    getSelectedShopId(state){
+        return state.selectedShop.id;
     }
 }
 

@@ -46,15 +46,23 @@
 
             axios.get('/islogin').then((response) => {
                 if(!response.data.error){
-                    this.login = true;
-                    this.$store.commit('setUser', response.data);
+                    // set all shop.
+                    this.$store.dispatch('fetchShop', 1);
 
-                    let route = this.$route.name;
-                    if(route != 'login'){
-                        this.$router.push({name: route});
-                        return;
-                    }
-                    this.$router.push({name: 'home'})
+                    setTimeout(() => {
+                        this.login = true;
+                        this.$store.commit('setUser', response.data);
+
+                        this.$store.commit('setSelectedShop', response.data.store_id)
+
+                        let route = this.$route.name;
+                        if(route != 'login'){
+                            this.$router.push({name: route});
+                            return;
+                        }
+                        this.$router.push({name: 'home'})
+                    }, 1000)
+
                 }
             })
 

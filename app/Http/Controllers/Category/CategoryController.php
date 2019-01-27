@@ -42,6 +42,7 @@ class CategoryController extends ApiController
             'description'   => 'required',
         ];
 
+
         $this->validate($request, $rules);
 
         $root = Category::root();

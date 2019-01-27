@@ -34,8 +34,10 @@ class ProductBuyerTransactionController extends ApiController
             $transaction = Transaction::create([
                 'customer_id' => $customer->id,
                 'seller_id' => $request->seller_id,
+                'store_id' => $request->store_id,
                 'invoice_number' => $unique_id,
                 'discount_amount' => $request->discount,
+                'special_discount' => $request->special_discount,
                 'total' => $request->total,
                 'payment_status' => $request->payment_status,
                 'payment_due' => $request->payment_due ? $request->payment_due : 0,
@@ -66,7 +68,6 @@ class ProductBuyerTransactionController extends ApiController
 
             $products = json_decode($request->products);
 
-
             foreach ($products as $product) {
                 // check if has selected serials
                 if ($product->selectedSerials) {
@@ -81,10 +82,33 @@ class ProductBuyerTransactionController extends ApiController
                 }
 
                 $cur_product = Product::find($product->product->id);
-                $selected_quantity = $product->selected_quantity;
-                $cur_product->quantity -= $selected_quantity;
+                $sale_quantity = 0;
+                $sale_feet = 0;
 
-                $attach_product[$product->product->id] = ['sale_quantity' => $product->selected_quantity];
+                // check what type of product
+                if($cur_product->quantity_type === 'feet'){
+                    $totalFeet = ($cur_product->quantity * $cur_product->quantity_per_feet) + $cur_product->feet;
+                    $remainingFeet = $totalFeet - $product->selected_quantity;
+
+                    $remainingQuantity = $remainingFeet / $cur_product->quantity_per_feet;
+
+                    $cur_product->quantity = floor($remainingQuantity);
+                    $cur_product->feet = $remainingFeet % $cur_product->quantity_per_feet;
+
+                    // now get the sale quantity.
+                    $sale_quantity = floor($product->selected_quantity / $cur_product->quantity_per_feet);
+                    $sale_feet = $product->selected_quantity % $cur_product->quantity_per_feet;
+                }else{
+                    $selected_quantity = $product->selected_quantity;
+                    $cur_product->quantity -= $selected_quantity;
+                    $sale_quantity = $product->selected_quantity;
+                }
+
+                $attach_product[$product->product->id] = [
+                    'sale_quantity' => $sale_quantity,
+                    'sale_feet' => $sale_feet,
+                    'discount_percentage' => $product->selected_percentage
+                ];
 
                 $cur_product->save();
             }

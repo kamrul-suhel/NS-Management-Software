@@ -58,6 +58,7 @@
                                 <v-flex xs6>
                                     <v-text-field
                                             dark
+                                            disabled
                                             color="dark"
                                             label="Discount amount"
                                             v-model="discount"
@@ -65,6 +66,17 @@
                                             hint="Put how much paid">
 
                                     </v-text-field>
+                                </v-flex>
+                            </v-layout>
+
+                            <v-layout row wrap>
+                                <v-flex xs6>
+                                    <v-text-field
+                                            dark
+                                            color="dark"
+                                            label="Special discount"
+                                            v-model="special_discount"
+                                    ></v-text-field>
                                 </v-flex>
                             </v-layout>
 
@@ -103,7 +115,7 @@
                                 <v-flex xs3 class="text-xs-right">
                                     <p v-if="selectedPaymentStatus > 1"><strong>Due: {{ total_amount_transactions - paid }}</strong></p>
                                     <p><strong>Discount: {{ discount }}</strong></p>
-                                    <p><strong>Grand total: {{ total_amount_transactions - discount }}</strong></p>
+                                    <p><strong>Grand total: {{ total_amount_transactions - discount - special_discount }}</strong></p>
 
                                 </v-flex>
                             </v-layout>
@@ -161,7 +173,8 @@
             serial_number:'',
             length_warranty:'',
 
-            service_charge: 0
+            service_charge: 0,
+            special_discount : 0,
         }),
 
         computed: {
@@ -185,7 +198,6 @@
                 this.previousDue = 0;
                 let url = '/transaction/due/create?customer_id='+val.value;
                 axios.get(url).then((response)=>{
-                    console.log(response);
                     this.previousDue = response.data.previous_record.previousDue ? response.data.previous_record.previousDue : 0;
                 })
             },
@@ -195,11 +207,15 @@
             this.initialize();
 
             TransactionEventBus.$on('updateProduct', () => {
-                var totalTransactions = this.$store.getters.getProduct;
-                var total = 0;
+                let totalTransactions = this.$store.getters.getProduct;
+                let total = 0;
+                let discount = 0;
                 totalTransactions.forEach((product) => {
                     total += product.product.sale_price * product.selected_quantity;
+                    discount += ((product.product.sale_price * product.selected_quantity) * product.selected_percentage) / 100 ;
                 });
+
+                this.discount = discount;
 
                 this.total_amount_transactions = total;
             });
@@ -262,14 +278,16 @@
 
             onCreateTransaction(){
                 let form = new FormData()
-                let total = this.total_amount_transactions - this.discount;
+                let total = this.total_amount_transactions - this.discount - this.special_discount;
                 let url = '/api/customers/'+this.selectedCustomer.value+'/transactions';
 
                 form.append('payment_status', this.selectedPaymentStatus);
                 form.append('discount', this.discount);
+                form.append('special_discount', this.special_discount);
                 form.append('length_warranty', this.length_warranty);
                 form.append('total', total);
                 form.append('service_charge', this.service_charge);
+                form.append('store_id', this.$store.getters.getSelectedShopId);
                 form.append('seller_id', this.$store.getters.getUserId);
 
                 if(this.selectedPaymentStatus > 1){

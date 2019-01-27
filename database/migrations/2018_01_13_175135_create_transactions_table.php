@@ -25,11 +25,10 @@ class CreateTransactionsTable extends Migration
             $table->float('paid')->unsigned()->nullable();
             $table->string('invoice_number')->index();
             $table->float('discount_amount')->unsigned()->nullable();
+            $table->float('special_discount')->unsigned()->nullable();
             $table->float('total')->index();
             $table->timestamps();
             $table->softDeletes();
-
-//            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });
     }
 

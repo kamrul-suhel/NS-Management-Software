@@ -105,6 +105,10 @@ class CompanyTransactionController extends Controller
     public function destroy($id)
     {
         //
+        $company = CompanyTransaction::findOrFail($id);
+
+        $company->delete();
+        return $this->successResponse($company);
     }
 
 

@@ -20,7 +20,8 @@ class CompanyTransaction extends Model
         'debit',
         'credit',
         'balance',
-        'manuel_date'
+        'manuel_date',
+        'store_id'
     ];
 
     public function company(){

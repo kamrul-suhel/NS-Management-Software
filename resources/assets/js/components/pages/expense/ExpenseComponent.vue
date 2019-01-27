@@ -167,6 +167,7 @@
 </template>
 
 <script>
+    import {mapGetters} from 'vuex';
     import axios from 'axios'
     export default {
         data: () => ({
@@ -239,6 +240,9 @@
         }),
 
         computed: {
+            ...mapGetters({
+                selectedExpense: 'getSelectedShop'
+            }),
 
             theme(){
               return this.$store.getters.getTheme;
@@ -250,12 +254,14 @@
 
             buttonTitle () {
                 return this.editedIndex === -1 ? 'Create Expense' : 'Update expense'
-            },
-
-
+            }
         },
 
         watch: {
+            selectedExpense() {
+                this.initialize();
+            },
+
             dialog (val) {
                 val || this.close()
             }
@@ -267,7 +273,8 @@
 
         methods: {
             initialize () {
-                axios.get('api/expense')
+                let storeId = this.$store.getters.getSelectedShopId;
+                axios.get('api/expense?store_id='+storeId)
                 .then((response) => {
                     this.items = response.data.expenses;
                     this.expenseCategories = response.data.expense_categories;
@@ -311,6 +318,7 @@
                 form.append('title', this.editedItem.title);
                 form.append('description', this.editedItem.description);
                 form.append('payment_type', this.editedItem.payment_type);
+                form.append('store_id', this.$store.getters.getSelectedShopId);
                 form.append('amount', this.editedItem.amount);
 
                 if(this.editedItem.category.id){
@@ -367,7 +375,7 @@
                     this.pagination.sortBy = column
                     this.pagination.descending = false
                 }
-            },
+            }
         }
     }
 </script>

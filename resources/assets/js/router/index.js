@@ -15,6 +15,7 @@ import ExpenseCategoryComponent from '../components/pages/expense/ExpenseCategor
 import CompanyComponent from '../components/pages/company/CompanyComponent'
 import CompanyTransaction from '../components/pages/company/CompanyTransitionsComponent'
 import AccountExpenseComponent from '../components/pages/accounting/expense/ExpenseAccountingComponent'
+import BalanceAccountingComponent from '../components/pages/accounting/balance/BalanceAccountingComponent'
 import ProductTransaction from '../components/pages/accounting/product_transaction/TransactionAccountingComponent'
 import CustomerAccountingTransaction from '../components/pages/accounting/customer/CustomerAccountingComponent'
 import UserComponent from '../components/pages/user/UserComponent'
@@ -129,6 +130,12 @@ const routes = [
         path: '/account/expense',
         name:'account_expense',
         component: AccountExpenseComponent
+    },
+
+    {
+        path: '/account/balance',
+        name:'account_balance',
+        component: BalanceAccountingComponent
     },
 
     {

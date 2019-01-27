@@ -155,6 +155,11 @@
                         .then(response => {
                             LoginEventBus.successLogin();
                             this.$store.commit('setUser', response.data.user);
+
+                            setTimeout(() => {
+                                this.$store.commit('setSelectedShop', response.data.user.store_id)
+                            }, 3000)
+
                         })
                         .catch(error => {
                             this.loading = false;

@@ -196,6 +196,7 @@
 
                 form.append('name', this.editedItem.name);
                 form.append('description', this.editedItem.description);
+                form.append('store_id', this.$store.getters.getSelectedShopId);
 
                 if (this.editedIndex > -1) {
                     form.append('_method', 'PUT');

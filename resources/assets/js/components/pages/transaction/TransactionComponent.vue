@@ -166,6 +166,7 @@
     /* eslint-disable no-unreachable */
 
     import axios from 'axios'
+    import {mapGetters} from 'vuex'
 
     export default {
         data: () => ({
@@ -280,6 +281,10 @@
         }),
 
         computed: {
+            ...mapGetters({
+                selectedShop: 'getSelectedShop'
+            }),
+
             formTitle() {
                 return this.editedIndex === -1 ? 'New Transaction' : 'Edit Transaction'
             },
@@ -292,6 +297,10 @@
         watch: {
             dialog(val) {
                 val || this.close()
+            },
+
+            selectedShop() {
+                this.initialize();
             },
 
             selectedProduct(val) {
@@ -316,7 +325,9 @@
         methods: {
             initialize() {
                 // get all transaction
-                axios.get('/api/transactions')
+
+                const url = '/api/transactions?shopId='+ this.$store.getters.getSelectedShopId;
+                axios.get(url)
                     .then((response) => {
                         if(response.data.transactions){
                             this.items = response.data.transactions;
@@ -368,7 +379,6 @@
                     .catch((error) => {
                         console.log(error)
                     });
-
             },
 
             openDeleteDialog(deleteItem){
@@ -384,7 +394,6 @@
                     this.items.splice(index, 1)
                 });
             },
-
 
             changeSort(column) {
                 if (this.pagination.sortBy === column) {
@@ -437,7 +446,7 @@
                     return items;
                 }
                 let filterItem = [];
-                items.forEach((item)=>{
+                items.forEach((item) => {
                     let isSerial = false;
                     let transaction = false;
                     if(item.serials.length > 0){
@@ -458,7 +467,6 @@
                     }
                 })
                 return filterItem;
-
             }
         }
     }

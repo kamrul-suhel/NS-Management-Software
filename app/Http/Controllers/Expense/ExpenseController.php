@@ -21,7 +21,11 @@ class ExpenseController extends Controller
         //
         if($request->ajax()){
 
-            $expense = Expense::with('category')->get();
+            $expense = Expense::with('category');
+
+            $request->has('store_id') ? $expense = $expense->where('store_id', $request->store_id) : '';
+
+            $expense = $expense->get();
             $category = ExpenseCategory::orderBy('id', 'DESC')->get();
             $data = [
                 'expenses' => $expense,

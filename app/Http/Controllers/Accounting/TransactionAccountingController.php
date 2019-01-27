@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Accounting;
 
+use App\CompanyTransaction;
 use App\Expense;
+use App\Product;
 use App\Traits\ApiResponser;
 use App\Transaction;
 use Carbon\Carbon;
@@ -18,6 +20,7 @@ class TransactionAccountingController extends Controller
     {
         $transactions = Transaction::with(['products', 'customer']);
         $expenses = new Expense();
+        $companyTransaction = new CompanyTransaction();
 
         if ($request->select['abbr'] === 'TDT') {
             $transactions = $transactions->where('created_at', '>', Carbon::now()->startOfDay())
@@ -25,16 +28,22 @@ class TransactionAccountingController extends Controller
 
             $expenses = $expenses->where('created_at', '>', Carbon::now()->startOfDay())
                 ->where('created_at', '<', Carbon::now()->endOfDay());
+
+            $companyTransaction = $companyTransaction->where('created_at', '>', Carbon::now()->startOfDay())
+                ->where('created_at', '<', Carbon::now()->endOfDay());
         }
 
         if ($request->select['abbr'] === 'YDT') {
             $transactions = $transactions->where('created_at', '>', Carbon::yesterday());
             $expenses = $expenses->where('created_at', '>', Carbon::yesterday());
+
+            $companyTransaction = $companyTransaction->where('created_at', '>', Carbon::yesterday());
         }
 
         if ($request->select['abbr'] === 'TWT') {
             $transactions = $transactions->where('created_at', '>', Carbon::now()->startOfWeek());
             $expenses = $expenses->where('created_at', '>', Carbon::now()->startOfWeek());
+            $companyTransaction = $companyTransaction->where('created_at', '>', Carbon::now()->startOfWeek());
         }
         if ($request->select['abbr'] === 'LWT') {
             $currentDate = Carbon::now();
@@ -44,6 +53,8 @@ class TransactionAccountingController extends Controller
             $transactions = $transactions->whereBetween('created_at', [$agoDate, $endDate]);
 
             $expenses = $expenses->whereBetween('created_at', [$agoDate, $endDate]);
+
+            $companyTransaction = $companyTransaction->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
         if ($request->select['abbr'] === 'TMT') {
@@ -53,11 +64,15 @@ class TransactionAccountingController extends Controller
             $endDate = $currentDate->endOfMonth();
             $transactions = $transactions->whereBetween('created_at', [$agoDate, $endDate]);
             $expenses = $expenses->whereBetween('created_at', [$agoDate, $endDate]);
+
+            $companyTransaction = $companyTransaction->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
         if ($request->select['abbr'] === 'LMT') {
             $transactions = $transactions->whereMonth('created_at', Carbon::now()->subMonth()->month);
             $expenses = $expenses->whereMonth('created_at', Carbon::now()->subMonth()->month);
+
+            $companyTransaction = $companyTransaction->whereMonth('created_at', Carbon::now()->subMonth()->month);
         }
 
         if ($request->select['abbr'] === 'TYT') {
@@ -67,6 +82,8 @@ class TransactionAccountingController extends Controller
             $endDate = $currentDate->endOfYear();
             $transactions = $transactions->whereBetween('created_at', [$agoDate, $endDate]);
             $expenses = $expenses->whereBetween('created_at', [$agoDate, $endDate]);
+
+            $companyTransaction = $companyTransaction->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
         if ($request->customdate) {
@@ -74,6 +91,8 @@ class TransactionAccountingController extends Controller
             $endDate = Carbon::parse($request->startdate)->endOfDay();
             $transactions = $transactions->whereBetween('created_at', [$begainDate, $endDate]);
             $expenses = $expenses->whereBetween('created_at', [$begainDate, $endDate]);
+
+            $companyTransaction = $companyTransaction->whereBetween('created_at', [$begainDate, $endDate]);
         }
 
         if ($request->customdate && $request->customrangerate) {
@@ -81,7 +100,18 @@ class TransactionAccountingController extends Controller
             $endDate = Carbon::parse($request->enddate)->endOfDay();
             $transactions = $transactions->whereBetween('created_at', [$agoDate, $endDate]);
             $expenses = $expenses->whereBetween('created_at', [$agoDate, $endDate]);
+
+            $companyTransaction = $companyTransaction->whereBetween('created_at', [$agoDate, $endDate]);
         }
+
+        // get store specifice transaction.
+        $request->has('store_id') ? $transactions->where('store_id', $request->store_id) : '';
+
+        // get expense specified transaction
+        $request->has('store_id') ? $expenses->where('store_id', $request->store_id) : '';
+
+        $request->has('store_id') ? $companyTransaction->where('store_id', $request->store_id) : '';
+
 
         $transactions = $transactions->orderBy('created_at', 'desc')->get();
         $expenses = $expenses->orderBy('created_at', 'desc')->get();
@@ -89,6 +119,7 @@ class TransactionAccountingController extends Controller
         $total = $transactions->sum(function($transaction){
         	return$transaction->total + $transaction->service_charge;
 		});
+
         $totalServices = $transactions->sum('service_charge');
         $paymentDue = $transactions->sum('payment_due');
         $discount = $transactions->sum('discount_amount');
@@ -115,20 +146,33 @@ class TransactionAccountingController extends Controller
         $totalProduct = $transactions->pluck('products')->collapse();
 
         $salePrice = $totalProduct->sum(function ($product) {
-            return $product->pivot->sale_quantity * $product->sale_price;
+            return ($product->pivot->sale_quantity * $product->quantity_per_feet + $product->pivot->sale_feet) * $product->sale_price;
         });
 
         $purchasePrice = $totalProduct->sum(function ($product) {
-            return $product->pivot->sale_quantity * $product->purchase_price;
+            return ($product->pivot->sale_quantity * $product->quantity_per_feet + $product->pivot->sale_feet) * $product->purchase_price;
         });
+
+        // get company total debit
+        $companyTotalDebit = $companyTransaction->sum('debit');
 
         $totalProfit = $salePrice - $purchasePrice + $totalServices;
         $totalExpenses = $expenses->sum('amount');
+
         $profitAfter = $totalProfit - $totalExpenses - $discount;
         $totalProfitAfterDue = $totalProfit - $paymentDue;
+        $cash = $total - $paymentDue -$totalExpenses - $companyTotalDebit;
 
+
+        $products = Product::where('store_id', $request->store_id)
+            ->get();
+
+        $totalStock = $products->sum(function($product){
+            return ($product->quantity * $product->quantity_per_feet + $product->feet) * $product->purchase_price;
+        });
 
         $data = [
+            'total_stock' => $totalStock,
             'total' => number_format((float)$total, 2, '.', ''),
             'payment_due' => number_format((float)$paymentDue, 2, '.', ''),
             'discount' => number_format((float)$discount, 2, '.', ''),
@@ -139,7 +183,8 @@ class TransactionAccountingController extends Controller
             'total_profit' => number_format((float)$totalProfit, 2, '.', ''),
             'total_expense' => number_format((float)$totalExpenses, 2, '.', ''),
             'profit_after' => number_format((float)$profitAfter, 2, '.', ''),
-            'total_profit_after_due' => number_format($totalProfitAfterDue, 2, '.', '')
+            'total_profit_after_due' => number_format($totalProfitAfterDue, 2, '.', ''),
+            'cash' => $cash
         ];
 
         return $this->successResponse($data, 200);

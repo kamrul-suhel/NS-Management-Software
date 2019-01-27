@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Product;
 
+use App\Company;
 use App\Http\Controllers\ApiController;
 use App\Product;
 use Illuminate\Http\Request;
@@ -38,7 +39,7 @@ class ProductController extends ApiController
 
         $totalProduct = $products->count();
         $totalStock = $products->sum(function($product){
-            return $product->purchase_price * $product->quantity;
+            return ($product->quantity * $product->quantity_per_feet + $product->feet) * $product->purchase_price;
         });
 
         $avaliable_product = Product::where('status', 'available');
@@ -81,15 +82,28 @@ class ProductController extends ApiController
      */
     public function store(Request $request)
     {
-        //
         $totalCompanies = json_decode($request->totalCompanies);
-
 
         // Product create
         $product = $request->except('totalCompanies');
         $product['image'] = '1.jpg';
         //change this when auth is set
-        $product['seller_id'] = $request->sellerId;
+        $product['seller_id'] = $request->seller_id;
+
+        if($request->has('quantity_type') && $request->quantity_type !== 'pic'){
+            // Get quantity_per_feet.
+            $quantityPerFeet = $request->total_feet - ($request->quantity * $request->quantity_per_feet);
+
+            $product['feet'] = $quantityPerFeet;
+        }else{
+            $product['feet'] = 0;
+            $product['quantity_per_feet'] = 1;
+        }
+
+
+        // Get barcode
+        $product['barcode'] = Product::generateBarcode();
+
         $product = Product::create($product);
 
         // Product serials key with company
@@ -100,6 +114,8 @@ class ProductController extends ApiController
             $company = [];
             $company['company_id'] = $currCompany->selectedCompany->id;
             $company['product_quantity'] = $currCompany->quantity;
+            $company['product_feet'] = isset($currCompany->feet) ? $currCompany->feet : 0;
+
             $productCompany[] = $company;
             if($currCompany->serials){
                 foreach($currCompany->serials as $currSerial){
@@ -113,8 +129,11 @@ class ProductController extends ApiController
             }
         }
 
-        $companies = $product->companies()->attach($productCompany);
-        $serial = $product->serials()->createMany($productSerialsWithCompany);
+        // Save product company.
+        $product->companies()->attach($productCompany);
+
+        // Save Product serial
+        $product->serials()->createMany($productSerialsWithCompany);
 
         // If product has category then it will link with category in pivot table
         if($request->has('categories')){
@@ -168,6 +187,7 @@ class ProductController extends ApiController
             'sale_price',
             'status'
         ]));
+
         $product->quantity = $product->quantity + $request->quantity;
 
         // Product serials key with company
@@ -208,10 +228,9 @@ class ProductController extends ApiController
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Product  $product
-     * @return \Illuminate\Http\Response
+     * @param Product $product
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function destroy(Product $product)
     {

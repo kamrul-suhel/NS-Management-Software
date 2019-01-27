@@ -26,11 +26,13 @@ class Transaction extends Model
     	'customer_id',
     	'product_id',
 		'seller_id',
+        'store_id',
         'payment_status',
         'service_charge',
         'payment_due',
         'paid',
         'discount_amount',
+        'special_discount',
         'total',
         'invoice_number',
         'type'
@@ -46,7 +48,7 @@ class Transaction extends Model
 
      public function products(){
      	return $this->belongsToMany(Product::class)
-            ->withPivot(['sale_quantity'])
+            ->withPivot(['sale_quantity','sale_feet','discount_percentage'])
             ->withTimestamps();
      }
 

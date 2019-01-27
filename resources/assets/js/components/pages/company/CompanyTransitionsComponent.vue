@@ -475,6 +475,7 @@
                 let form = new FormData();
                 let url = '/api/ctransaction';
                 form.append('company_id', this.selectedCompany);
+                form.append('store_id', this.$store.getters.getSelectedShopId);
                 form.append('payment_type', this.editedItem.payment_type);
                 form.append('emreferenceail', this.editedItem.reference);
                 form.append('remarks', this.editedItem.remarks);

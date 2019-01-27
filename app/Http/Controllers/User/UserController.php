@@ -42,6 +42,15 @@ class UserController extends ApiController
      */
     public function store(Request $request)
     {
+        // If updating only store id then do this.
+        if($request->has('store_id')){
+            $user = User::findOrFail($request->user_id);
+            $user->store_id = $request->store_id;
+            $user->save();
+
+            return $this->showOne($user, 200);
+        }
+
         $rules = [
             'name'      => 'required',
             'email'     => 'required|email|unique:users',

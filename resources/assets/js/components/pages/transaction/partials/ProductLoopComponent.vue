@@ -1,6 +1,6 @@
 <template>
     <v-layout row wrap>
-        <v-flex xs6>
+        <v-flex xs4>
             <v-autocomplete
                     dark
                     color="dark"
@@ -15,11 +15,11 @@
             ></v-autocomplete>
         </v-flex>
 
-        <v-flex xs6>
+        <v-flex xs4>
             <v-text-field
                     dark
                     color="dark"
-                    label="Quantity"
+                    :label="productMessage"
                     type="number"
                     min="1"
                     :placeholder="'You have '+ current_product_quantity + ' in your stock'"
@@ -29,8 +29,23 @@
             ></v-text-field>
         </v-flex>
 
+        <v-flex xs4>
+            <v-text-field
+                    dark
+                    color="dark"
+                    label="Discount percentage %"
+                    type="number"
+                    min="1"
+                    placeholder="Select how much you want to give discount this product."
+                    hint="Must be percentage."
+                    persistent-hint
+                    v-model="selectedPercentage"
+            ></v-text-field>
+        </v-flex>
+
         <v-flex xs6>
             <v-autocomplete
+                    v-if="serials.length > 0"
                     label="Serial Number"
                     dark
                     color="dark"
@@ -65,6 +80,8 @@
                 previous_selected_id: '',
                 serials: [],
                 selectedSerials: [],
+                selectedPercentage:0,
+                productMessage: 'Select product'
             }
         },
 
@@ -80,6 +97,11 @@
                 this.updateStore(this.selectedProduct.value);
             },
 
+            selectedPercentage(){
+                console.log('calling');
+                this.updateStore(this.selectedProduct.value);
+            }
+
         },
 
         created() {
@@ -93,8 +115,10 @@
 
             initialize() {
 
-                //get all product
-                axios.get('/api/products')
+                const url = '/api/products?shopId=' +this.$store.getters.getSelectedShopId;
+
+                //get all product for store
+                axios.get(url)
                     .then((response) => {
                         if (response.data.products) {
                             this.products = response.data.products;
@@ -123,16 +147,32 @@
             },
 
             updateStore(val) {
-                var change_product = {};
+                let change_product = {};
                 this.allProductData.forEach((product) => {
                     if (val === product.id) {
+                        console.log(product);
+
+                        // Check the product type & change message.
+                        if(product.quantity_type === 'feet'){
+                            this.productMessage = 'How many feet'
+                        }else{
+                            this.productMessage = "How many quantity"
+                        }
+
                         change_product.selected_quantity = this.selectedQuantity;
-                        this.current_product_quantity = product.quantity;
+                        change_product.selected_percentage = this.selectedPercentage;
+
+                        // check type of product
+                        if(product.quantity_type === 'feet'){
+                            this.current_product_quantity = (product.quantity * product.quantity_per_feet) + product.feet;
+                        }else{
+                            this.current_product_quantity = product.quantity;
+                        }
+
                         this.current_product_sale_price = product.sale_price;
                         change_product.index = this.index;
                         change_product.product = product;
                         change_product.selectedSerials = this.selectedSerials;
-                        console.log('updated ');
 
                         // Check serial keys exists
                         if (product.serials.length > 0) {
