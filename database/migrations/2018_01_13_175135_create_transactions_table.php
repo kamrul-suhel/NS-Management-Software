@@ -15,21 +15,16 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('store_id')->index()->unsigned();
-            $table->integer('customer_id')->unsigned()->index();
-            $table->integer('seller_id')->unsigned()->index();
-            $table->integer('payment_status')->unsigned()->nullable();
-            $table->float('payment_due')->unsigned()->nullable();
-            $table->float('service_charge')->unsigned()->nullable()->index();
-            $table->enum('type',['paid', 'due-paid'])->index();
+            $table->integer('hotel_id')->index()->unsigned();
+            $table->string('client_name')->unsigned()->index();
+            $table->text('client_address')->unsigned();
+            $table->string('client_phone', 30)->unsigned()->index();
+            $table->integer('staff_id')->unsigned()->index();
             $table->float('paid')->unsigned()->nullable();
-            $table->string('invoice_number')->index();
             $table->float('discount_amount')->unsigned()->nullable();
             $table->float('total')->index();
             $table->timestamps();
             $table->softDeletes();
-
-//            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });
     }
 
