@@ -4,7 +4,7 @@ namespace App;
 
 use App\Transformers\SellerTransformer;
 use App\User;
-use App\Product;
+use App\Room;
 
 
 class Seller extends User
@@ -13,7 +13,7 @@ class Seller extends User
     public $transformer = SellerTransformer::class;
 
 	public function products(){
-		return $this->hasMany(Product::class);
+		return $this->hasMany(Room::class);
 	}
 
 }

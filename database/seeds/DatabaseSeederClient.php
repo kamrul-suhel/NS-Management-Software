@@ -7,7 +7,7 @@ use App\Expense;
 use App\ExpenseCategory;
 use App\Store;
 use App\User;
-use App\Product;
+use App\Room;
 use App\Category;
 use App\Transaction;
 use Illuminate\Database\Seeder;
@@ -27,7 +27,7 @@ class DatabaseSeederClient extends Seeder
         User::truncate();
         Customer::truncate();
         Category::truncate();
-        Product::truncate();
+        Room::truncate();
         Transaction::truncate();
         Expense::truncate();
         ExpenseCategory::truncate();
@@ -38,7 +38,7 @@ class DatabaseSeederClient extends Seeder
         DB::table('product_transaction')->truncate();
 
         User::flushEventListeners();
-        Product::flushEventListeners();
+        Room::flushEventListeners();
         Category::flushEventListeners();
         Transaction::flushEventListeners();
         Customer::flushEventListeners();

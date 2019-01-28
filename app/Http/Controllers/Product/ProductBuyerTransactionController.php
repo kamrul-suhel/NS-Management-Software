@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Customer\CustomerDueController;
-use App\Product;
+use App\Room;
 use App\ProductSerial;
 use App\Transaction;
 use App\Customer;
@@ -80,7 +80,7 @@ class ProductBuyerTransactionController extends ApiController
                     }
                 }
 
-                $cur_product = Product::find($product->product->id);
+                $cur_product = Room::find($product->product->id);
                 $selected_quantity = $product->selected_quantity;
                 $cur_product->quantity -= $selected_quantity;
 

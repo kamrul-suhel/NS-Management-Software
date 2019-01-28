@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Product;
+use App\Room;
 use App\Transformers\CategoryTransformer;
 use Baum\Node;
 use Illuminate\Database\Eloquent\Model;
@@ -32,6 +32,6 @@ class Category extends Node
     ];
 
     public function products(){
-    	return $this->belongsToMany(Product::class);
+    	return $this->belongsToMany(Room::class);
     }
 }

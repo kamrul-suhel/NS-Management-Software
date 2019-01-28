@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\ApiController;
-use App\Product;
+use App\Room;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -19,7 +19,7 @@ class ProductBuyerController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Product $product)
+    public function index(Room $product)
     {
         $buyer = $product->transitions()
                 ->whereHas('buyer')

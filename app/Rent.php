@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Transaction extends Model
+class Rent extends Model
 {
     use SoftDeletes;
 
@@ -45,7 +45,7 @@ class Transaction extends Model
      }
 
      public function products(){
-     	return $this->belongsToMany(Product::class)
+     	return $this->belongsToMany(Room::class)
             ->withPivot(['sale_quantity'])
             ->withTimestamps();
      }

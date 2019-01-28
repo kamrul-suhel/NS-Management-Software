@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Product;
 
 use App\Category;
 use App\Http\Controllers\ApiController;
-use App\Product;
+use App\Room;
 use Illuminate\Http\Request;
 
 class ProductCategoryController extends ApiController
@@ -20,7 +20,7 @@ class ProductCategoryController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Product $product)
+    public function index(Room $product)
     {
         $categories = $product->categories;
 
@@ -31,10 +31,10 @@ class ProductCategoryController extends ApiController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Product  $product
+     * @param  \App\Room  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product, Category $category)
+    public function update(Request $request, Room $product, Category $category)
     {
         //to interact with many to many you have some option
         // attach, sync, syncWithoutDetaching
@@ -45,10 +45,10 @@ class ProductCategoryController extends ApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Product  $product
+     * @param  \App\Room  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Product $product, Category $category)
+    public function destroy(Request $request, Room $product, Category $category)
     {
         if(!$product->categories()->find($category->id)){
             return $this->errorResponse('This category is not related with this product', 404);

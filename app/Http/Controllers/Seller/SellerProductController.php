@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\ApiController;
-use App\Product;
+use App\Room;
 use App\Seller;
 use App\Transformers\SellerTransformer;
 use App\User;
@@ -46,9 +46,9 @@ class SellerProductController extends ApiController
         $data['image'] = $request->image->store('');
 
         $data['seller_id'] = $seller->id;
-        $data['status'] = Product::UNAVAILABLE_PRODUCT;
+        $data['status'] = Room::UNAVAILABLE_PRODUCT;
 
-        $product = Product::create($data);
+        $product = Room::create($data);
 
         return $this->showOne($product, 201);
 
@@ -62,12 +62,12 @@ class SellerProductController extends ApiController
      * @param  \App\Seller  $seller
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Seller $seller, Product $product)
+    public function update(Request $request, Seller $seller, Room $product)
     {
 
         $rules = [
             'quantity'      => 'integer|min:1',
-            'status'        => 'in:'.Product::ABAILABLE_PRODUCT .','.Product::UNAVAILABLE_PRODUCT,
+            'status'        => 'in:'.Room::ABAILABLE_PRODUCT .','.Room::UNAVAILABLE_PRODUCT,
             'image'         => 'image'
         ];
 
@@ -110,7 +110,7 @@ class SellerProductController extends ApiController
      * @param  \App\Seller  $seller
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Seller $seller, Product $product)
+    public function destroy(Seller $seller, Room $product)
     {
         $this->checkSeller($seller, $product);
 
@@ -121,7 +121,7 @@ class SellerProductController extends ApiController
         return $this->showOne($product);
     }
 
-    private function checkSeller(Seller $seller, Product $product){
+    private function checkSeller(Seller $seller, Room $product){
         if($seller->id != $product->seller_id){
             throw new HttpException(402, 'The specified seller is not the actual seller of the product');
         }

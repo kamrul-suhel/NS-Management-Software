@@ -7,7 +7,7 @@ use App\Expense;
 use App\ExpenseCategory;
 use App\Store;
 use App\User;
-use App\Product;
+use App\Room;
 use App\Category;
 use App\Transaction;
 use Illuminate\Database\Seeder;
@@ -27,7 +27,7 @@ class DatabaseSeederWork extends Seeder
         User::truncate();
         Customer::truncate();
         Category::truncate();
-        Product::truncate();
+        Room::truncate();
         Transaction::truncate();
         Expense::truncate();
         ExpenseCategory::truncate();
@@ -39,7 +39,7 @@ class DatabaseSeederWork extends Seeder
         DB::table('product_transaction')->truncate();
 
         User::flushEventListeners();
-        Product::flushEventListeners();
+        Room::flushEventListeners();
         Category::flushEventListeners();
         Transaction::flushEventListeners();
         Customer::flushEventListeners();
@@ -124,7 +124,7 @@ class DatabaseSeederWork extends Seeder
         factory(User::class, $usersQuantity)->create();
         factory(Customer::class, $customerQuantity)->create();
 
-        factory(Product::class, $productsQuantity)->create()->each(
+        factory(Room::class, $productsQuantity)->create()->each(
         	function($product){
         		$categories = Category::all()->random(mt_rand(1, 5))->pluck('id');
 
@@ -136,7 +136,7 @@ class DatabaseSeederWork extends Seeder
 
         factory(Transaction::class, $transactionQuantity)->create()->each(
             function($transaction){
-            $products = Product::all()->random(mt_rand(1,5))->pluck('id');
+            $products = Room::all()->random(mt_rand(1,5))->pluck('id');
             $transaction->products()->attach($products,
                 [
                     'sale_quantity' => Faker::create()->numberBetween(1, 5),
@@ -163,7 +163,7 @@ class DatabaseSeederWork extends Seeder
          */
 
         factory(Company::class, 20)->create()->each(function($company){
-            $products = Product::all()->random(mt_rand(1,5))->pluck('id');
+            $products = Room::all()->random(mt_rand(1,5))->pluck('id');
             $company->products()->attach($products,
                 [
                    'product_quantity' => Faker::create()->numberBetween(1, 5)

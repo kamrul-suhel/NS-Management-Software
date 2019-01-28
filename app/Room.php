@@ -9,7 +9,7 @@ use App\Transformers\ProductTransformer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Product extends Model
+class Room extends Model
 {
     use SoftDeletes;
 
@@ -21,8 +21,6 @@ class Product extends Model
 	const UNAVAILABLE_PRODUCT = 'unavailable';
 	const ABAILABLE_PRODUCT = 'available';
 
-	const PRODUCTTYPEFEET = 'feet';
-	const PRODUCTTYPEPIC = 'pic';
 
 
     protected $fillable = [
@@ -47,7 +45,7 @@ class Product extends Model
     ];
 
     public function isAbaliable(){
-    	return $this->status == Product::ABAILABLE_PRODUCT;
+    	return $this->status == Room::ABAILABLE_PRODUCT;
     }
 
     public function categories(){

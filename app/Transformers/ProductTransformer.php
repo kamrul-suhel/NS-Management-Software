@@ -2,7 +2,7 @@
 
 namespace App\Transformers;
 
-use App\Product;
+use App\Room;
 use League\Fractal\TransformerAbstract;
 
 class ProductTransformer extends TransformerAbstract
@@ -12,7 +12,7 @@ class ProductTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform(Product $product)
+    public function transform(Room $product)
     {
         return [
             'identifier'        => (int) $product->id,

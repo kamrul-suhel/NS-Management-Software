@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use App\Mail\UserCreated;
 use App\Mail\UserMailChanged;
-use App\Product;
+use App\Room;
 use App\User;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
@@ -22,9 +22,9 @@ class AppServiceProvider extends ServiceProvider
         //
         Schema::defaultStringLength(191);
 
-        Product::updated(function(Product $product){
+        Room::updated(function(Room $product){
             if($product->quantity == 0 && $product->isAbaliable()){
-                $product->status = Product::UNAVAILABLE_PRODUCT;
+                $product->status = Room::UNAVAILABLE_PRODUCT;
                 $product->save();
             }
 

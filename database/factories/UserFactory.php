@@ -2,9 +2,10 @@
 
 use App\Company;
 use App\Customer;
+use App\Rent;
 use App\Store;
 use App\User;
-use App\Product;
+use App\Room;
 use App\Category;
 use App\Transaction;
 use Faker\Generator as Faker;
@@ -24,6 +25,7 @@ $factory->define(User::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
+        'type' => $faker->rendomElement(['manager', 'staff']),
 //        'email' => 'nslaptop@bd.co.uk',
         'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
         'remember_token' => str_random(10),
@@ -33,28 +35,8 @@ $factory->define(User::class, function (Faker $faker) {
     ];
 });
 
-$factory->define(Customer::class, function (Faker $faker) {
-    return [
-        'name' => $faker->name,
-        'email' => $faker->email,
-        'mobile' => $faker->phoneNumber,
-        'phone' => $faker->phoneNumber,
-        'address' => $faker->address,
-        'active' => $faker->randomElement([1, 0])
-    ];
-});
 
-
-$factory->define(Category::class, function (Faker $faker) {
-    $store_id = Store::all()->random();
-    return [
-        'name' => $faker->word,
-        'store_id' => $store_id->id,
-        'description' => $faker->paragraph(1)
-    ];
-});
-
-$factory->define(Product::class, function (Faker $faker) {
+$factory->define(Room::class, function (Faker $faker) {
     /*
      * *********************************
      * product serial
@@ -70,16 +52,15 @@ $factory->define(Product::class, function (Faker $faker) {
         'feet' => $faker->numberBetween(10, 20),
         'sale_price' => $sale_price = $faker->numberBetween(150, 200),
         'purchase_price' => $sale_price - $faker->numberBetween(10, $sale_price),
-        'status' => $faker->randomElement([Product::UNAVAILABLE_PRODUCT, Product::ABAILABLE_PRODUCT]),
-        'quantity_type' => $faker->randomElement([Product::PRODUCTTYPEFEET, Product::PRODUCTTYPEPIC]),
+        'status' => $faker->randomElement([Room::UNAVAILABLE_PRODUCT, Room::ABAILABLE_PRODUCT]),
+        'quantity_type' => $faker->randomElement([Room::PRODUCTTYPEFEET, Room::PRODUCTTYPEPIC]),
         'image' => $faker->randomElement(['1.jpg', '2.jpg', '3.jpg', '4.jpg']),
         'barcode' => $faker->ean13,
         'seller_id' => User::all()->random()->id,
-
     ];
 });
 
-$factory->define(Transaction::class, function (Faker $faker) {
+$factory->define(Rent::class, function (Faker $faker) {
 
     $customer = Customer::all()->random();
     $seller = User::all()->random();

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\ApiController;
-use App\Product;
+use App\Room;
 use Illuminate\Http\Request;
 
 class ProductController extends ApiController
@@ -24,7 +24,7 @@ class ProductController extends ApiController
         $shopId = $request->has('shopId') ? $request->shopId : null;
 
     	$allSerial = $request->allSerial;
-        $products = Product::with(['serials' => function($quary) use ($allSerial) {
+        $products = Room::with(['serials' => function($quary) use ($allSerial) {
         	if(!$allSerial){
 				$quary->where('is_sold', 0);
 			}
@@ -41,12 +41,12 @@ class ProductController extends ApiController
             return $product->purchase_price * $product->quantity;
         });
 
-        $avaliable_product = Product::where('status', 'available');
+        $avaliable_product = Room::where('status', 'available');
         if($shopId){
             $avaliable_product  = $avaliable_product->where('store_id', $shopId);
         }
         $avaliable_product = $avaliable_product ->count();
-        $unavaliable_product = Product::where('status', 'unavailable');
+        $unavaliable_product = Room::where('status', 'unavailable');
             if($shopId){
                 $unavaliable_product = $unavaliable_product->where('store_id', $shopId);
             }
@@ -54,7 +54,7 @@ class ProductController extends ApiController
 
         $data = collect([
             'products' => $products,
-            'quantity_types' => Product::getQuantityType(),
+            'quantity_types' => Room::getQuantityType(),
             'total_stock' => number_format($totalStock,2,'.',','),
             'avaliable_product' => $avaliable_product,
             'unavaliable_product' => $unavaliable_product,
@@ -90,7 +90,7 @@ class ProductController extends ApiController
         $product['image'] = '1.jpg';
         //change this when auth is set
         $product['seller_id'] = $request->sellerId;
-        $product = Product::create($product);
+        $product = Room::create($product);
 
         // Product serials key with company
         $productSerialsWithCompany =[];
@@ -131,10 +131,10 @@ class ProductController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param  \App\Product  $product
+     * @param  \App\Room  $product
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show(Room $product)
     {
         return $this->showOne($product, 201);
     }
@@ -142,10 +142,10 @@ class ProductController extends ApiController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Product  $product
+     * @param  \App\Room  $product
      * @return \Illuminate\Http\Response
      */
-    public function edit(Product $product)
+    public function edit(Room $product)
     {
         //
     }
@@ -154,10 +154,10 @@ class ProductController extends ApiController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Product  $product
+     * @param  \App\Room  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, Room $product)
     {
         //
         $product->fill($request->only([
@@ -210,10 +210,10 @@ class ProductController extends ApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Product  $product
+     * @param  \App\Room  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy(Room $product)
     {
         //
         $delete = $product->delete();

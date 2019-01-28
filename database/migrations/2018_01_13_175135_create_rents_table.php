@@ -16,11 +16,12 @@ class CreateRentsTable extends Migration
         Schema::create('rents', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('hotel_id')->index()->unsigned();
+            $table->integer('room_id')->index()->unsigned();
+            $table->integer('staff_id')->unsigned()->index();
             $table->string('client_name')->index();
             $table->text('father_name');
             $table->text('client_address');
             $table->string('client_phone', 30)->nullable()->index();
-            $table->integer('staff_id')->unsigned()->index();
             $table->float('discount_amount')->unsigned()->nullable();
             $table->float('total')->unsigned()->index();
             $table->dateTime('check_in')->index()->nullable();
