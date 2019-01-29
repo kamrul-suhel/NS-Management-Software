@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Store extends Model
+class Hotel extends Model
 {
     //
 
@@ -15,7 +15,6 @@ class Store extends Model
         'phone',
         'mobile',
         'fax',
-        'serial',
         'website',
         'logo'
     ];

@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Transformers\UserTransformer;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -23,15 +22,6 @@ class User extends Authenticatable
     const REGULAR_USER = 'false';
 
     protected $table = 'users';
-
-
-    /*
-     *
-     * This is transform attribute
-     *
-     */
-
-//    public $transformer = UserTransformer::class;
 
 
     /**
@@ -61,33 +51,31 @@ class User extends Authenticatable
         'deleted_at'
     ];
 
-
-    public function setNameAttribute($value){
+    public function setNameAttribute($value) {
         return $this->attributes['name'] = $value;
     }
 
-    public function getNameAttribute($value){
+    public function getNameAttribute($value) {
         return ucwords($value);
     }
 
-    public function setEmailAttribute($value){
+    public function setEmailAttribute($value) {
         $this->attributes['email'] = strtolower($value);
     }
 
-    public function getEmailAttribute(){
+    public function getEmailAttribute() {
         return $this->attributes['email'];
     }
 
-
-    public function isVerified(){
+    public function isVerified() {
         return $this->verified == self::VERIFIED_USER;
     }
 
-    public function isAdmin(){
+    public function isAdmin() {
         return $this->admin == self::ADMIN_USER;
     }
 
-    public static function generateVerificationCode(){
+    public static function generateVerificationCode() {
         return str_random(40);
     }
 }

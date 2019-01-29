@@ -20,7 +20,6 @@ class CreateForeignKeyRelationship extends Migration
         Schema::table('rents', function($table){
             $table->foreign('hotel_id')->references('id')->on('hotels');
             $table->foreign('room_id')->references('id')->on('rooms');
-
         });
     }
 

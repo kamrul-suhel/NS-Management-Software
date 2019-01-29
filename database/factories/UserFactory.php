@@ -2,6 +2,7 @@
 
 use App\Company;
 use App\Customer;
+use App\Hotel;
 use App\Rent;
 use App\Store;
 use App\User;
@@ -35,6 +36,19 @@ $factory->define(User::class, function (Faker $faker) {
     ];
 });
 
+$factory->define(Hotel::class, function(Faker $faker){
+    return [
+        'name' => $faker->company,
+        'address' => $faker->address,
+        'email' => $faker->email,
+        'phone' => $faker->phoneNumber,
+        'mobile' => $faker->phoneNumber,
+        'fax' => $faker->faxNumber,
+        'website' => $faker->domainName,
+        'logo' => $faker->imageUrl(640, 480)
+    ];
+});
+
 
 $factory->define(Room::class, function (Faker $faker) {
     /*
@@ -42,10 +56,10 @@ $factory->define(Room::class, function (Faker $faker) {
      * product serial
      * *********************************
      */
-    $store_id = Store::all()->random();
+    $hotel_id = Hotel::all()->random();
 
     return [
-        'store_id' => $store_id->id,
+        'hotel_id' => $hotel_id->id,
         'name' => $faker->word,
         'description' => $faker->paragraph(1),
         'quantity' => $faker->numberBetween(1, 10),

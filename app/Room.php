@@ -24,19 +24,12 @@ class Room extends Model
 
 
     protected $fillable = [
-    	'name',
+    	'title',
     	'description',
-    	'status',
-    	'quantity',
-        'store_id',
-        'feet',
-        'quantity_per_feet',
+        'price',
+        'additional_price',
+        'status',
     	'image',
-    	'seller_id',
-        'quantity_type',
-        'sale_price',
-        'purchase_price',
-        'barcode'
     ];
 
     protected $hidden = [
