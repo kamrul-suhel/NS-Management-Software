@@ -5,6 +5,8 @@ use App\CompanyTransaction;
 use App\Customer;
 use App\Expense;
 use App\ExpenseCategory;
+use App\Hotel;
+use App\Rent;
 use App\Store;
 use App\User;
 use App\Room;
@@ -22,93 +24,39 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-    	$this->call(
-    		[
-    			DatabaseSeeder::class,
-    			DatabaseSeederClient::class,
-                DatabaseSeederWork::class
-			]
-		);
-
+//    	$this->call(
+//    		[
+//    			DatabaseSeeder::class,
+//    			DatabaseSeederClient::class,
+//                DatabaseSeederWork::class
+//			]
+//		);
 
     	DB::statement('SET FOREIGN_KEY_CHECKS = 0');
 
         User::truncate();
-        Customer::truncate();
-        Category::truncate();
+        Hotel::truncate();
         Room::truncate();
-        Transaction::truncate();
+        Rent::truncate();
         Expense::truncate();
         ExpenseCategory::truncate();
-        Company::truncate();
-        CompanyTransaction::truncate();
-        Store::truncate();
-
-        DB::table('category_product')->truncate();
-        DB::table('product_transaction')->truncate();
 
         User::flushEventListeners();
         Room::flushEventListeners();
-        Category::flushEventListeners();
-        Transaction::flushEventListeners();
-        Customer::flushEventListeners();
         Expense::flushEventListeners();
+        Hotel::flushEventListeners();
+        Rent::flushEventListeners();
         ExpenseCategory::flushEventListeners();
-        Company::flushEventListeners();
-        CompanyTransaction::flushEventListeners();
-        Store::flushEventListeners();
 
-        $usersQuantity = 30;
-        $customerQuantity = 10;
-        $categoriesQuantity = 200;
-        $productsQuantity = 200;
-        $transactionQuantity = 200;
-
-        factory(Store::class, 3)->create();
-
-        $categoryRoot = Category::create([
-            'name' => 'category 1',
-            'store_id' => 1,
-            'description' => 'Category description',
-            'parent_id'   => null,
-            'lft'          => 1,
-            'rgt'           => 12
-        ]);
-
-        $categoryRoot->children()->create([
-            'name' => 'category 2',
-            'store_id' => 2,
-            'description' => 'Category description',
-            'parent_id'   => 1,
-            'lft'          => 2,
-            'rgt'           => 3,
-            'depth'         => 1
-        ]);
+        $usersQuantity = 5;
+        $roomQuantity = 40;
 
         factory(User::class, $usersQuantity)->create();
-        factory(Customer::class, $customerQuantity)->create();
 
-        factory(Room::class, $productsQuantity)->create()->each(
-        	function($product){
-        		$categories = Category::all()->random(mt_rand(1, 5))->pluck('id');
+        factory(Hotel::class, 3)->create();
 
-        		$product->categories()->attach($categories);
-        		$serials = $this->generateProductSerialArray();
-        		$product->serials()->saveMany($serials);
-        	}
-        );
+        factory(Room::class, $roomQuantity)->create();
 
-        factory(Company::class, 20)->create();
-    }
-
-    private function generateProductSerialArray(){
-        $faker = new Faker();
-        $digits = $faker->numberBetween(3, 5);
-        $data = [];
-        for($i = 0; $i<=$digits; $i++) {
-            $data['product_serial'] = $faker->unique()->randomDigit;
-            $data['is_sold'] = $faker->numberBetween(0, 1);
-        }
-        return $data;
+        factory(Rent::class, 500)->create();
     }
 }

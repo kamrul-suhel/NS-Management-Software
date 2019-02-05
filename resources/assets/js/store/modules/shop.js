@@ -31,7 +31,7 @@ const getters = {
 
 const actions = {
     fetchShop({commit}, payload){
-        let url = '/shops';
+        let url = '/hotels';
         axios.get(url).then((response) => {
             commit('setShops', response.data);
         }).catch((error) => {
