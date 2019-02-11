@@ -74,7 +74,7 @@
                                     ></v-select>
                                 </v-flex>
 
-                                <v-flex xs12  v-if="editedItem.quantity_type === 'feet'">
+                                <v-flex xs12 v-if="editedItem.quantity_type === 'feet'">
                                     <v-text-field
                                             label="How much feets = 1 coil / 1 pipe"
                                             dark
@@ -109,7 +109,7 @@
                                         </v-flex>
 
 
-                                        <v-flex  :class="{xs3: editedItem.quantity_type === 'feet', xs6: editedItem.quantity_type !== 'feet' }">
+                                        <v-flex :class="{xs3: editedItem.quantity_type === 'feet', xs6: editedItem.quantity_type !== 'feet' }">
                                             <v-text-field
                                                     label="How many quantity"
                                                     dark
@@ -281,7 +281,8 @@
                             color="dark"
                             raised
                             @click.native="close"
-                    >Cancel</v-btn>
+                    >Cancel
+                    </v-btn>
 
                     <v-btn dark
                            color="dark"
@@ -297,7 +298,7 @@
         <v-container grid-list-md class="pt-0">
             <v-layout row wrap>
                 <v-flex xs12 class="pt-0">
-                    <h2>Products</h2>
+                    <h2>Rooms</h2>
                 </v-flex>
             </v-layout>
 
@@ -306,10 +307,10 @@
             <v-layout row wrap>
                 <v-flex xs6>
                     <v-card flat class="cyan lighten-1 white--text">
-                        <v-card-title>Total product</v-card-title>
+                        <v-card-title>Total Rooms</v-card-title>
                         <v-card-text class="pt-0">
                             <h2 class="display-2 white--text text-xs-center">
-                                <strong>{{total_product}}</strong>
+                                <strong>{{total_rooms}}</strong>
                             </h2>
                         </v-card-text>
                     </v-card>
@@ -317,10 +318,10 @@
 
                 <v-flex xs6>
                     <v-card flat class="light-blue white--text">
-                        <v-card-title>Product Available</v-card-title>
+                        <v-card-title>Room Available</v-card-title>
                         <v-card-text class="pt-0">
                             <h2 class="display-2 white--text text-xs-center">
-                                <strong>{{avaliable_product}}</strong>
+                                <strong>{{avaliable_rooms}}</strong>
                             </h2>
                         </v-card-text>
                     </v-card>
@@ -328,10 +329,10 @@
 
                 <v-flex xs6>
                     <v-card flat class="light-green lighten-1 white--text">
-                        <v-card-title>Not is stock</v-card-title>
+                        <v-card-title>Unavailable Room</v-card-title>
                         <v-card-text class="pt-0">
                             <h2 class="display-2 white--text text-xs-center">
-                                <strong>{{unavaliable_product}}</strong>
+                                <strong>{{unavaliable_rooms}}</strong>
                             </h2>
                         </v-card-text>
                     </v-card>
@@ -339,7 +340,7 @@
 
                 <v-flex xs6>
                     <v-card flat class="orange darken-1 white--text">
-                        <v-card-title>Total Stock</v-card-title>
+                        <v-card-title>Total</v-card-title>
                         <v-card-text class="pt-0">
                             <h2 class="display-2 white--text text-xs-center">
                                 <span style="font-size:12px">TK.</span>
@@ -353,19 +354,33 @@
 
         <v-container grid-list-md>
             <v-layout row wrap>
+                <v-flex xs-12>
+                    <v-btn dark fab small color="dark" @click="dialog = true">
+                        <v-icon>add</v-icon>
+                    </v-btn>
+                </v-flex>
+
+                <v-flex xs12></v-flex>
+
+                <v-flex xs6 md4 v-for="item in items">
+                    <v-card>
+                        <v-card-media src="/static/doc-images/cards/desert.jpg" height="200px">
+                        </v-card-media>
+                        <v-card-title primary-title>
+                            <div>
+                                <h3 class="headline mb-0">{{item.title}}</h3>
+                                <div>{{item.description}}</div>
+                            </div>
+                        </v-card-title>
+                        <v-card-actions>
+                            <v-btn flat color="orange">Share</v-btn>
+                            <v-btn flat color="orange">Explore</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-flex>
+
                 <v-card width="100%">
                     <v-card-title>
-                        <v-btn dark fab small color="dark" @click="dialog = true">
-                            <v-icon>add</v-icon>
-                        </v-btn>
-
-                        <v-spacer></v-spacer>
-                        <v-text-field
-                                dark
-                                color="dark"
-                                prepend-icon="search"
-                                label="Search"
-                                v-model="search"></v-text-field>
                     </v-card-title>
 
                     <v-card-text>
@@ -381,11 +396,8 @@
                             <template slot="items" slot-scope="props">
                                 <tr @click="props.expanded = !props.expanded">
                                     <td>{{ props.item.created_at | convertDate }}</td>
-                                    <td class="text-xs-center">{{ props.item.name }}</td>
-                                    <td class="text-xs-center">{{ props.item.quantity }}</td>
-                                    <td class="text-xs-center">{{ props.item.quantity_type }}</td>
-                                    <td class="text-xs-center">TK. {{ props.item.sale_price }}</td>
-                                    <td class="text-xs-center">TK. {{ props.item.purchase_price }}</td>
+                                    <td class="text-xs-center">{{ props.item.title }}</td>
+                                    <td class="text-xs-center">TK. {{ props.item.price }}</td>
                                     <td class="text-xs-center">{{ props.item.status }}</td>
                                     <td class="justify-start layout px-0">
                                         <v-btn dark
@@ -490,7 +502,7 @@
     </div>
 </template>
 <script>
-import {mapGetters} from 'vuex'
+    import {mapGetters} from 'vuex'
 
     export default {
         data: () => ({
@@ -500,9 +512,9 @@ import {mapGetters} from 'vuex'
                 sortBy: 'name'
             },
 
-            avaliable_product: 0,
-            unavaliable_product: 0,
-            total_product: 0,
+            avaliable_rooms: 0,
+            unavaliable_rooms: 0,
+            total_rooms: 0,
             total_stock: 0,
 
             deleteDialog: false,
@@ -531,25 +543,9 @@ import {mapGetters} from 'vuex'
                     value: 'name',
                     sortable: true
                 },
-
                 {
-                    text: 'Quantity',
-                    value: 'quantity',
-                    sortable: true
-                },
-                {
-                    text: 'Type',
-                    value: 'quantity_types',
-                    sortable: true
-                },
-                {
-                    text: 'Sale price',
+                    text: 'Price',
                     value: 'sale_price',
-                    sortable: true
-                },
-                {
-                    text: 'Purchase price',
-                    value: 'purchase_price',
                     sortable: true
                 },
                 {
@@ -618,7 +614,7 @@ import {mapGetters} from 'vuex'
             productWarrantyError: false,
 
             barcodeDialogvalue: false,
-            barcode:''
+            barcode: ''
 
         }),
 
@@ -658,7 +654,7 @@ import {mapGetters} from 'vuex'
 
                 this.editedItem.quantity = quantity;
 
-                if(isNaN(feets)){
+                if (isNaN(feets)) {
                     feets = Number(0);
                 }
 
@@ -667,13 +663,13 @@ import {mapGetters} from 'vuex'
                 return this.selectedCompanies;
             },
 
-            barcodeDialog(){
+            barcodeDialog() {
                 return this.barcodeDialogvalue;
             }
         },
 
         watch: {
-            selectedShop(){
+            selectedShop() {
                 this.initialize();
             },
 
@@ -700,14 +696,14 @@ import {mapGetters} from 'vuex'
                     }
                 }
 
-                if(value.companies){
+                if (value.companies) {
 
                 }
             },
 
-            quantityToFeet(value){
+            quantityToFeet(value) {
                 let feetPerUnit = Number(value);
-                if(!isNaN(feetPerUnit) && value >=0){
+                if (!isNaN(feetPerUnit) && value >= 0) {
                     this.quantityToFeetError = false;
                     this.valid = true;
                 }
@@ -723,53 +719,23 @@ import {mapGetters} from 'vuex'
         methods: {
             initialize() {
                 const shopId = this.selectedShop.id
-                let productsUrl = '/api/products'
-                let categoriesUrl = '/api/categories'
-                if(shopId){
-                    productsUrl +='?shopId='+shopId
-                    categoriesUrl += '?shopId=' + shopId
+                let roomUrl = '/api/rooms'
+                if (shopId) {
+                    roomUrl += '?shopId=' + shopId
                 }
 
                 // get all product
-                axios.get(productsUrl)
+                axios.get(roomUrl)
                     .then((response) => {
-                        this.items = response.data.products;
-                        this.quantity_type = response.data.quantity_types;
-                        this.total_product = response.data.total_product;
-                        this.avaliable_product = response.data.avaliable_product;
-                        this.unavaliable_product = response.data.unavaliable_product ? response.data.unavaliable_product : 0;
+                        this.items = response.data.rooms;
+                        this.total_rooms = response.data.total_rooms;
+                        this.avaliable_rooms = response.data.avaliable_rooms;
+                        this.unavaliable_rooms = response.data.unavaliable_rooms ? response.data.unavaliable_rooms : 0;
                         this.total_stock = response.data.total_stock;
                     })
                     .catch((error) => {
                         console.log(error)
                     });
-
-                // get all categories
-                axios.get(categoriesUrl)
-                    .then((response) => {
-                        let categories = response.data;
-                        categories.forEach((value) => {
-                            let category = {};
-                            category.value = value.id;
-                            category.text = value.name;
-
-                            this.categories.push(category)
-                        })
-                    })
-                    .catch((error) => {
-                        console.log('categories error');
-                        console.log(error)
-                    })
-
-                // get All product
-                axios.get('/api/productcompany')
-                    .then((response) => {
-                        this.companies = response.data;
-                    })
-                    .catch((error) => {
-                        console.log('Companies error');
-                        console.log(error)
-                    })
             },
 
             editItem(item) {
@@ -827,21 +793,21 @@ import {mapGetters} from 'vuex'
             },
 
             save() {
-                if(!this.$refs.product_form.validate()){
+                if (!this.$refs.product_form.validate()) {
                     return;
                 }
 
-                if(this.isSerial === 'true'){
+                if (this.isSerial === 'true') {
                     console.log(this.totalCompanies);
                     let error = false;
                     this.totalCompanies.forEach((company) => {
-                        if(company.product_warranty === undefined){
+                        if (company.product_warranty === undefined) {
                             this.productWarrantyError = true;
                             error = true;
                         }
                     })
 
-                    if(error){
+                    if (error) {
                         return;
                     }
                 }
@@ -867,8 +833,8 @@ import {mapGetters} from 'vuex'
                 console.log(this.totalCompanies);
 
                 //check product has pipe or feet
-                if(this.editedItem.quantity_type === 'feet'){
-                    if(this.quantityToFeet <= 0){
+                if (this.editedItem.quantity_type === 'feet') {
+                    if (this.quantityToFeet <= 0) {
                         this.quantityToFeetError = true;
                         return;
                     }
@@ -942,7 +908,7 @@ import {mapGetters} from 'vuex'
                     }
 
                     let itemName = item.name.toString().toLowerCase();
-                    if(itemName.includes(search)){
+                    if (itemName.includes(search)) {
                         itemSerial = true
                     }
 
@@ -955,23 +921,23 @@ import {mapGetters} from 'vuex'
             },
 
 
-            onBarcodeScanned(code){
+            onBarcodeScanned(code) {
                 console.log(code);
                 console.log('barcode scanned');
                 this.barcodeDailog = true;
                 this.barcode = code;
                 this.barcodeDialogvalue = true;
-                if(code !== ''){
+                if (code !== '') {
                     this.barcodeDailog = true;
                     this.barcode = code;
                 }
             },
 
-            openDialog(){
+            openDialog() {
                 this.barcodeDialogvalue = true;
             },
 
-            onbarcodeDialogClose(){
+            onbarcodeDialogClose() {
                 this.barcodeDialogvalue = false;
                 this.code = '';
             },

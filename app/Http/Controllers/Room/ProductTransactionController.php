@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Product;
+namespace App\Http\Controllers\Room;
 
 use App\Http\Controllers\ApiController;
 use App\Room;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class ProductBuyerController extends ApiController
+class ProductTransactionController extends ApiController
 {
     public function __construct()
     {
         parent::__construct();
     }
-
     /**
      * Display a listing of the resource.
      *
@@ -21,13 +20,8 @@ class ProductBuyerController extends ApiController
      */
     public function index(Room $product)
     {
-        $buyer = $product->transitions()
-                ->whereHas('buyer')
-                ->with('buyer')
-                ->get()
-                ->pluck('buyer')
-                ->unique()
-                ->values();
-        return $this->showAll($buyer);
+        $products = $product->transitions;
+
+        return $this->showAll($products);
     }
 }

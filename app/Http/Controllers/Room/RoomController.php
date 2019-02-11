@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Product;
+namespace App\Http\Controllers\Room;
 
 use App\Http\Controllers\ApiController;
 use App\Room;
 use Illuminate\Http\Request;
 
-class ProductController extends ApiController
+class RoomController extends ApiController
 {
     public function __construct()
     {
@@ -23,42 +23,28 @@ class ProductController extends ApiController
 
         $shopId = $request->has('shopId') ? $request->shopId : null;
 
-    	$allSerial = $request->allSerial;
-        $products = Room::with(['serials' => function($quary) use ($allSerial) {
-        	if(!$allSerial){
-				$quary->where('is_sold', 0);
-			}
-        }])
-			->with('companies');
-        if($shopId){
-            $products = $products->where('store_id', $shopId);
-        }
+        $rooms = Room::where('hotel_id', $shopId);
+        $rooms = $rooms->get();
 
-        $products = $products->get();
-
-        $totalProduct = $products->count();
-        $totalStock = $products->sum(function($product){
-            return $product->purchase_price * $product->quantity;
+        $totalRooms = $rooms->count();
+        $totalStock = $rooms->sum(function ($room) {
+            return $room->price;
         });
 
-        $avaliable_product = Room::where('status', 'available');
-        if($shopId){
-            $avaliable_product  = $avaliable_product->where('store_id', $shopId);
-        }
-        $avaliable_product = $avaliable_product ->count();
-        $unavaliable_product = Room::where('status', 'unavailable');
-            if($shopId){
-                $unavaliable_product = $unavaliable_product->where('store_id', $shopId);
-            }
-        $unavaliable_product = $unavaliable_product->count();
+        $avaliable_rooms = Room::where('status', 'available');
+        $avaliable_rooms = $avaliable_rooms->where('hotel_id', $shopId);
+        $avaliable_rooms = $avaliable_rooms->count();
+
+        $unavaliable_rooms = Room::where('status', 'unavailable');
+        $unavaliable_rooms = $unavaliable_rooms->where('hotel_id', $shopId);
+        $unavaliable_rooms = $unavaliable_rooms->count();
 
         $data = collect([
-            'products' => $products,
-            'quantity_types' => Room::getQuantityType(),
-            'total_stock' => number_format($totalStock,2,'.',','),
-            'avaliable_product' => $avaliable_product,
-            'unavaliable_product' => $unavaliable_product,
-            'total_product' => $totalProduct
+            'rooms' => $rooms,
+            'total_stock' => number_format($totalStock, 2, '.', ','),
+            'total_rooms' => $totalRooms,
+            'avaliable_rooms' => $avaliable_rooms,
+            'unavaliable_rooms' => $unavaliable_rooms
         ]);
         return $this->showAll($data);
     }
@@ -76,7 +62,7 @@ class ProductController extends ApiController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -93,16 +79,16 @@ class ProductController extends ApiController
         $product = Room::create($product);
 
         // Product serials key with company
-        $productSerialsWithCompany =[];
+        $productSerialsWithCompany = [];
         $productCompany = [];
-        foreach($totalCompanies as $currCompany){
+        foreach ($totalCompanies as $currCompany) {
 
             $company = [];
             $company['company_id'] = $currCompany->selectedCompany->id;
             $company['product_quantity'] = $currCompany->quantity;
             $productCompany[] = $company;
-            if($currCompany->serials){
-                foreach($currCompany->serials as $currSerial){
+            if ($currCompany->serials) {
+                foreach ($currCompany->serials as $currSerial) {
                     $serial = [];
                     $serial['is_sold'] = 0;
                     $serial['product_serial'] = $currSerial;
@@ -117,9 +103,9 @@ class ProductController extends ApiController
         $serial = $product->serials()->createMany($productSerialsWithCompany);
 
         // If product has category then it will link with category in pivot table
-        if($request->has('categories')){
+        if ($request->has('categories')) {
             $categoriesId = [];
-            foreach(json_decode($request->categories) as $category){
+            foreach (json_decode($request->categories) as $category) {
                 $categoriesId[] = $category->value;
             }
             $product->categories()->sync($categoriesId);
@@ -131,7 +117,7 @@ class ProductController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param  \App\Room  $product
+     * @param  \App\Room $product
      * @return \Illuminate\Http\Response
      */
     public function show(Room $product)
@@ -142,7 +128,7 @@ class ProductController extends ApiController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Room  $product
+     * @param  \App\Room $product
      * @return \Illuminate\Http\Response
      */
     public function edit(Room $product)
@@ -153,8 +139,8 @@ class ProductController extends ApiController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Room  $product
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Room $product
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Room $product)
@@ -172,16 +158,16 @@ class ProductController extends ApiController
 
         // Product serials key with company
         $totalCompanies = json_decode($request->totalCompanies);
-        $productSerialsWithCompany =[];
+        $productSerialsWithCompany = [];
         $productCompany = [];
-        foreach($totalCompanies as $currCompany){
+        foreach ($totalCompanies as $currCompany) {
 
             $company = [];
             $company['company_id'] = $currCompany->selectedCompany->id;
             $company['product_quantity'] = $currCompany->quantity;
             $productCompany[] = $company;
-            if($currCompany->serials){
-                foreach($currCompany->serials as $currSerial){
+            if ($currCompany->serials) {
+                foreach ($currCompany->serials as $currSerial) {
                     $serial = [];
                     $serial['is_sold'] = 0;
                     $serial['product_serial'] = $currSerial;
@@ -195,9 +181,9 @@ class ProductController extends ApiController
         $companies = $product->companies()->syncWithoutDetaching($productCompany);
         $serial = $product->serials()->createMany($productSerialsWithCompany);
 
-        if($request->has('categories') && !empty($request->categories)){
+        if ($request->has('categories') && !empty($request->categories)) {
             $categoriesId = [];
-            foreach(json_decode($request->categories) as $category){
+            foreach (json_decode($request->categories) as $category) {
                 $categoriesId[] = $category->value;
             }
             $product->categories()->sync($categoriesId);
@@ -210,14 +196,14 @@ class ProductController extends ApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Room  $product
+     * @param  \App\Room $product
      * @return \Illuminate\Http\Response
      */
     public function destroy(Room $product)
     {
         //
         $delete = $product->delete();
-        if($delete){
+        if ($delete) {
             return $this->showOne($product);
         }
     }

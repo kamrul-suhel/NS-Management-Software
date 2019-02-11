@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Hotel;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +36,9 @@ class LoginController extends Controller
 
         if ($request->ajax() || $request->isJson()) {
             $response_data['user'] = Auth::user();
+            $hotel = Hotel::where('id', Auth::user()->hotel_id)
+                ->first();
+            $response_data['hote'] = $hotel;
             return $this->successResponse($response_data, 200);
         }
 
@@ -42,8 +46,12 @@ class LoginController extends Controller
 
     public function isLogin(Request $request){
         $user = Auth::user();
+        $hotel = Hotel::where('id', $user->hotel_id)->first();
+        $data['user'] = $user;
+        $data['hotel'] = $hotel;
+
         if($user){
-            return response()->json($user);
+            return response()->json($data);
         }else{
             return response()->json(['error'=> 'not login']);
         }

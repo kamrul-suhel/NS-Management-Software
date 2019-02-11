@@ -50,49 +50,25 @@
                 items: [
                     {
                         icon: 'add_shopping_cart',
-                        text: 'Products',
+                        text: 'Rooms',
                         navs: [
                             {
                                 icon: 'history',
-                                text: 'All Products',
+                                text: 'All Rooms',
                                 link:'products'
-                            },
-
-                            {
-                                icon: 'subscriptions',
-                                text: 'Categories',
-                                link:'categories'
                             }
                         ],
                     },
 
                     {
                         icon: 'compare_arrows',
-                        text: 'Transitions',
+                        text: 'Renting room',
                         navs: [
                             {
                                 icon: 'compare_arrows',
-                                text: 'Transitions',
+                                text: 'Rent room',
                                 link: 'transaction'
                             }
-                        ]
-                    },
-                    {
-                        icon: 'people',
-                        text: 'Customers',
-                        navs: [
-                            {
-                                icon: 'people',
-                                text: 'Customers',
-                                link: 'customers'
-                            },
-
-                            {
-                                icon: 'people',
-                                text: 'Customer Laser',
-                                link: 'accounting_customer_transaction'
-                            }
-
                         ]
                     },
 
@@ -110,25 +86,6 @@
                                 icon: 'category',
                                 text: 'Ex Categories',
                                 link: 'expense_categories'
-                            }
-
-                        ]
-                    },
-
-                    {
-                        icon: 'store',
-                        text: 'Company',
-                        navs: [
-                            {
-                                icon: 'store',
-                                text: 'Companies',
-                                link: 'company'
-                            },
-
-                            {
-                                icon: 'compare_arrows',
-                                text: 'C. Transaction',
-                                link: 'ctransaction'
                             }
 
                         ]

@@ -23,11 +23,12 @@ use Faker\Generator as Faker;
 */
 
 $factory->define(User::class, function (Faker $faker) {
+    $hotelId = Hotel::all()->random()->id;
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
         'type' => $faker->randomElement(['manager', 'staff']),
-//        'email' => 'nslaptop@bd.co.uk',
+        'hotel_id' => $hotelId,
         'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
         'remember_token' => str_random(10),
         'verified' => $verified = $faker->randomElement([User::VERIFIED_USER, User::UNVERIFIED_USER]),

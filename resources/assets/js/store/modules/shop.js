@@ -16,6 +16,10 @@ const mutations = {
             }
         })
         state.selectedShop = {...selectedShop}
+    },
+
+    setShop(state, hotel){
+        state.selectedShop = {...hotel}
     }
 }
 

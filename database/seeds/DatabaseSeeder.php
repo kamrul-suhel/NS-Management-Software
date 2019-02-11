@@ -51,9 +51,9 @@ class DatabaseSeeder extends Seeder
         $usersQuantity = 5;
         $roomQuantity = 40;
 
-        factory(User::class, $usersQuantity)->create();
 
         factory(Hotel::class, 3)->create();
+        factory(User::class, $usersQuantity)->create();
 
         factory(Room::class, $roomQuantity)->create();
 

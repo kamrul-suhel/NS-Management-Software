@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Product;
+namespace App\Http\Controllers\Room;
 
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Customer\CustomerDueController;

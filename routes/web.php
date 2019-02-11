@@ -38,7 +38,7 @@ Route::get('/',function(){
     return view('welcome');
 })->middleware('guest');
 
-Route::get('/products', function(){
+Route::get('/rooms', function(){
     return view('welcome');
 });
 
