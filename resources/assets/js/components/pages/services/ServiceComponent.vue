@@ -65,11 +65,13 @@
 
                                 <v-flex xs6>
                                     <v-autocomplete
-                                        :items="customers"
-                                        v-model="editedItem.customer"
-                                        item-text="name"
-                                        return-object
-                                        >
+                                            dark
+                                            color="dark"
+                                            :items="customers"
+                                            v-model="editedItem.customer"
+                                            item-text="name"
+                                            return-object
+                                    >
                                     </v-autocomplete>
                                 </v-flex>
 
@@ -148,6 +150,7 @@
                         <v-card-title>Due</v-card-title>
                         <v-card-text class="pt-0">
                             <h2 class="display-2 white--text text-xs-center">
+                                <span style="font-size:12px"></span>
                                 <strong>{{due}}</strong>
                             </h2>
                         </v-card-text>
@@ -159,6 +162,7 @@
                         <v-card-title>Due Amount</v-card-title>
                         <v-card-text class="pt-0">
                             <h2 class="display-2 white--text text-xs-center">
+                                <span style="font-size:12px">TK.</span>
                                 <strong>{{due_amount}}</strong>
                             </h2>
                         </v-card-text>
@@ -170,7 +174,7 @@
                         <v-card-title>Paid</v-card-title>
                         <v-card-text class="pt-0">
                             <h2 class="display-2 white--text text-xs-center">
-                                <span style="font-size:12px">TK.</span>
+                                <span style="font-size:12px"></span>
                                 <strong>{{paid}}</strong>
                             </h2>
                         </v-card-text>
@@ -253,23 +257,56 @@
                                         <v-layout>
                                             <v-flex xs6>
                                                 <table width="100%" class="datatable table">
-                                                    <tr><td class="title">Created Time: {{props.item.created_at}}</td></tr>
-                                                    <tr><td>Brand: {{props.item.brand}}</td></tr>
-                                                    <tr><td>Problem: {{props.item.problem}}</td></tr>
-                                                    <tr><td>Service charge: {{props.item.service_charge}}</td></tr>
-                                                    <tr><td>status: {{props.item.status}}</td></tr>
-                                                    <tr><td colspan="2">Description: {{props.item.description}}</td></tr>
+                                                    <tr>
+                                                        <td class="title">Created Time: {{props.item.created_at}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Brand: {{props.item.brand}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Problem: {{props.item.problem}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Service charge: {{props.item.service_charge}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>status: {{props.item.status}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">Description: {{props.item.description}}</td>
+                                                    </tr>
                                                 </table>
                                             </v-flex>
 
                                             <v-flex xs6>
                                                 <table width="100%" class="datatable table">
-                                                    <tr><td class="title">Customer</td></tr>
-                                                    <tr><td>Name : {{props.item.customer && props.item.customer.name}}</td></tr>
-                                                    <tr><td>Email : {{props.item.customer && props.item.customer.email}}</td></tr>
-                                                    <tr><td>Mobile : {{props.item.customer && props.item.customer.phone}}</td></tr>
-                                                    <tr><td>Phone : {{props.item.customer && props.item.customer.mobile}}</td></tr>
-                                                    <tr><td>Address : {{props.item.customer && props.item.customer.address}}</td></tr>
+                                                    <tr>
+                                                        <td class="title">Customer</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Name : {{props.item.customer && props.item.customer.name}}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Email : {{props.item.customer &&
+                                                            props.item.customer.email}}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Mobile : {{props.item.customer &&
+                                                            props.item.customer.phone}}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Phone : {{props.item.customer &&
+                                                            props.item.customer.mobile}}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Address : {{props.item.customer &&
+                                                            props.item.customer.address}}
+                                                        </td>
+                                                    </tr>
                                                 </table>
                                             </v-flex>
                                         </v-layout>
@@ -329,9 +366,9 @@
 
             total_count: 0,
             due: 0,
-            due_amount:0,
+            due_amount: 0,
             paid: 0,
-            paid_amount : 0,
+            paid_amount: 0,
 
             customers: [],
 
@@ -414,7 +451,7 @@
                 description: '',
                 service_charge: 0,
                 status: '',
-                created_at:'',
+                created_at: '',
                 customer: {}
             },
             row_per_page: [20, 30, 50, {'text': 'All', 'value': -1}],
