@@ -14,4 +14,11 @@ class Service extends Model
         'service_charge',
         'status'
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function customer(){
+        return $this->belongsTo('App\Customer', 'customer_id', 'id');
+    }
 }

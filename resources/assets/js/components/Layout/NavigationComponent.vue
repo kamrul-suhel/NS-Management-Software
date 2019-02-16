@@ -67,11 +67,11 @@
                     },
 
                     {
-                        icon: 'add_shopping_cart',
+                        icon: 'build',
                         text: 'Services',
                         navs: [
                             {
-                                icon: 'history',
+                                icon: 'build',
                                 text: 'All services',
                                 link:'services'
                             }

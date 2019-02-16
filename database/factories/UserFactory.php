@@ -190,9 +190,12 @@ $factory->define(\App\CompanyTransaction::class, function (Faker $faker) {
 });
 
 $factory->define(\App\Service::class, function (Faker $faker) {
+
+    $customerId = Customer::all()->random()->id;
     return [
         //
         'brand' => $faker->jobTitle,
+        'customer_id' => $customerId,
         'problem'        => $faker->word,
         'description'        => $faker->text,
         'service_charge'        => $faker->randomFloat(2, 500, 1000),

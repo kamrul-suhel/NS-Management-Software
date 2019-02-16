@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Customer;
 use App\Service;
 use Illuminate\Http\Request;
 
@@ -10,7 +11,8 @@ class ServiceController extends ApiController
     //
 
     public function index(){
-        $services = Service::all();
+        $services = Service::with('customer')
+            ->get();
         $data = [];
 
         $totalService = $services->count();
@@ -22,11 +24,14 @@ class ServiceController extends ApiController
         $data['due'] = $due->count();
         $data['due_amount'] = number_format($due->sum('service_charge'), 2);
 
-
-
         $paid = Service::where('status', 'paid')->get();
         $data['paid'] = $paid->count();
         $data['paid_amount'] = number_format($paid->sum('service_charge'), 2);
+
+        // Customers
+        $customers = Customer::select('id', 'name')->get();
+
+        $data['customers'] = $customers;
 
         return response()->json($data);
     }
@@ -35,6 +40,7 @@ class ServiceController extends ApiController
         $service = new Service();
 
         $request->has('brand') ? $service->brand = $request->brand : '';
+        $request->has('customer_id') ? $service->customer_id = $request->customer_id : '';
         $request->has('problem') ? $service->problem = $request->brand : '';
         $request->has('description') ? $service->description = $request->description : '';
         $request->has('service_charge') ? $service->service_charge = $request->service_charge : '';
@@ -48,6 +54,7 @@ class ServiceController extends ApiController
         $service = Service::findOrFail($id);
 
         $request->has('brand') ? $service->brand = $request->brand : '';
+        $request->has('customer_id') ? $service->customer_id = $request->customer_id : '';
         $request->has('problem') ? $service->problem = $request->brand : '';
         $request->has('description') ? $service->description = $request->description : '';
         $request->has('service_charge') ? $service->service_charge = $request->service_charge : '';

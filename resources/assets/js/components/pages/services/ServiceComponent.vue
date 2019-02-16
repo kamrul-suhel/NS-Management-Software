@@ -64,6 +64,16 @@
                                 </v-flex>
 
                                 <v-flex xs6>
+                                    <v-autocomplete
+                                        :items="customers"
+                                        v-model="editedItem.customer"
+                                        item-text="name"
+                                        return-object
+                                        >
+                                    </v-autocomplete>
+                                </v-flex>
+
+                                <v-flex xs6>
                                     <v-text-field
                                             label="Service Charge"
                                             v-model="editedItem.service_charge"
@@ -212,6 +222,7 @@
                                 <tr @click="props.expanded = !props.expanded">
                                     <td class="">{{ props.item.brand }}</td>
                                     <td class="">{{ props.item.problem }}</td>
+                                    <td>{{props.item.customer && props.item.customer.name }}</td>
                                     <td class="">TK. {{ props.item.service_charge }}</td>
                                     <td class="">{{ props.item.status }}</td>
                                     <td>{{ props.item.created_at | convertDate }}</td>
@@ -239,15 +250,29 @@
                             <template slot="expand" slot-scope="props">
                                 <v-card flat>
                                     <v-card-text>
-                                        <table width="100%" class="datatable table">
-                                            <tr><td><strong>Detail</strong></td></tr>
-                                            <tr><td class="title">Created Time: {{props.item.created_at}}</td></tr>
-                                            <tr><td>Brand: {{props.item.brand}}</td></tr>
-                                            <tr><td>Problem: {{props.item.problem}}</td></tr>
-                                            <tr><td>Service charge: {{props.item.service_charge}}</td></tr>
-                                            <tr><td>status: {{props.item.status}}</td></tr>
-                                            <tr><td colspan="2">Description: {{props.item.description}}</td></tr>
-                                        </table>
+                                        <v-layout>
+                                            <v-flex xs6>
+                                                <table width="100%" class="datatable table">
+                                                    <tr><td class="title">Created Time: {{props.item.created_at}}</td></tr>
+                                                    <tr><td>Brand: {{props.item.brand}}</td></tr>
+                                                    <tr><td>Problem: {{props.item.problem}}</td></tr>
+                                                    <tr><td>Service charge: {{props.item.service_charge}}</td></tr>
+                                                    <tr><td>status: {{props.item.status}}</td></tr>
+                                                    <tr><td colspan="2">Description: {{props.item.description}}</td></tr>
+                                                </table>
+                                            </v-flex>
+
+                                            <v-flex xs6>
+                                                <table width="100%" class="datatable table">
+                                                    <tr><td class="title">Customer</td></tr>
+                                                    <tr><td>Name : {{props.item.customer && props.item.customer.name}}</td></tr>
+                                                    <tr><td>Email : {{props.item.customer && props.item.customer.email}}</td></tr>
+                                                    <tr><td>Mobile : {{props.item.customer && props.item.customer.phone}}</td></tr>
+                                                    <tr><td>Phone : {{props.item.customer && props.item.customer.mobile}}</td></tr>
+                                                    <tr><td>Address : {{props.item.customer && props.item.customer.address}}</td></tr>
+                                                </table>
+                                            </v-flex>
+                                        </v-layout>
                                     </v-card-text>
                                 </v-card>
                             </template>
@@ -308,6 +333,8 @@
             paid: 0,
             paid_amount : 0,
 
+            customers: [],
+
             deleteDialog: false,
             deleteItem: {},
 
@@ -326,6 +353,12 @@
                 {
                     text: 'Problem',
                     value: 'problem',
+                    sortable: true
+                },
+
+                {
+                    text: 'Customer',
+                    value: 'customer',
                     sortable: true
                 },
                 {
@@ -369,6 +402,7 @@
                 description: '',
                 service_charge: 0,
                 status: '',
+                customer: {}
             },
 
             update_form: false,
@@ -380,7 +414,8 @@
                 description: '',
                 service_charge: 0,
                 status: '',
-                created_at:''
+                created_at:'',
+                customer: {}
             },
             row_per_page: [20, 30, 50, {'text': 'All', 'value': -1}],
 
@@ -417,6 +452,7 @@
                 axios.get('/api/services')
                     .then((response) => {
                         this.items = [...response.data.services];
+                        this.customers = [...response.data.customers];
                         this.total_count = response.data.total_count;
                         this.due = response.data.due;
                         this.due_amount = response.data.due_amount;
@@ -472,6 +508,7 @@
                 form.append('problem', this.editedItem.problem);
                 form.append('description', this.editedItem.description);
                 form.append('service_charge', this.editedItem.service_charge);
+                this.editedItem.customer && form.append('customer_id', this.editedItem.customer.id);
                 form.append('status', this.editedItem.status);
 
                 if (this.editedIndex > -1) {

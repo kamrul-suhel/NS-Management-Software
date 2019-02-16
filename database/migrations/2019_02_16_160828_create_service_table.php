@@ -15,6 +15,7 @@ class CreateServiceTable extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('customer_id')->index()->unsigned()->nullable();
             $table->string('brand', 250)->index();
             $table->string('problem', 250)->index();
             $table->text('description')->nullable();
