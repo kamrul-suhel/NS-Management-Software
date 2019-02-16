@@ -113,8 +113,8 @@ class TransactionAccountingController extends Controller
 
         $expenses = $expenses->orderBy('created_at', 'desc')->get();
 
+        $services = $services->where('status', 'apid');
         $services = $services->orderBy('created_at', 'desc')->get();
-        $totalService = $services->count();
         $totalServiceAmount = $services->sum('service_charge');
 
 
@@ -168,10 +168,11 @@ class TransactionAccountingController extends Controller
             'paid' => number_format((float)$paid, 2, '.', ''),
             'transactions' => $transactions,
             'chart_data' => $chartData,
-            'total_profit' => number_format((float)$totalProfit, 2, '.', ''),
+            'total_profit' => number_format((float)$totalProfit + $totalServiceAmount, 2, '.', ''),
             'total_expense' => number_format((float)$totalExpenses, 2, '.', ''),
             'profit_after' => number_format((float)$profitAfter, 2, '.', ''),
-            'total_profit_after_due' => number_format($totalProfitAfterDue, 2, '.', '')
+            'total_profit_after_due' => number_format($totalProfitAfterDue, 2, '.', ''),
+            'service_amount' => $totalServiceAmount
         ];
 
         return $this->successResponse($data, 200);

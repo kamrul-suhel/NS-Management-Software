@@ -73,6 +73,18 @@
         </v-flex>
 
         <v-flex xs6>
+            <v-card flat class="purple darken-1 white--text">
+                <v-card-title>{{ title }} service amount</v-card-title>
+                <v-card-text class="pt-0">
+                    <h2 class="display-2 white--text text-xs-center">
+                        <span style="font-size:12px">TK.</span>
+                        <strong>{{serviceAmount}}</strong>
+                    </h2>
+                </v-card-text>
+            </v-card>
+        </v-flex>
+
+        <v-flex xs6>
             <v-card flat class="blue darken-1 white--text">
                 <v-card-title>{{ title }} after expense profit</v-card-title>
                 <v-card-text class="pt-0">
@@ -116,7 +128,8 @@
                 totalProfit : 'getProfit',
                 afterExpenseProfit : 'getAfterExpenseProfit',
                 afterDueProfit : 'getAfterDueProfit',
-                title:'getChartTitle'
+                title:'getChartTitle',
+                serviceAmount: 'getTotalServiceAmount'
             }),
 
             totalProfiteAll(){

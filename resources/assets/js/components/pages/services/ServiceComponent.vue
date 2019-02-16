@@ -67,6 +67,7 @@
                                     <v-autocomplete
                                             dark
                                             color="dark"
+                                            label="Customer"
                                             :items="customers"
                                             v-model="editedItem.customer"
                                             item-text="name"
