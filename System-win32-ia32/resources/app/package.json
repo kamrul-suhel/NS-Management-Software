@@ -1,0 +1,32 @@
+{
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "electron": "electron .",
+    "build": "electron-packager . System",
+    "dev": "npm run development",
+    "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch-poll": "npm run watch -- --watch-poll",
+    "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "prod": "npm run production",
+    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+  },
+  "dependencies": {
+    "amcharts3": "^3.21.13",
+    "vue-barcode-scanner": "^0.6.0",
+    "yarn-upgrade-all": "^0.3.0"
+  },
+  "devDependencies": {
+    "axios": "^0.18.0",
+    "cross-env": "^5.2.0",
+    "electron": "^2.0.5",
+    "electron-packager": "^12.1.0",
+    "laravel-mix": "^2.1.11",
+    "lodash": "^4.17.10",
+    "vue": "^2.5.16",
+    "vue-router": "^3.0.1",
+    "vuetify": "^1.1.8",
+    "vuex": "^3.0.1"
+  }
+}

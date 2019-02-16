@@ -8,8 +8,8 @@ app.on('ready', () => {
     var main_window = new BrowserWindow(
         {
             // fullscreen: true,
-            width: 1024,
-            height: 700,
+            width: 1440,
+            height: 900,
             backgroundColor: '#312450'
         });
     // main_window.once('ready-to-show', () => {

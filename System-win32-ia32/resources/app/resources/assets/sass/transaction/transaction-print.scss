@@ -1,0 +1,35 @@
+@media print {
+  html, body {
+    width: 210mm;
+    height: 297mm;
+    background:#fff;
+  }
+
+  .application .theme--dark.card, .theme--dark .card{
+    background:#fff;
+    color:#000;
+  }
+  @page
+  {
+    size: 5.5in 8.5in;
+    size: portrait;
+  }
+
+  .v-navigation-drawer{
+    display:none;
+  }
+
+  .v-content{
+    padding:0 !important;
+    width:100% !important;
+    background:#fff !important;
+  }
+
+  .application .theme--dark.divider, .theme--dark .divider{
+    background-color:#777;
+  }
+
+  .v-toolbar{
+    display:none;
+  }
+}
