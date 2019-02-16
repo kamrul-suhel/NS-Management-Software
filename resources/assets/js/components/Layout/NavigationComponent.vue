@@ -55,21 +55,19 @@
                             {
                                 icon: 'history',
                                 text: 'All Rooms',
-                                link:'products'
-                            }
-                        ],
-                    },
-
-                    {
-                        icon: 'compare_arrows',
-                        text: 'Renting room',
-                        navs: [
+                                link:'rooms'
+                            },
                             {
                                 icon: 'compare_arrows',
-                                text: 'Rent room',
-                                link: 'transaction'
+                                text: 'Check In',
+                                link: 'checkin'
+                            },
+                            {
+                                icon: 'compare_arrows',
+                                text: 'Checkout',
+                                link: 'checkout'
                             }
-                        ]
+                        ],
                     },
 
                     {
@@ -120,7 +118,7 @@
                         navs: [
                             {
                                 icon: 'settings',
-                                text: 'Shops',
+                                text: 'Hotels',
                                 link: 'shops'
                             },
 

@@ -67,51 +67,20 @@ class RoomController extends ApiController
      */
     public function store(Request $request)
     {
-        //
-        $totalCompanies = json_decode($request->totalCompanies);
+        // Room create
+        $room = new Room();
+        $room->hotel_id = $request->hotel_id;
+        $room->room_number = $request->room_number;
+        $room->title = $request->title;
+        $room->description = $request->description;
+        $room->status = Room::ABAILABLE_PRODUCT;
+        $room->price = $request->price;
+        $room->additional_price = $request->additional_price;
+        $room->status = $request->status;
+        $room->image = '1.jpg';
+        $room->save();
 
-
-        // Product create
-        $product = $request->except('totalCompanies');
-        $product['image'] = '1.jpg';
-        //change this when auth is set
-        $product['seller_id'] = $request->sellerId;
-        $product = Room::create($product);
-
-        // Product serials key with company
-        $productSerialsWithCompany = [];
-        $productCompany = [];
-        foreach ($totalCompanies as $currCompany) {
-
-            $company = [];
-            $company['company_id'] = $currCompany->selectedCompany->id;
-            $company['product_quantity'] = $currCompany->quantity;
-            $productCompany[] = $company;
-            if ($currCompany->serials) {
-                foreach ($currCompany->serials as $currSerial) {
-                    $serial = [];
-                    $serial['is_sold'] = 0;
-                    $serial['product_serial'] = $currSerial;
-                    $serial['product_warranty'] = $currCompany->product_warranty;
-                    $serial['company_id'] = $currCompany->selectedCompany->id;
-                    $productSerialsWithCompany[] = $serial;
-                }
-            }
-        }
-
-        $companies = $product->companies()->attach($productCompany);
-        $serial = $product->serials()->createMany($productSerialsWithCompany);
-
-        // If product has category then it will link with category in pivot table
-        if ($request->has('categories')) {
-            $categoriesId = [];
-            foreach (json_decode($request->categories) as $category) {
-                $categoriesId[] = $category->value;
-            }
-            $product->categories()->sync($categoriesId);
-        }
-
-        return $this->showOne($product);
+        return $this->showOne($room);
     }
 
     /**
@@ -143,54 +112,18 @@ class RoomController extends ApiController
      * @param  \App\Room $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Room $product)
+    public function update(Request $request, Room $room)
     {
-        //
-        $product->fill($request->only([
-            'name',
-            'description',
-            'purchase_price',
-            'quantity_type',
-            'sale_price',
-            'status'
-        ]));
-        $product->quantity = $product->quantity + $request->quantity;
+        $request->has('room_number') ? $room->room_number = $request->room_number : '';
+        $request->has('hotel_id') ? $room->hotel_id = $request->hotel_id : '';
+        $request->has('title') ? $room->title = $request->title : '';
+        $request->has('description') ? $room->description = $request->description : '';
+        $request->has('price') ? $room->price = $request->price : '';
+        $request->has('additional_price') ? $room->additional_price = $request->additional_price : '';
+        $request->has('status') ? $room->status = $request->status : '';
 
-        // Product serials key with company
-        $totalCompanies = json_decode($request->totalCompanies);
-        $productSerialsWithCompany = [];
-        $productCompany = [];
-        foreach ($totalCompanies as $currCompany) {
-
-            $company = [];
-            $company['company_id'] = $currCompany->selectedCompany->id;
-            $company['product_quantity'] = $currCompany->quantity;
-            $productCompany[] = $company;
-            if ($currCompany->serials) {
-                foreach ($currCompany->serials as $currSerial) {
-                    $serial = [];
-                    $serial['is_sold'] = 0;
-                    $serial['product_serial'] = $currSerial;
-                    $serial['product_warranty'] = $currCompany->product_warranty;
-                    $serial['company_id'] = $currCompany->selectedCompany->id;
-                    $productSerialsWithCompany[] = $serial;
-                }
-            }
-        }
-
-        $companies = $product->companies()->syncWithoutDetaching($productCompany);
-        $serial = $product->serials()->createMany($productSerialsWithCompany);
-
-        if ($request->has('categories') && !empty($request->categories)) {
-            $categoriesId = [];
-            foreach (json_decode($request->categories) as $category) {
-                $categoriesId[] = $category->value;
-            }
-            $product->categories()->sync($categoriesId);
-        }
-
-        $product->save();
-        return $this->showOne($product);
+        $room->save();
+        return $this->showOne($room);
     }
 
     /**

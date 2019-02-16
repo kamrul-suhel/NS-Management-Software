@@ -19,11 +19,13 @@ class CreateRentsTable extends Migration
             $table->integer('room_id')->index()->unsigned();
             $table->integer('staff_id')->unsigned()->index();
             $table->string('client_name')->index();
-            $table->text('father_name');
+            $table->string('father_name', 100);
+            $table->string('ni_number', 100)->index();
             $table->text('client_address');
             $table->string('client_phone', 30)->nullable()->index();
-            $table->float('discount_amount')->unsigned()->nullable();
+            $table->float('advance')->unsigned()->index()->nullable()->default(0);
             $table->float('total')->unsigned()->index();
+            $table->float('discount_amount')->unsigned()->nullable();
             $table->dateTime('check_in')->index()->nullable();
             $table->dateTime('check_out')->index()->nullable();
             $table->timestamps();

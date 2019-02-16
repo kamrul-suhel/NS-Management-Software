@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Accounting;
 
 use App\Expense;
+use App\Rent;
 use App\Traits\ApiResponser;
 use App\Transaction;
 use Carbon\Carbon;
@@ -16,7 +17,7 @@ class TransactionAccountingController extends Controller
 
     public function index(Request $request)
     {
-        $transactions = Transaction::with(['products', 'customer']);
+        $transactions = new Rent();
         $expenses = new Expense();
 
         if ($request->select['abbr'] === 'TDT') {
@@ -83,7 +84,8 @@ class TransactionAccountingController extends Controller
             $expenses = $expenses->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
-        $transactions = $transactions->orderBy('created_at', 'desc')->get();
+        $transactions = $transactions->orderBy('created_at', 'desc')
+            ->get();
         $expenses = $expenses->orderBy('created_at', 'desc')->get();
 
         $total = $transactions->sum(function($transaction){

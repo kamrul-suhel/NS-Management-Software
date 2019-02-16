@@ -34,4 +34,18 @@ class Rent extends Model
         $dt = date("F j, Y, g:i a", strtotime($value));
         return $dt;
      }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+     public function room(){
+         return $this->belongsTo('App\Room', 'room_id', 'id');
+     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+     public function rentUser(){
+         return $this->belongsTo('App\User', 'staff_id', 'id');
+     }
 }

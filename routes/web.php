@@ -42,6 +42,10 @@ Route::get('/rooms', function(){
     return view('welcome');
 });
 
+Route::get('/rents', function(){
+    return view('welcome');
+});
+
 Route::get('/categories', function(){
     return view('welcome');
 });

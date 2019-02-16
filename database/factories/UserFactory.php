@@ -53,9 +53,11 @@ $factory->define(Hotel::class, function(Faker $faker){
 
 $factory->define(Room::class, function (Faker $faker) {
     $hotel_id = Hotel::all()->random();
+    $number = $faker->numberBetween(1, 40) . $faker->randomElement(['A', 'B', 'C', 'D', 'E']);
 
     return [
         'hotel_id' => $hotel_id->id,
+        'room_number' => $number,
         'title' => $faker->title,
         'description' => $faker->paragraph(1),
         'status' => $faker->randomElement([Room::UNAVAILABLE_PRODUCT, Room::ABAILABLE_PRODUCT]),
@@ -75,6 +77,7 @@ $factory->define(Rent::class, function (Faker $faker) {
         'hotel_id'          => $hotel->id,
 		'staff_id' 		    => $user->id,
 		'room_id' 		    => $room->id,
+		'ni_number' 		    => $faker->creditCardNumber,
         'client_name'   	=> $faker->name($faker->randomElement(['male', 'female'])),
         'father_name'       => $faker->name('male'),
         'client_address' 	=> $faker->address,

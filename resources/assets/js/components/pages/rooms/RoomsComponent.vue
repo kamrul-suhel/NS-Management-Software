@@ -1,21 +1,9 @@
 <template>
-    <div class="products">
-        <v-dialog
-                v-model="barcodeDialog"
-                persistent
-                max-width="290">
-            <v-card>
-                <v-card-title class="headline">You scanned a Barcode</v-card-title>
-                <v-card-text>Your barcode is : {{ barcode }}</v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="green darken-1" flat @click.native="onbarcodeDialogClose()">Ok</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
+    <div class="room-page">
 
         <v-dialog
                 v-model="dialog"
+                max-width="800"
                 persistent>
             <v-card class="px-2 py-2">
                 <v-card-title>
@@ -28,10 +16,21 @@
                             lazy-validation>
                         <v-container fluid grid-list-md>
                             <v-layout row wrap>
-                                <v-flex xs12>
+                                <v-flex xs6>
+                                    <v-text-field
+                                            label="Room number"
+                                            v-model="editedItem.room_number"
+                                            dark
+                                            color="dark"
+                                            :rules="[v => !!v || 'Title is required']"
+                                            required
+                                    ></v-text-field>
+                                </v-flex>
+
+                                <v-flex xs6>
                                     <v-text-field
                                             label="Title"
-                                            v-model="editedItem.name"
+                                            v-model="editedItem.title"
                                             dark
                                             color="dark"
                                             :rules="[v => !!v || 'Title is required']"
@@ -51,224 +50,36 @@
                                 </v-flex>
 
                                 <v-flex xs6>
-                                    <v-select
-                                            dark
-                                            color="dark"
-                                            label="Is this product has serial"
-                                            :items="isSerials"
-                                            required
-                                            :rules="[v => !!v || 'This field required']"
-                                            v-model="isSerial"></v-select>
-                                </v-flex>
-
-                                <v-flex xs6>
-                                    <v-select
-                                            dark
-                                            color="dark"
-                                            label="Quantity type"
-                                            :items="quantity_type"
-                                            v-model="editedItem.quantity_type"
-                                            required
-                                            :rules="[v => !!v || 'Quantity type is required']"
-                                            auto
-                                    ></v-select>
-                                </v-flex>
-
-                                <v-flex xs12 v-if="editedItem.quantity_type === 'feet'">
                                     <v-text-field
-                                            label="How much feets = 1 coil / 1 pipe"
-                                            dark
-                                            v-model="quantityToFeet"
-                                            mask="####"
-                                            :error="quantityToFeetError"
-                                            messages="Please provide per quantity how much feets"
-                                            counter
-                                            :reles="[v => !!v && v <= 0 || 'Field is required' ]"
-                                            color="dark">
-                                    </v-text-field>
-                                </v-flex>
-
-                                <v-flex xs12
-                                        v-for="(company, totalCompanyIndex) in totalCompanies"
-                                        :key="totalCompanyIndex">
-                                    <v-layout row wrap
-                                    >
-                                        <v-flex xs6>
-                                            <v-select
-                                                    dark
-                                                    color="dark"
-                                                    label="Which company"
-                                                    :items="company.companies"
-                                                    v-model="company.selectedCompany"
-                                                    item-text="name"
-                                                    item-value="id"
-                                                    required
-                                                    :reles="[v => !!v || 'Select A company']"
-                                                    return-object
-                                            ></v-select>
-                                        </v-flex>
-
-
-                                        <v-flex :class="{xs3: editedItem.quantity_type === 'feet', xs6: editedItem.quantity_type !== 'feet' }">
-                                            <v-text-field
-                                                    label="How many quantity"
-                                                    dark
-                                                    v-model="company.quantity"
-                                                    required
-                                                    mask="####"
-                                                    :reles="[v => !!v || 'Quantity is required' ]"
-                                                    color="dark">
-                                            </v-text-field>
-                                        </v-flex>
-
-                                        <v-flex xs3 v-if="editedItem.quantity_type === 'feet'">
-                                            <v-text-field
-                                                    label="How many feet"
-                                                    dark
-                                                    v-model="company.feet"
-                                                    required
-                                                    append-icon="equalizer"
-                                                    mask="####"
-                                                    :reles="[v => !!v || 'Quantity is required' ]"
-                                                    color="dark">
-                                            </v-text-field>
-
-                                            <v-btn
-                                                    right
-                                                    fab
-                                                    dark
-                                                    small
-                                                    color="error"
-                                                    style="width:20px;height:20px;position:absolute"
-                                                    @click="onRemoveCompany(totalCompanyIndex)"
-                                            >
-                                                <v-icon>remove</v-icon>
-                                            </v-btn>
-                                        </v-flex>
-
-                                        <v-layout row wrap v-if="isSerial === 'true'">
-                                            <v-flex xs6>
-                                                <v-autocomplete
-                                                        dark
-                                                        color="white"
-                                                        label="Select warranty"
-                                                        v-model="company.product_warranty"
-                                                        :items="warranties"
-                                                ></v-autocomplete>
-                                                <span class="red--text"
-                                                      v-if="productWarrantyError">Please select warranty</span>
-                                            </v-flex>
-
-                                            <v-flex xs6>
-                                                <v-layout row wrap>
-                                                    <v-flex xs3
-                                                            v-for="(serial, index) in company.serials"
-                                                            :key="index">
-                                                        <v-text-field
-                                                                dark
-                                                                color="dark"
-                                                                :label="'Product Serial ' +  (Number(index) + 1)"
-                                                                v-model="company.serials[index]"
-                                                        ></v-text-field>
-                                                    </v-flex>
-                                                </v-layout>
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-layout>
-                                </v-flex>
-
-
-                                <v-flex xs12>
-                                    <v-btn
+                                            label="Per day"
+                                            v-model="editedItem.price"
                                             dark
                                             color="dark"
-                                            class="ml-0"
-                                            @click="onAddCompany()">Add company
-                                    </v-btn>
-                                </v-flex>
-
-                                <v-flex xs6>
-                                    <v-text-field
-                                            label="Quantity"
-                                            type="number"
-                                            dark
+                                            :rules="[v => !!v || 'Price is required']"
                                             required
-                                            :rules="[v => !!v || 'Quantity is required']"
-                                            color="dark"
-                                            placeholder="00.00"
-                                            disabled
-                                            v-model="editedItem.quantity"
                                     ></v-text-field>
                                 </v-flex>
 
+                                <v-flex xs6>
+                                    <v-text-field
+                                            label="Additional Charge"
+                                            v-model="editedItem.additional_price"
+                                            dark
+                                            color="dark"
+                                            :rules="[v => !!v || 'Price is required']"
+                                            required
+                                    ></v-text-field>
+                                </v-flex>
 
                                 <v-flex xs6>
                                     <v-select
-                                            dark
-                                            color="dark"
                                             :items="status"
                                             v-model="editedItem.status"
-                                            label="Status"
-                                            required
-                                            :rules="[v => !!v || 'Status is required']"
-                                            auto
+                                            label="Room status"
+                                            single-line
                                     ></v-select>
                                 </v-flex>
 
-                                <v-flex xs6>
-                                    <v-text-field
-                                            dark
-                                            color="dark"
-                                            :label="editedItem.quantity_type === 'feet' ? 'Sale price 1 Feet' : 'Sale price 1 item'"
-                                            type="number"
-                                            placeholder="00.00"
-                                            prefix="TK"
-                                            required
-                                            :rules="[v => !!v  || 'Sale price is required']"
-                                            v-model="editedItem.sale_price"
-                                    ></v-text-field>
-                                </v-flex>
-
-                                <v-flex xs6>
-                                    <v-text-field
-                                            dark
-                                            color="dark"
-                                            :label="editedItem.quantity_type === 'feet' ? 'Purchase price 1 Feet' : 'Purchase price 1 item'"
-                                            type="number"
-                                            placeholder="00.00"
-                                            prefix="TK"
-                                            required
-                                            :rules="[v => !!v || 'Purchase price is required']"
-                                            v-model="editedItem.purchase_price">
-                                    </v-text-field>
-                                </v-flex>
-
-                                <v-flex xs6>
-                                    <v-select
-                                            dark
-                                            color="dark"
-                                            label="Categories"
-                                            :items="categories"
-                                            v-model="selectedCategories"
-                                            multiple
-                                            chips
-                                            required
-                                            :rules="[v => !!v || 'Please select category']"
-                                            persistent-hint
-                                            return-object
-                                    >
-                                    </v-select>
-                                </v-flex>
-
-                                <v-flex xs3 v-if="editedItem.quantity_type === 'feet'">
-                                    <h4>Total feets is: </h4>
-                                    {{ totalFeets }}
-                                </v-flex>
-
-                                <v-flex xs3 v-if="editedItem.quantity_type === 'feet'">
-                                    <h4>Total Quantity is: </h4>
-                                    {{ editedItem.quantity }}
-                                </v-flex>
                             </v-layout>
                         </v-container>
                     </v-form>
@@ -288,8 +99,8 @@
                            color="dark"
                            raised
                            :disabled="!valid"
-                           @click.native="save">{{ editedIndex === -1 ? 'Create product' :
-                        'Update product' }}
+                           @click.native="save">{{ editedIndex === -1 ? 'Create Room' :
+                        'Update Room' }}
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -298,14 +109,22 @@
         <v-container grid-list-md class="pt-0">
             <v-layout row wrap>
                 <v-flex xs12 class="pt-0">
-                    <h2>Rooms</h2>
+                    <h2>ROOMS</h2>
+                </v-flex>
+
+                <v-flex xs12>
+                    <v-flex xs-12>
+                        <v-btn dark small class="ml-0" color="dark" @click="dialog = true">
+                            <v-icon>add</v-icon> Add new room
+                        </v-btn>
+                    </v-flex>
                 </v-flex>
             </v-layout>
 
             <v-divider class="mb-3 dark"></v-divider>
 
             <v-layout row wrap>
-                <v-flex xs6>
+                <v-flex xs4>
                     <v-card flat class="cyan lighten-1 white--text">
                         <v-card-title>Total Rooms</v-card-title>
                         <v-card-text class="pt-0">
@@ -316,7 +135,7 @@
                     </v-card>
                 </v-flex>
 
-                <v-flex xs6>
+                <v-flex xs4>
                     <v-card flat class="light-blue white--text">
                         <v-card-title>Room Available</v-card-title>
                         <v-card-text class="pt-0">
@@ -327,7 +146,7 @@
                     </v-card>
                 </v-flex>
 
-                <v-flex xs6>
+                <v-flex xs4>
                     <v-card flat class="light-green lighten-1 white--text">
                         <v-card-title>Unavailable Room</v-card-title>
                         <v-card-text class="pt-0">
@@ -337,47 +156,43 @@
                         </v-card-text>
                     </v-card>
                 </v-flex>
-
-                <v-flex xs6>
-                    <v-card flat class="orange darken-1 white--text">
-                        <v-card-title>Total</v-card-title>
-                        <v-card-text class="pt-0">
-                            <h2 class="display-2 white--text text-xs-center">
-                                <span style="font-size:12px">TK.</span>
-                                <strong>{{total_stock}}</strong>
-                            </h2>
-                        </v-card-text>
-                    </v-card>
-                </v-flex>
             </v-layout>
         </v-container>
 
         <v-container grid-list-md>
-            <v-layout row wrap>
-                <v-flex xs-12>
-                    <v-btn dark fab small color="dark" @click="dialog = true">
-                        <v-icon>add</v-icon>
-                    </v-btn>
+            <v-layout align-content-end justify-end>
+                <v-flex>
+                    <v-radio-group v-model="selectedView" row>
+                        <v-radio label="Box view" value="box" color="dark"></v-radio>
+                        <v-radio label="Table view" value="table" color="dark"></v-radio>
+                    </v-radio-group>
                 </v-flex>
+            </v-layout>
 
-                <v-flex xs12></v-flex>
-
-                <v-flex xs6 md4 v-for="item in items">
-                    <v-card>
-                        <v-card-media src="/static/doc-images/cards/desert.jpg" height="200px">
-                        </v-card-media>
+            <v-layout row wrap v-if="selectedView === 'box'">
+                <v-flex xs6 md4 v-for="room in items" :key="room.id">
+                    <v-card height="250" :color="room.status === 'available' ? 'blue-grey darken-2' : 'lime darken-1'" class="white--text">
                         <v-card-title primary-title>
-                            <div>
-                                <h3 class="headline mb-0">{{item.title}}</h3>
-                                <div>{{item.description}}</div>
+                            <div class="headline">{{room.title}}</div>
+                            <div>{{room.description}}</div>
+                            <div class="room-number">Room Number : <span class="price">{{room.room_number}}</span></div>
+                            <div class="room-price-content">
+                                <div class="room-price">Per day : {{room.price}}</div>
+                                <div class="room-price">Extra : {{room.additional_price}}</div>
+                                <div class="room-price">Status : {{room.status}}</div>
                             </div>
                         </v-card-title>
-                        <v-card-actions>
-                            <v-btn flat color="orange">Share</v-btn>
-                            <v-btn flat color="orange">Explore</v-btn>
+
+                        <v-card-actions wrap>
+                            <v-btn flat>View</v-btn>
+                            <v-btn flat v-if="room.status === 'available'">Rent</v-btn>
+                            <v-btn flat color="white" @click="editItem(room)">Update</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-flex>
+            </v-layout>
+
+            <v-layout row wrap v-else>
 
                 <v-card width="100%">
                     <v-card-title>
@@ -395,10 +210,10 @@
 
                             <template slot="items" slot-scope="props">
                                 <tr @click="props.expanded = !props.expanded">
-                                    <td>{{ props.item.created_at | convertDate }}</td>
-                                    <td class="text-xs-center">{{ props.item.title }}</td>
-                                    <td class="text-xs-center">TK. {{ props.item.price }}</td>
-                                    <td class="text-xs-center">{{ props.item.status }}</td>
+                                    <td>{{ props.item.title }}</td>
+                                    <td>TK. {{ props.item.price }}</td>
+                                    <td>TK. {{ props.item.additional_price }}</td>
+                                    <td>{{ props.item.status }}</td>
                                     <td class="justify-start layout px-0">
                                         <v-btn dark
                                                color="dark"
@@ -418,54 +233,8 @@
                                 </tr>
                             </template>
 
-                            <v-divider></v-divider>
-
-                            <template slot="expand" slot-scope="props">
-                                <v-card flat>
-                                    <v-card-text>
-                                        <table width="100%">
-                                            <tr>
-                                                <td><strong>Serials</strong></td>
-                                            </tr>
-
-                                            <tr v-if="props.item.serials && props.item.serials.length > 0">
-                                                <td v-for="(serial, index) in props.item.serials" :key="index">
-                                                    {{ serial.product_serial }}
-                                                </td>
-                                            </tr>
-                                            <tr v-else>
-                                                <td>This product has no serial.</td>
-                                            </tr>
-                                        </table>
-
-                                        <v-divider></v-divider>
-
-                                        <table with="100%">
-                                            <tr>
-                                                <td><strong>Companies</strong></td>
-                                                <td><strong>Mobile</strong></td>
-                                                <td><strong>Phone</strong></td>
-                                                <td><strong>Quantity</strong></td>
-                                                <td><strong>Purchased date</strong></td>
-                                            </tr>
-                                            <tr v-for="(company, index) in props.item.companies" :key="index">
-                                                <td>{{ company.name}}</td>
-                                                <td>{{ company.mobile }}</td>
-                                                <td>{{ company.phone }}</td>
-                                                <td>{{ company.pivot.product_quantity }}</td>
-                                                <td>{{ company.pivot.created_at | convertDate }}</td>
-                                            </tr>
-                                        </table>
-                                    </v-card-text>
-                                </v-card>
-                            </template>
-
-                            <v-alert slot="no-results" :value="true" color="error" icon="warning">
-                                Your search for "{{ search }}" found no results.
-                            </v-alert>
-
                             <template slot="no-data">
-                                Sorry no products found
+                                Sorry no room found
                             </template>
                         </v-data-table>
                     </v-card-text>
@@ -512,6 +281,13 @@
                 sortBy: 'name'
             },
 
+            status : [
+                'available',
+                'unavailable'
+            ],
+
+            selectedView: 'box',
+
             avaliable_rooms: 0,
             unavaliable_rooms: 0,
             total_rooms: 0,
@@ -524,28 +300,21 @@
             snackbar: false,
             snackbar_message: '',
 
-            warranties: ['3 Month', '6 Month', '1 Year', '1.5 Year', '2 Year', '3 Year', '4 year', '5 year'],
-
-            quantityToFeetError: false,
-            quantityToFeet: 0,
-            totalFeets: 0,
-
             headers: [
-                {
-                    text: 'Date',
-                    align: 'left',
-                    sortable: true,
-                    value: 'created_at'
-                },
-
                 {
                     text: 'Title',
                     value: 'name',
                     sortable: true
                 },
                 {
-                    text: 'Price',
+                    text: 'Per day',
                     value: 'sale_price',
+                    sortable: true
+                },
+
+                {
+                    text: 'Extra charge',
+                    value: 'additional_price',
                     sortable: true
                 },
                 {
@@ -571,47 +340,15 @@
                 }
             ],
             editedIndex: -1,
-            editedItem: {
-                id: '',
-                name: '',
-                description: '',
-                quantity: 0,
-                status: '',
-                sale_price: '',
-                purchase_price: '',
-                quantity_type: ''
-            },
+            editedItem: {},
 
-            quantity_type: [],
-
-            categories: [],
-            selectedCategories: [],
             update_form: false,
 
-            defaultItem: {
-                id: '',
-                name: '',
-                description: '',
-                quantity: '',
-                status: '',
-                sale_price: '',
-                purchase_price: '',
-                quantity_type: ''
-            },
+            defaultItem: {},
+
             row_per_page: [20, 30, 50, {'text': 'All', 'value': -1}],
 
-            purchase_price_field: false,
-
-            companies: [],
-            selectedCompanies: [],
-
-            isSerials: [{text: 'yes', value: 'true'}, {text: 'No', value: 'false'}],
-            isSerial: '',
-            productSerials: [],
-
             valid: true,
-
-            productWarrantyError: false,
 
             barcodeDialogvalue: false,
             barcode: ''
@@ -624,48 +361,9 @@
             }),
 
             formTitle() {
-                return this.editedIndex === -1 ? 'New Product' : 'Edit Product'
+                return this.editedIndex === -1 ? 'New Room' : 'Edit Room'
             },
 
-            totalCompanies() {
-                let quantity = 0;
-                let feets = 0;
-                let serials = [];
-                this.selectedCompanies.forEach((company) => {
-                    if (company.serials) {
-                        serials = company.serials;
-                    }
-
-                    feets += Number(company.feet);
-
-                    quantity += Number(company.quantity)
-                    company.serials = [];
-                    for (let i = 0; i < company.quantity; i++) {
-                        if (this.isSerial === 'true') {
-                            if (serials.length > 0) {
-                                company.serials.push(serials[i]);
-                            } else {
-                                company.serials.push('');
-                            }
-                        }
-
-                    }
-                })
-
-                this.editedItem.quantity = quantity;
-
-                if (isNaN(feets)) {
-                    feets = Number(0);
-                }
-
-                this.totalFeets = (quantity * this.quantityToFeet) + feets;
-
-                return this.selectedCompanies;
-            },
-
-            barcodeDialog() {
-                return this.barcodeDialogvalue;
-            }
         },
 
         watch: {
@@ -675,38 +373,6 @@
 
             dialog(val) {
                 val || this.close()
-            },
-
-            isSerial(value) {
-                this.productSerials = [];
-                if (value === 'true') {
-                    let count = Number(this.editedItem.quantity);
-                    for (let i = 0; i < count; i++) {
-                        this.productSerials.push('0');
-                    }
-                }
-            },
-
-            editedItem(value) {
-                if (value.quantity) {
-                    this.productSerials = [];
-                    let count = Number(this.editedItem.quantity);
-                    for (let i = 0; i < count; i++) {
-                        this.productSerials.push('0');
-                    }
-                }
-
-                if (value.companies) {
-
-                }
-            },
-
-            quantityToFeet(value) {
-                let feetPerUnit = Number(value);
-                if (!isNaN(feetPerUnit) && value >= 0) {
-                    this.quantityToFeetError = false;
-                    this.valid = true;
-                }
             }
         },
 
@@ -739,19 +405,6 @@
             },
 
             editItem(item) {
-                // get selected categories & all categories
-                let url = '/api/products/' + item.id + '/categories';
-
-                axios.get(url)
-                    .then((response) => {
-                        let selectedCategories = response.data;
-                        selectedCategories.forEach((value) => {
-                            let categories = {}
-                            categories.value = value.id
-                            categories.text = value.name
-                            this.selectedCategories.push(categories)
-                        })
-                    })
                 this.editedIndex = this.items.indexOf(item)
                 this.editedItem = Object.assign({}, item)
                 this.dialog = true
@@ -763,7 +416,7 @@
             },
 
             deleteItemD() {
-                let url = 'api/products/' + this.deleteItem.id
+                let url = 'api/rooms/' + this.deleteItem.id
                 axios.delete(url).then((response) => {
                     this.deleteDialog = false;
                     const index = this.items.indexOf(this.deleteItem)
@@ -776,20 +429,10 @@
 
             close() {
                 this.dialog = false;
-                this.selectedCategories = [];
                 setTimeout(() => {
                     this.editedItem = Object.assign({}, this.defaultItem);
                     this.editedIndex = -1;
                 }, 300)
-            },
-
-            onAddCompany() {
-                let newcompany = {quantity: 0, companies: this.companies, selectedCompany: {}};
-                this.selectedCompanies.push(newcompany);
-            },
-
-            onRemoveCompany(index) {
-                this.selectedCompanies.splice(index, 1);
             },
 
             save() {
@@ -797,49 +440,16 @@
                     return;
                 }
 
-                if (this.isSerial === 'true') {
-                    console.log(this.totalCompanies);
-                    let error = false;
-                    this.totalCompanies.forEach((company) => {
-                        if (company.product_warranty === undefined) {
-                            this.productWarrantyError = true;
-                            error = true;
-                        }
-                    })
-
-                    if (error) {
-                        return;
-                    }
-                }
-
                 let form = new FormData();
-                let url = '/api/products';
+                let url = '/api/rooms';
 
-                form.append('name', this.editedItem.name);
-                form.append('sellerId', this.$store.getters.getUserId);
+                form.append('room_number', this.editedItem.room_number);
+                form.append('hotel_id', this.selectedShop.id);
+                form.append('title', this.editedItem.title);
                 form.append('description', this.editedItem.description);
-                form.append('purchase_price', this.editedItem.purchase_price);
-                form.append('sale_price', this.editedItem.sale_price);
-                form.append('quantity', this.editedItem.quantity);
+                form.append('price', this.editedItem.price);
+                form.append('additional_price', this.editedItem.additional_price);
                 form.append('status', this.editedItem.status);
-                form.append('quantity_type', this.editedItem.quantity_type);
-                form.append('totalCompanies', JSON.stringify(this.totalCompanies));
-
-                if (this.selectedCategories) {
-                    form.append('categories', JSON.stringify(this.selectedCategories));
-                }
-
-                console.log(this.editedItem);
-                console.log(this.totalCompanies);
-
-                //check product has pipe or feet
-                if (this.editedItem.quantity_type === 'feet') {
-                    if (this.quantityToFeet <= 0) {
-                        this.quantityToFeetError = true;
-                        return;
-                    }
-                }
-                return;
 
                 if (this.editedIndex > -1) {
                     // update product
@@ -848,23 +458,21 @@
                     axios.post(url, form)
                         .then((response) => {
                             Object.assign(this.items[this.editedIndex], this.editedItem);
-                            this.snackbar_message = 'Product ' + this.editedItem.name + ' successfully updated.';
+                            this.snackbar_message = 'Room ' + this.editedItem.title + ' successfully updated.';
                             this.snackbar = true;
                             this.close()
                             this.initialize();
                             this.$refs.product_form.reset();
-                            this.selectedCompanies = [];
-                            this.productWarrantyError = false
                         })
                 } else {
                     // create product
                     axios.post(url, form)
                         .then((response) => {
                             this.items.push(response.data);
-                            this.snackbar_message = 'Product ' + this.editedItem.name + ' successfully created.';
+                            this.snackbar_message = 'Room ' + this.editedItem.title + ' successfully created.';
                             this.snackbar = true;
                             // update total product & stock
-                            this.total_product++;
+                            this.total_rooms++;
 
                             // let total = this.total_stock.replace(',', '');
                             // total = Number(total);
@@ -872,8 +480,6 @@
                             this.close()
                             this.initialize();
                             this.$refs.product_form.reset();
-                            this.selectedCompanies = [];
-                            this.productWarrantyError = false;
                         })
                 }
 
@@ -919,7 +525,6 @@
                 return filterItem;
 
             },
-
 
             onBarcodeScanned(code) {
                 console.log(code);

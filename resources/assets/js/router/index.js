@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import CategoryComponent from '../components/pages/categories/CategoryIndexComponent'
 import RoomsComponent from '../components/pages/rooms/RoomsComponent'
-import TransactionComponent from '../components/pages/transaction/TransactionComponent'
+import RentsComponent from '../components/pages/rent/RentsComponent'
 import CustomerComponent from '../components/pages/customer/CustomerComponent'
 import ShopComponent from '../components/pages/shop/ShopComponent'
 import CreateTransaction from '../components/pages/transaction/CreateTransactionComponent'
@@ -36,11 +36,6 @@ const routes = [
         component: ProductTransaction
     },
 
-    {
-        path: '/categories',
-        name: 'categories',
-        component: CategoryComponent
-    },
 
     {
         path: '/rooms',
@@ -49,9 +44,9 @@ const routes = [
     },
 
     {
-        path: '/transaction',
-        name: 'transaction',
-        component: TransactionComponent
+        path: '/rents',
+        name: 'rents',
+        component: RentsComponent
     },
 
     {

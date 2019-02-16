@@ -25,16 +25,6 @@ Route::resource('buyers.products','Buyer\BuyerProductController',['only' => ['in
 
 
 /*
-*  Category route
-*/
-
-Route::resource('categories','Category\CategoryController',['except' => ['create', 'edit']]);
-Route::resource('categories.products','Category\CategoryProductController',['only' => ['index']]);
-Route::resource('categories.sellers','Category\CategorySellerController',['only' => ['index']]);
-Route::resource('categories.transactions','Category\CategoryTransactionController',['only' => ['index']]);
-Route::resource('categories.buyers','Category\CategoryBuyerController',['only' => ['index']]);
-
-/*
 *  Product route
 */
 
@@ -50,10 +40,7 @@ Route::post('customer/{customer_id}/due/transactions', 'Customer\CustomerDueCont
 *  Transition route
 */
 
-Route::resource('transactions','Transaction\TransactionController',['only' => ['index', 'show']]);
-Route::resource('transactions.categories','Transaction\TransactionCategoryController',['only' => ['index']]);
-Route::resource('transactions.sellers','Transaction\TransactionSellerController',['only' => ['index']]);
-Route::get('transactions/{id}/delete','Transaction\TransactionController@destroy');
+Route::resource('rent','Rent\RentController',['only' => ['index', 'show', 'store', 'update']]);
 
 
 /*

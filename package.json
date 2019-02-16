@@ -24,7 +24,7 @@
     "electron-packager": "^12.1.0",
     "laravel-mix": "^2.1.11",
     "lodash": "^4.17.10",
-    "vue": "^2.5.16",
+    "vue": "2.5.16",
     "vue-router": "^3.0.1",
     "vuetify": "^1.1.8",
     "vuex": "^3.0.1"
