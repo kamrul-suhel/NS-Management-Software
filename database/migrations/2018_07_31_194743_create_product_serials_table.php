@@ -16,7 +16,7 @@ class CreateProductSerialsTable extends Migration
         Schema::create('product_serials', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('product_id');
-            $table->integer('company_id');
+            $table->integer('company_id')->nullable();
             $table->integer('transaction_id')->nullable();
             $table->string('product_serial')->nullable()->index();
             $table->enum('product_warranty',['3 Month','6 Month','1 Year', '1.5 Year', '2 Year'])->nullable()->index();

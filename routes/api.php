@@ -47,6 +47,12 @@ Route::post('customer/{customer_id}/due/transactions', 'Customer\CustomerDueCont
 
 
 /*
+*  Services route
+*/
+
+Route::resource('services', 'ServiceController', ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
+
+/*
 *  Transition route
 */
 

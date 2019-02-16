@@ -189,6 +189,20 @@ $factory->define(\App\CompanyTransaction::class, function (Faker $faker) {
     ];
 });
 
+$factory->define(\App\Service::class, function (Faker $faker) {
+    return [
+        //
+        'brand' => $faker->jobTitle,
+        'problem'        => $faker->word,
+        'description'        => $faker->text,
+        'service_charge'        => $faker->randomFloat(2, 500, 1000),
+        'status'        => $faker->randomElement(['due', 'paid']),
+        'created_at'    => $created_at = $faker->dateTimeBetween($startDate = '-1 day', $endDate = 'now'),
+        'updated_at'    => $faker->dateTimeBetween($startDate = $created_at, 'now + 1 hour')
+//
+    ];
+});
+
 
 
 function generateRandomString($length = 11) {

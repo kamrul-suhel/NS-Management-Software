@@ -67,6 +67,18 @@
                     },
 
                     {
+                        icon: 'add_shopping_cart',
+                        text: 'Services',
+                        navs: [
+                            {
+                                icon: 'history',
+                                text: 'All services',
+                                link:'services'
+                            }
+                        ],
+                    },
+
+                    {
                         icon: 'compare_arrows',
                         text: 'Transitions',
                         navs: [

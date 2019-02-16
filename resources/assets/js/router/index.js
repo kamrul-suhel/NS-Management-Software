@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import CategoryComponent from '../components/pages/categories/CategoryIndexComponent'
 import ProductComponent from '../components/pages/products/ProductsComponent'
+import ServiceComponent from '../components/pages/services/ServiceComponent'
 import TransactionComponent from '../components/pages/transaction/TransactionComponent'
 import CustomerComponent from '../components/pages/customer/CustomerComponent'
 import SettingComponent from '../components/pages/setting/SettingComponent'
@@ -46,6 +47,12 @@ const routes = [
         path: '/products',
         name: 'products',
         component: ProductComponent
+    },
+
+    {
+        path: '/services',
+        name: 'services',
+        component: ServiceComponent
     },
 
     {

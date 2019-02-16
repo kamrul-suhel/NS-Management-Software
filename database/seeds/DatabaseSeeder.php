@@ -5,6 +5,8 @@ use App\CompanyTransaction;
 use App\Customer;
 use App\Expense;
 use App\ExpenseCategory;
+use App\ProductSerial;
+use App\Service;
 use App\Setting;
 use App\User;
 use App\Product;
@@ -13,6 +15,7 @@ use App\Transaction;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Faker\Factory as Faker;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -22,12 +25,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-    	$this->call(
-    		[
-    			DatabaseSeeder::class,
-				DatabaseSeederDump::class
-			]
-		);
+//    	$this->call(
+//    		[
+//    			DatabaseSeeder::class,
+//				DatabaseSeederDump::class
+//			]
+//		);
 
 
     	DB::statement('SET FOREIGN_KEY_CHECKS = 0');
@@ -41,6 +44,7 @@ class DatabaseSeeder extends Seeder
         ExpenseCategory::truncate();
         Company::truncate();
         CompanyTransaction::truncate();
+        Service::truncate();
 
         DB::table('category_product')->truncate();
         DB::table('product_transaction')->truncate();
@@ -54,6 +58,7 @@ class DatabaseSeeder extends Seeder
         ExpenseCategory::flushEventListeners();
         Company::flushEventListeners();
         CompanyTransaction::flushEventListeners();
+        Service::flushEventListeners();
 
         $usersQuantity = 30;
         $customerQuantity = 10;
@@ -79,43 +84,43 @@ class DatabaseSeeder extends Seeder
             'depth'         => 1
         ]);
 
-//        $categoryRoot->children()->create([
-//            'name' => 'category 3',
-//            'description' => 'Category description',
-//            'parent_id'   => 1,
-//            'lft'          => 4,
-//            'rgt'           => 5,
-//            'depth'         => 1
-//        ]);
-//
-//        $categoryRoot->children()->create([
-//            'name' => 'category 4',
-//            'description' => 'Category description',
-//            'parent_id'   => 1,
-//            'lft'          => 6,
-//            'rgt'           => 7,
-//            'depth'         => 1
-//        ]);
-//
-//        $categoryRoot->children()->create([
-//            'name' => 'category 5',
-//            'description' => 'Category description',
-//            'parent_id'   => 1,
-//            'lft'          => 8,
-//            'rgt'           => 9,
-//            'depth'         => 1
-//        ]);
-//
-//        $categoryRoot->children()->create([
-//            'name' => 'category 6',
-//            'description' => 'Category description',
-//            'name' => 'category 2',
-//            'description' => 'Category description',
-//            'parent_id'   => 1,
-//            'lft'          => 10,
-//            'rgt'           => 11,
-//            'depth'         => 1
-//        ]);
+        $categoryRoot->children()->create([
+            'name' => 'category 3',
+            'description' => 'Category description',
+            'parent_id'   => 1,
+            'lft'          => 4,
+            'rgt'           => 5,
+            'depth'         => 1
+        ]);
+
+        $categoryRoot->children()->create([
+            'name' => 'category 4',
+            'description' => 'Category description',
+            'parent_id'   => 1,
+            'lft'          => 6,
+            'rgt'           => 7,
+            'depth'         => 1
+        ]);
+
+        $categoryRoot->children()->create([
+            'name' => 'category 5',
+            'description' => 'Category description',
+            'parent_id'   => 1,
+            'lft'          => 8,
+            'rgt'           => 9,
+            'depth'         => 1
+        ]);
+
+        $categoryRoot->children()->create([
+            'name' => 'category 6',
+            'description' => 'Category description',
+            'name' => 'category 2',
+            'description' => 'Category description',
+            'parent_id'   => 1,
+            'lft'          => 10,
+            'rgt'           => 11,
+            'depth'         => 1
+        ]);
 
 //        factory(Category::class, $categoriesQuantity)->create()->each(function($category){
 //            $root = Category::root();
@@ -130,16 +135,24 @@ class DatabaseSeeder extends Seeder
 
         factory(User::class, $usersQuantity)->create();
         factory(Customer::class, $customerQuantity)->create();
+
+        //        /**
+//         * Company seeder
+//         */
 //
+        factory(Company::class, 20)->create();
+
         factory(Product::class, $productsQuantity)->create()->each(
         	function($product){
         		$categories = Category::all()->random(mt_rand(1, 5))->pluck('id');
+
 
         		$product->categories()->attach($categories);
         		$serials = $this->generateProductSerialArray();
         		$product->serials()->saveMany($serials);
         	}
         );
+
 //
 //        factory(Transaction::class, $transactionQuantity)->create()->each(
 //            function($transaction){
@@ -154,6 +167,8 @@ class DatabaseSeeder extends Seeder
 //        });
 //
         factory(Setting::class, 1)->create();
+
+        factory(Service::class, 200)->create();
 //
 //
 //        /**
@@ -164,22 +179,20 @@ class DatabaseSeeder extends Seeder
 //        factory(Expense::class, 200)->create();
 //
 //
-//        /**
-//         * Company seeder
-//         */
-//
-        factory(Company::class, 20)->create();
 //
 //        factory(CompanyTransaction::class, 200)->create();
     }
 //
     private function generateProductSerialArray(){
-        $faker = new Faker();
+        $faker = Faker::create();
         $digits = $faker->numberBetween(3, 5);
+
         $data = [];
         for($i = 0; $i<=$digits; $i++){
-            $data['product_serial'] = $faker->unique()->randomDigit;
-            $data['is_sold'] = $faker->numberBetween(0, 1);
+            $serial = new ProductSerial();
+            $serial->product_serial = $faker->unique()->randomDigit;
+            $serial->is_sold = $faker->numberBetween(0, 1);
+            $data[$i] = $serial;
         }
 //
         return $data;

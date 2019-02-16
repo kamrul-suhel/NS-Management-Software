@@ -13,7 +13,7 @@ use App\Transaction;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Faker\Factory as Faker;
-class DatabaseSeeder extends Seeder
+class DatabaseSeeder2 extends Seeder
 {
     /**
      * Run the database seeds.
