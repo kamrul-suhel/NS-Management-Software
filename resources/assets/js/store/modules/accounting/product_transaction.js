@@ -12,6 +12,11 @@ const state = {
     afterExpenseProfit:'',
     afterDueProfit: 0,
 
+    totalService:0,
+    totalServiceAmount:0,
+    serviceAmountDue:0,
+    serviceAmountPaid:0
+
 }
 
 const getters = {
@@ -56,6 +61,22 @@ const getters = {
 
     getAfterDueProfit(state){
         return state.afterDueProfit;
+    },
+
+    getTotalService(state){
+        return state.totalService
+    },
+
+    getTotalServiceAmount(state){
+        return state.totalServiceAmount
+    },
+
+    getServiceAmountDue(state){
+        return state.serviceAmountDue
+    },
+
+    getServiceAmountPaid(state){
+        return state.serviceAmountPaid
     }
 }
 
@@ -113,6 +134,22 @@ const mutations = {
 
     setAfterDueProfit(state, value){
         state.afterDueProfit = value;
+    },
+
+    setTotalService(state, value){
+        state.totalService = value
+    },
+
+    setTotalServiceAmount(state, value){
+        state.totalServiceAmount = value
+    },
+
+    setServiceAmountDue(state, value){
+        state.serviceAmountDue = value
+    },
+
+    setServiceAmountPaid(state, value){
+        state.serviceAmountPaid = value
     }
 }
 
