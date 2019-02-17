@@ -202,6 +202,7 @@ const actions = {
                 commit('setProfit', response.data.total_profit);
                 commit('setAfterExpenseProfit', response.data.profit_after);
                 commit('setAfterDueProfit', response.data.total_profit_after_due);
+                commit('setTotalServiceAmount', response.data.service_amount);
             });
     }
 }
