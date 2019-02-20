@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Rent;
 
 use App\Http\Controllers\ApiController;
 use App\Rent;
+use App\Room;
 use App\Store;
 use App\Traits\ApiResponser;
 use App\Transaction;
@@ -74,6 +75,29 @@ class RentController extends ApiController
     public function store(Request $request)
     {
         //
+        $rent = new Rent();
+        $request->has('room_id') ? $rent->room_id = $request->room_id : 0;
+        $request->has('hotel_id') ? $rent->hotel_id = $request->hotel_id : 0;
+        $request->has('staff_id') ? $rent->staff_id = $request->staff_id : 0;
+        $request->has('name') ? $rent->client_name = $request->name : '';
+        $request->has('father_name') ? $rent->father_name = $request->father_name : '';
+        $request->has('ni_number') ? $rent->ni_number = $request->ni_number : '';
+        $request->has('address') ? $rent->client_address = $request->address : '';
+        $request->has('phone') ? $rent->client_phone = $request->phone : '';
+        $request->has('advance') ? $rent->advance = $request->advance : '';
+
+        // Mysql date & time
+        $date = $request->checkin . ' '. date('H:i:s');
+
+        $request->has('checkin') ? $rent->check_in = $date : '';
+
+        $rent->save();
+
+        $room = Room::findOrfail($request->room_id);
+        $room->status = 'unavailable';
+        $room->save();
+
+        return response()->json($rent);
     }
 
     /**

@@ -29,11 +29,6 @@ Route::resource('buyers.products','Buyer\BuyerProductController',['only' => ['in
 */
 
 Route::resource('rooms','Room\RoomController',['only' => ['index', 'show','destroy', 'store','update']]);
-Route::resource('products.transactions','Product\ProductTransactionController',['only' => ['index']]);
-Route::resource('products.buyers','Product\ProductBuyerController',['only' => ['index']]);
-Route::resource('products.categories','Product\ProductCategoryController',['except' => ['edit','show','create','store']]);
-Route::resource('customers.transactions','Product\ProductBuyerTransactionController',['only' => ['store']]);
-Route::post('customer/{customer_id}/due/transactions', 'Customer\CustomerDueController@store')->name('customer.due.transaction');
 
 
 /*

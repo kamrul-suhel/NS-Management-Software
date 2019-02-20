@@ -25,6 +25,8 @@
     import  NavigationComponent  from './Layout/NavigationComponent.vue';
     import  LoginEventBus  from '../event_bus/login-event-bus';
 
+    import {mapGetters} from 'vuex'
+
     export default {
         name: 'App',
         components: {
@@ -42,22 +44,21 @@
             source: String
         },
 
+        computed: {
+            ...mapGetters({
+                userId: 'getUserId'
+            })
+        },
+
+        watch: {
+            userId() {
+                this.initialize();
+            }
+        },
+
         created(){
 
-            axios.get('/islogin').then((response) => {
-                if(!response.data.error){
-                    this.login = true;
-                    this.$store.commit('setUser', response.data.user);
-                    this.$store.commit('setShop', response.data.hotel);
-
-                    let route = this.$route.name;
-                    if(route != 'login'){
-                        this.$router.push({name: route});
-                        return;
-                    }
-                    this.$router.push({name: 'home'})
-                }
-            })
+            this.initialize();
 
             LoginEventBus.$on('successLogin', ()=> {
                 this.login = true;
@@ -70,6 +71,23 @@
         },
 
         methods: {
+
+            initialize(){
+                axios.get('/islogin').then((response) => {
+                    if(!response.data.error){
+                        this.login = true;
+                        this.$store.commit('setUser', response.data.user);
+                        this.$store.commit('setShop', response.data.hotel);
+
+                        let route = this.$route.name;
+                        if(route != 'login'){
+                            this.$router.push({name: route});
+                            return;
+                        }
+                        this.$router.push({name: 'home'})
+                    }
+                })
+            },
 
             // Reset to the last barcode before hitting enter (whatever anything in the input box)
             resetBarcode () {

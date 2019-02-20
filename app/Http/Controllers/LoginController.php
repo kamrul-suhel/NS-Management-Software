@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class LoginController extends Controller
 {
     use ApiResponser;
+
     //
 
     public function login(Request $request)
@@ -44,20 +45,23 @@ class LoginController extends Controller
 
     }
 
-    public function isLogin(Request $request){
+    public function isLogin(Request $request)
+    {
         $user = Auth::user();
+        if (!$user) {
+
+            return response()->json(['error' => 'not login']);
+        }
+
         $hotel = Hotel::where('id', $user->hotel_id)->first();
         $data['user'] = $user;
         $data['hotel'] = $hotel;
 
-        if($user){
-            return response()->json($data);
-        }else{
-            return response()->json(['error'=> 'not login']);
-        }
+        return response()->json($data);
     }
 
-    public function showLoginForm(){
+    public function showLoginForm()
+    {
         return view('welcome');
     }
 }

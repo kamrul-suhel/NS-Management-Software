@@ -24,6 +24,13 @@ class RoomController extends ApiController
         $shopId = $request->has('shopId') ? $request->shopId : null;
 
         $rooms = Room::where('hotel_id', $shopId);
+
+        if($request->has('check_in')){
+            $rooms = $rooms->where('status', 'available')
+                ->get();
+            return $this->showAll($rooms);
+        }
+
         $rooms = $rooms->get();
 
         $totalRooms = $rooms->count();

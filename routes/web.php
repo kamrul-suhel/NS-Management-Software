@@ -46,6 +46,14 @@ Route::get('/rents', function(){
     return view('welcome');
 });
 
+Route::get('/checkin', function(){
+    return view('welcome');
+});
+
+Route::get('/checkout', function(){
+    return view('welcome');
+});
+
 Route::get('/categories', function(){
     return view('welcome');
 });
@@ -59,12 +67,6 @@ Route::resource('customers.transactions', 'Customer\CustomerTransitionController
 
 Route::resource('hotels', 'HotelController')->only(['index', 'update', 'show','store']);
 
-Route::get('transaction/{id}/print', 'Transaction\TransactionController@showPrint');
-Route::get('transaction/{id}/edit', 'Transaction\TransactionController@edit');
-Route::get('transaction/create', 'Transaction\TransactionController@create');
-Route::post('transaction/{id}/edit', 'Transaction\TransactionController@edit');
-
-
 
 /**
  * Expense frontend route
@@ -72,16 +74,6 @@ Route::post('transaction/{id}/edit', 'Transaction\TransactionController@edit');
 
 Route::get('expense', 'Expense\ExpenseController@index')->name('expense.show');
 Route::get('expensecategories', 'ExpenseCategory\ExpenseCategoryController@index')->name('expense.category.show');
-
-
-/**
- * Company frontend route
- */
-
-Route::get('company', 'Company\CompanyController@index')->name('company');
-
-Route::get('companytransaction', 'Company\CompanyController@index')->name('company');
-
 
 
 /**

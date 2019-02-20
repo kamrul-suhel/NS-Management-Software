@@ -24,7 +24,7 @@ class CreateRentsTable extends Migration
             $table->text('client_address');
             $table->string('client_phone', 30)->nullable()->index();
             $table->float('advance')->unsigned()->index()->nullable()->default(0);
-            $table->float('total')->unsigned()->index();
+            $table->float('total')->unsigned()->index()->nullable();
             $table->float('discount_amount')->unsigned()->nullable();
             $table->dateTime('check_in')->index()->nullable();
             $table->dateTime('check_out')->index()->nullable();
