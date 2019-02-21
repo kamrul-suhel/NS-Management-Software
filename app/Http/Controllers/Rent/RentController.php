@@ -24,8 +24,15 @@ class RentController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        if($request->has('room_id')){
+            $rent = Rent::where('room_id', $request->room_id)
+                ->orderBy('created_at', 'DESC')
+                ->first();
+            return $this->showOne($rent);
+        }
+
         $rents = Rent::with(['room', 'staff'])
             ->orderBy('id', 'DESC')
             ->get();

@@ -48,4 +48,8 @@ class Rent extends Model
      public function rentUser(){
          return $this->belongsTo('App\User', 'staff_id', 'id');
      }
+
+     public function staff(){
+         return $this->belongsTo('App\User', 'staff_id', 'id');
+     }
 }

@@ -25,8 +25,16 @@ class RoomController extends ApiController
 
         $rooms = Room::where('hotel_id', $shopId);
 
+        // Check in time get all available room
         if($request->has('check_in')){
             $rooms = $rooms->where('status', 'available')
+                ->get();
+            return $this->showAll($rooms);
+        }
+
+        // Check in time get all unavailable room
+        if($request->has('check_out')){
+            $rooms = $rooms->where('status', 'unavailable')
                 ->get();
             return $this->showAll($rooms);
         }
