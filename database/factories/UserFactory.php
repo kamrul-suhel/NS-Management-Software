@@ -165,7 +165,7 @@ $factory->define(App\Company::class, function (Faker $faker) {
     $store = Store::all()->random();
     return [
         //
-        'store_id' => $store->id,
+//        'store_id' => $store->id,
         'name' => $faker->company,
         'address' => $faker->address,
         'description' => $faker->paragraph(1),
