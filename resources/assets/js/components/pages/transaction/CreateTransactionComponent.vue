@@ -30,7 +30,7 @@
                             </v-layout>
 
                             <product-component
-                                    v-for="(code, index) in total_product"
+                                    v-for="(code, index) in totalProduct"
                                     :key="index"
                                     :code="code"
                                     :index="index"
@@ -38,7 +38,7 @@
 
                             <v-layout row wrap>
                                 <v-flex xs12>
-                                    <v-btn fab small @click="total_product++">
+                                    <v-btn fab small @click="addProduct()">
                                         <v-icon>add</v-icon>
                                     </v-btn>
                                 </v-flex>
@@ -156,7 +156,7 @@
             items: [],
             allProductData: [],
 
-            total_product: [],
+            totalProduct: [],
 
             customers: [{text: 'No customer', value: 1}],
             selectedCustomer: {},
@@ -325,10 +325,14 @@
                 }, 300)
             },
 
+            addProduct() {
+                this.totalProduct.push('96557');
+            },
+
             onBarcodeScanned(code) {
                 console.log('barcode scanned code : ', code);
                 this.barcodeDailog = true;
-                this.total_product.push(code);
+                this.totalProduct.push(code);
                 this.barcode = code;
                 if (code !== '') {
                     this.barcodeDailog = true;

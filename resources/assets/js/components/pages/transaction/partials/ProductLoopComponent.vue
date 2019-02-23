@@ -71,7 +71,7 @@
             }
         },
 
-        props: ['index'],
+        props: ['index','code'],
         watch: {
             selectedProduct(val) {
                 if (val) {
@@ -90,7 +90,8 @@
         },
 
         created() {
-            this.initialize()
+            this.initialize();
+            console.log('receiving code: ', this.code);
         },
 
         methods: {
@@ -100,7 +101,11 @@
 
             initialize() {
 
-                const url = '/api/products?shopId=' +this.$store.getters.getSelectedShopId;
+                let url = '/api/products?shopId=' +this.$store.getters.getSelectedShopId;
+
+                if(this.code && this.code !== 1){
+                    url = url+ '&code='+this.code
+                }
 
                 //get all product for store
                 axios.get(url)

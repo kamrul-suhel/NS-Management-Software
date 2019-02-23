@@ -38,9 +38,7 @@ class ProductController extends ApiController
         $products = $products->get();
 
         $totalProduct = $products->count();
-        $totalStock = $products->sum(function($product){
-            return ($product->quantity * $product->quantity_per_feet + $product->feet) * $product->purchase_price;
-        });
+        $totalStock = $products->sum('quantity');
 
         $avaliable_product = Product::where('status', 'available');
         if($shopId){
@@ -53,13 +51,24 @@ class ProductController extends ApiController
             }
         $unavaliable_product = $unavaliable_product->count();
 
+            // If scanned barcode or IMEI code
+        $selectedProduct = new Product();
+        if($request->has('code') && $request->code !== 1){
+            $code = $request->code;
+            $selectedProduct = $selectedProduct->with('serials')
+                ->whereHas('serials', function($query) use ($code){
+                $query->where('barcode', $code)->orWhere('imei', $code);
+            })->get();
+        }
+
         $data = collect([
             'products' => $products,
             'quantity_types' => Product::getQuantityType(),
             'total_stock' => number_format($totalStock,2,'.',','),
             'avaliable_product' => $avaliable_product,
             'unavaliable_product' => $unavaliable_product,
-            'total_product' => $totalProduct
+            'total_product' => $totalProduct,
+            'selected_product' => $selectedProduct
         ]);
         return $this->showAll($data);
     }
