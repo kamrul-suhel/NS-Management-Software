@@ -14,169 +14,283 @@
         <!--</v-card>-->
         <!--</v-dialog>-->
 
-        <v-container grid-list-md class="pt-0">
-            <v-layout row wrap>
-                <v-flex xs12 class="pt-0">
-                    <h2>Products</h2>
-                </v-flex>
-            </v-layout>
-
-            <v-divider class="mb-3 dark"></v-divider>
-
-            <v-layout row wrap>
-                <v-flex xs6>
-                    <v-card flat class="cyan lighten-1 white--text">
-                        <v-card-title>Total product</v-card-title>
-                        <v-card-text class="pt-0">
-                            <h2 class="display-2 white--text text-xs-center">
-                                <strong>{{total_product}}</strong>
-                            </h2>
-                        </v-card-text>
-                    </v-card>
-                </v-flex>
-
-                <v-flex xs6>
-                    <v-card flat class="light-blue white--text">
-                        <v-card-title>Product Available</v-card-title>
-                        <v-card-text class="pt-0">
-                            <h2 class="display-2 white--text text-xs-center">
-                                <strong>{{avaliable_product}}</strong>
-                            </h2>
-                        </v-card-text>
-                    </v-card>
-                </v-flex>
-
-                <v-flex xs6>
-                    <v-card flat class="light-green lighten-1 white--text">
-                        <v-card-title>Not is stock</v-card-title>
-                        <v-card-text class="pt-0">
-                            <h2 class="display-2 white--text text-xs-center">
-                                <strong>{{unavaliable_product}}</strong>
-                            </h2>
-                        </v-card-text>
-                    </v-card>
-                </v-flex>
-
-                <v-flex xs6>
-                    <v-card flat class="orange darken-1 white--text">
-                        <v-card-title>Total Stock</v-card-title>
-                        <v-card-text class="pt-0">
-                            <h2 class="display-2 white--text text-xs-center">
-                                <span style="font-size:12px">TK.</span>
-                                <strong>{{total_stock}}</strong>
-                            </h2>
-                        </v-card-text>
-                    </v-card>
-                </v-flex>
-            </v-layout>
-        </v-container>
-
         <v-container grid-list-md>
             <v-layout row wrap>
-                <v-card width="100%">
+                <v-card class="px-2 py-2">
                     <v-card-title>
-                        <v-btn dark fab small color="dark" @click="$router.push('products/add')">
-                            <v-icon>add</v-icon>
-                        </v-btn>
-
-                        <v-spacer></v-spacer>
-                        <v-text-field
-                                dark
-                                color="dark"
-                                prepend-icon="search"
-                                label="Search"
-                                v-model="search"></v-text-field>
+                        <span class="headline">{{ formTitle }}</span>
                     </v-card-title>
 
                     <v-card-text>
-                        <v-data-table
-                                :headers="headers"
-                                :items="items"
-                                :search="search"
-                                :pagination.sync="pagination"
-                                :rows-per-page-items="row_per_page"
-                                :custom-filter="customFilter"
-                        >
+                        <v-form ref="product_form"
+                                v-model="valid"
+                                lazy-validation>
+                            <v-container fluid grid-list-md>
+                                <v-layout row wrap>
+                                    <v-flex xs12>
+                                        <v-text-field
+                                                label="Title"
+                                                v-model="editedItem.name"
+                                                dark
+                                                color="dark"
+                                                :rules="[v => !!v || 'Title is required']"
+                                                required
+                                        ></v-text-field>
+                                    </v-flex>
 
-                            <template slot="items" slot-scope="props">
-                                <tr @click="props.expanded = !props.expanded">
-                                    <td>{{ props.item.created_at | convertDate }}</td>
-                                    <td class="text-xs-center">{{ props.item.name }}</td>
-                                    <td class="text-xs-center">{{ props.item.quantity }}</td>
-                                    <td class="text-xs-center">{{ props.item.quantity_type }}</td>
-                                    <td class="text-xs-center">TK. {{ props.item.sale_price }}</td>
-                                    <td class="text-xs-center">TK. {{ props.item.purchase_price }}</td>
-                                    <td class="text-xs-center">{{ props.item.status }}</td>
-                                    <td class="justify-start layout px-0">
-                                        <v-btn dark
-                                               color="dark"
-                                               icon
-                                               class="mx-0"
-                                               @click="editItem(props.item)">
-                                            <v-icon color="white">edit</v-icon>
+                                    <v-flex xs12>
+                                        <v-textarea
+                                                dark
+                                                color="dark"
+                                                label="Description"
+                                                v-model="editedItem.description"
+                                                :rules="[v => !!v || 'Description is required']"
+                                                required
+                                        ></v-textarea>
+                                    </v-flex>
+
+                                    <v-flex xs6>
+                                        <v-select
+                                                dark
+                                                color="dark"
+                                                label="Is this product has serial"
+                                                :items="isSerials"
+                                                required
+                                                :rules="[v => !!v || 'This field required']"
+                                                v-model="isSerial"></v-select>
+                                    </v-flex>
+
+                                    <v-flex xs6>
+                                        <v-select
+                                                dark
+                                                color="dark"
+                                                label="Quantity type"
+                                                :items="quantity_type"
+                                                v-model="editedItem.quantity_type"
+                                                required
+                                                :rules="[v => !!v || 'Quantity type is required']"
+                                                menu-props="auto"
+                                        ></v-select>
+                                    </v-flex>
+
+                                    <v-flex xs12 v-if="editedItem.quantity_type === 'feet'">
+                                        <v-text-field
+                                                label="How much feets = 1 coil / 1 pipe"
+                                                dark
+                                                v-model="quantityToFeet"
+                                                mask="####"
+                                                :error="quantityToFeetError"
+                                                messages="Please provide per quantity how much feets"
+                                                counter
+                                                :reles="[v => !!v && v <= 0 || 'Field is required' ]"
+                                                color="dark">
+                                        </v-text-field>
+                                    </v-flex>
+
+                                    <v-flex xs12
+                                            v-for="(company, totalCompanyIndex) in totalCompanies"
+                                            :key="totalCompanyIndex">
+                                        <v-layout row wrap
+                                        >
+                                            <v-flex xs6>
+                                                <v-select
+                                                        dark
+                                                        color="dark"
+                                                        label="Which company"
+                                                        :items="company.companies"
+                                                        v-model="company.selectedCompany"
+                                                        item-text="name"
+                                                        item-value="id"
+                                                        required
+                                                        :reles="[v => !!v || 'Select A company']"
+                                                        return-object
+                                                ></v-select>
+                                            </v-flex>
+
+
+                                            <v-flex :class="{xs3: editedItem.quantity_type === 'feet', xs6: editedItem.quantity_type !== 'feet' }">
+                                                <v-text-field
+                                                        label="How many quantity"
+                                                        dark
+                                                        v-model="company.quantity"
+                                                        required
+                                                        mask="####"
+                                                        :reles="[v => !!v || 'Quantity is required' ]"
+                                                        color="dark">
+                                                </v-text-field>
+                                            </v-flex>
+
+                                            <v-flex xs3 v-if="editedItem.quantity_type === 'feet'">
+                                                <v-text-field
+                                                        label="How many feet"
+                                                        dark
+                                                        v-model="company.feet"
+                                                        required
+                                                        append-icon="equalizer"
+                                                        mask="####"
+                                                        :reles="[v => !!v || 'Quantity is required' ]"
+                                                        color="dark">
+                                                </v-text-field>
+
+                                                <v-btn
+                                                        right
+                                                        fab
+                                                        dark
+                                                        small
+                                                        color="error"
+                                                        style="width:20px;height:20px;position:absolute"
+                                                        @click="onRemoveCompany(totalCompanyIndex)"
+                                                >
+                                                    <v-icon>remove</v-icon>
+                                                </v-btn>
+                                            </v-flex>
+
+                                            <v-layout row wrap v-if="isSerial === 'true'">
+                                                <v-flex xs6>
+                                                    <v-autocomplete
+                                                            dark
+                                                            color="white"
+                                                            label="Select warranty"
+                                                            v-model="company.product_warranty"
+                                                            :items="warranties"
+                                                    ></v-autocomplete>
+                                                    <span class="red--text"
+                                                          v-if="productWarrantyError">Please select warranty</span>
+                                                </v-flex>
+
+                                                <v-flex xs6>
+                                                    <v-layout row wrap>
+                                                        <v-flex xs3
+                                                                v-for="(serial, index) in company.serials"
+                                                                :key="index">
+                                                            <v-text-field
+                                                                    dark
+                                                                    color="dark"
+                                                                    :label="'Product Serial ' +  (Number(index) + 1)"
+                                                                    v-model="company.serials[index]"
+                                                            ></v-text-field>
+                                                        </v-flex>
+                                                    </v-layout>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-layout>
+                                    </v-flex>
+
+
+                                    <v-flex xs12>
+                                        <v-btn
+                                                dark
+                                                color="dark"
+                                                class="ml-0"
+                                                @click="onAddCompany()">Add company
                                         </v-btn>
-                                        <v-btn icon
-                                               dark
-                                               color="dark"
-                                               class="mx-0"
-                                               @click="openDeleteDialog(props.item)">
-                                            <v-icon color="white">delete</v-icon>
-                                        </v-btn>
-                                    </td>
-                                </tr>
-                            </template>
+                                    </v-flex>
 
-                            <v-divider></v-divider>
+                                    <v-flex xs6>
+                                        <v-text-field
+                                                label="Quantity"
+                                                type="number"
+                                                dark
+                                                required
+                                                :rules="[v => !!v || 'Quantity is required']"
+                                                color="dark"
+                                                placeholder="00.00"
+                                                disabled
+                                                v-model="editedItem.quantity"
+                                        ></v-text-field>
+                                    </v-flex>
 
-                            <template slot="expand" slot-scope="props">
-                                <v-card flat>
-                                    <v-card-text>
-                                        <table width="100%">
-                                            <tr>
-                                                <td><strong>Serials</strong></td>
-                                            </tr>
 
-                                            <tr v-if="props.item.serials && props.item.serials.length > 0">
-                                                <td v-for="(serial, index) in props.item.serials" :key="index">
-                                                    {{ serial.product_serial }}
-                                                </td>
-                                            </tr>
-                                            <tr v-else>
-                                                <td>This product has no serial.</td>
-                                            </tr>
-                                        </table>
+                                    <v-flex xs6>
+                                        <v-select
+                                                dark
+                                                color="dark"
+                                                :items="status"
+                                                v-model="editedItem.status"
+                                                label="Status"
+                                                required
+                                                :rules="[v => !!v || 'Status is required']"
+                                                menu-props="auto"
+                                        ></v-select>
+                                    </v-flex>
 
-                                        <v-divider></v-divider>
+                                    <v-flex xs6>
+                                        <v-text-field
+                                                dark
+                                                color="dark"
+                                                :label="editedItem.quantity_type === 'feet' ? 'Sale price 1 Feet' : 'Sale price 1 item'"
+                                                type="number"
+                                                placeholder="00.00"
+                                                prefix="TK"
+                                                required
+                                                :rules="[v => !!v  || 'Sale price is required']"
+                                                v-model="editedItem.sale_price"
+                                        ></v-text-field>
+                                    </v-flex>
 
-                                        <table with="100%">
-                                            <tr>
-                                                <td><strong>Companies</strong></td>
-                                                <td><strong>Mobile</strong></td>
-                                                <td><strong>Phone</strong></td>
-                                                <td><strong>Quantity</strong></td>
-                                                <td><strong>Purchased date</strong></td>
-                                            </tr>
-                                            <tr v-for="(company, index) in props.item.companies" :key="index">
-                                                <td>{{ company.name}}</td>
-                                                <td>{{ company.mobile }}</td>
-                                                <td>{{ company.phone }}</td>
-                                                <td>{{ company.pivot.product_quantity }}</td>
-                                                <td>{{ company.pivot.created_at | convertDate }}</td>
-                                            </tr>
-                                        </table>
-                                    </v-card-text>
-                                </v-card>
-                            </template>
+                                    <v-flex xs6>
+                                        <v-text-field
+                                                dark
+                                                color="dark"
+                                                :label="editedItem.quantity_type === 'feet' ? 'Purchase price 1 Feet' : 'Purchase price 1 item'"
+                                                type="number"
+                                                placeholder="00.00"
+                                                prefix="TK"
+                                                required
+                                                :rules="[v => !!v || 'Purchase price is required']"
+                                                v-model="editedItem.purchase_price">
+                                        </v-text-field>
+                                    </v-flex>
 
-                            <v-alert slot="no-results" :value="true" color="error" icon="warning">
-                                Your search for "{{ search }}" found no results.
-                            </v-alert>
+                                    <v-flex xs6>
+                                        <v-select
+                                                dark
+                                                color="dark"
+                                                label="Categories"
+                                                :items="categories"
+                                                v-model="selectedCategories"
+                                                multiple
+                                                chips
+                                                required
+                                                :rules="[v => !!v || 'Please select category']"
+                                                persistent-hint
+                                                return-object
+                                        >
+                                        </v-select>
+                                    </v-flex>
 
-                            <template slot="no-data">
-                                Sorry no products found
-                            </template>
-                        </v-data-table>
+                                    <v-flex xs3 v-if="editedItem.quantity_type === 'feet'">
+                                        <h4>Total feets is: </h4>
+                                        {{ totalFeets }}
+                                    </v-flex>
+
+                                    <v-flex xs3 v-if="editedItem.quantity_type === 'feet'">
+                                        <h4>Total Quantity is: </h4>
+                                        {{ editedItem.quantity }}
+                                    </v-flex>
+                                </v-layout>
+                            </v-container>
+                        </v-form>
                     </v-card-text>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                                dark
+                                color="dark"
+                                raised
+                                @click.native="close"
+                        >Cancel
+                        </v-btn>
+
+                        <v-btn dark
+                               color="dark"
+                               raised
+                               :disabled="!valid"
+                               @click.native="save">{{ editedIndex === -1 ? 'Create product' :
+                            'Update product' }}
+                        </v-btn>
+                    </v-card-actions>
                 </v-card>
             </v-layout>
         </v-container>
@@ -214,6 +328,7 @@
 
     export default {
         data: () => ({
+            dialog: false,
             search: '',
             pagination: {
                 sortBy: 'name'
@@ -283,7 +398,58 @@
             ],
 
             items: [],
+            status: [
+                {
+                    text: 'Avaliable',
+                    value: 'available'
+                },
+                {
+                    text: 'Unavaliable',
+                    value: 'unavailable'
+                }
+            ],
+            editedIndex: -1,
+            editedItem: {
+                id: '',
+                name: '',
+                description: '',
+                quantity: 0,
+                status: '',
+                sale_price: '',
+                purchase_price: '',
+                quantity_type: ''
+            },
+
+            quantity_type: [],
+
+            categories: [],
+            selectedCategories: [],
+            update_form: false,
+
+            defaultItem: {
+                id: '',
+                name: '',
+                description: '',
+                quantity: '',
+                status: '',
+                sale_price: '',
+                purchase_price: '',
+                quantity_type: ''
+            },
             row_per_page: [20, 30, 50, {'text': 'All', 'value': -1}],
+
+            purchase_price_field: false,
+
+            companies: [],
+            selectedCompanies: [],
+
+            isSerials: [{text: 'yes', value: 'true'}, {text: 'No', value: 'false'}],
+            isSerial: '',
+            productSerials: [],
+
+            valid: true,
+
+            productWarrantyError: false,
 
             barcodeDialogvalue: false,
             barcode: ''

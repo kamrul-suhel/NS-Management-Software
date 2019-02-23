@@ -59,6 +59,13 @@
                             },
 
                             {
+                                icon: 'history',
+                                text: 'Add Product',
+                                link:'productsAdd'
+                            },
+
+
+                            {
                                 icon: 'subscriptions',
                                 text: 'Categories',
                                 link:'categories'

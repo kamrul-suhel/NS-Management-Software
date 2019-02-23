@@ -38,14 +38,24 @@ Route::get('/',function(){
     return view('welcome');
 })->middleware('guest');
 
-Route::get('/products', function(){
-    return view('welcome');
-});
+/**
+ * Product Route
+ */
+Route::get('/products', function(){return view('welcome');});
+Route::get('/products/add', function(){return view('welcome');});
 
+
+/**
+ * Category route
+ */
 Route::get('/categories', function(){
     return view('welcome');
 });
 
+
+/**
+ * Transaction route
+ */
 Route::get('/transaction', function(){
 	return view('welcome');
 });
