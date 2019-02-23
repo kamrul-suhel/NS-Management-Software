@@ -30,8 +30,9 @@
                             </v-layout>
 
                             <product-component
-                                        v-for="(product, index) in total_product"
+                                    v-for="(code, index) in total_product"
                                     :key="index"
+                                    :code="code"
                                     :index="index"
                             ></product-component>
 
@@ -111,9 +112,11 @@
                                     <p v-if="paid > 0"><strong>paid: {{ paid }}</strong></p>
                                 </v-flex>
                                 <v-flex xs3 class="text-xs-right">
-                                    <p v-if="selectedPaymentStatus > 1"><strong>Due: {{ total_amount_transactions - paid }}</strong></p>
+                                    <p v-if="selectedPaymentStatus > 1"><strong>Due: {{ total_amount_transactions - paid
+                                        }}</strong></p>
                                     <p><strong>Discount: {{ discount }}</strong></p>
-                                    <p><strong>Grand total: {{ total_amount_transactions - discount - special_discount }}</strong></p>
+                                    <p><strong>Grand total: {{ total_amount_transactions - discount - special_discount
+                                        }}</strong></p>
 
                                 </v-flex>
                             </v-layout>
@@ -140,8 +143,9 @@
 <script>
     import ProductLoopComponent from './partials/ProductLoopComponent';
     import TransactionEventBus from '../../../event_bus/transaction_event';
+
     export default {
-        components:{
+        components: {
             'productComponent': ProductLoopComponent
         },
 
@@ -155,24 +159,24 @@
             total_product: [],
 
             customers: [{text: 'No customer', value: 1}],
-            selectedCustomer:{},
+            selectedCustomer: {},
             previousDue: 0,
-            payment_due:'',
-            paid:'',
-            discount:0,
+            payment_due: '',
+            paid: '',
+            discount: 0,
 
-            paymentStatus:[{text: 'paid', value: 1}, {text: 'Due', value:2}, {text: 'Half paid', value:3}],
-            selectedPaymentStatus:1,
+            paymentStatus: [{text: 'paid', value: 1}, {text: 'Due', value: 2}, {text: 'Half paid', value: 3}],
+            selectedPaymentStatus: 1,
             active: [1, 2],
 
             isWarranty: false,
-            warranty: [{text: 'Yes', value:1 }, {text: 'No', value :0}],
+            warranty: [{text: 'Yes', value: 1}, {text: 'No', value: 0}],
 
-            serial_number:'',
-            length_warranty:'',
+            serial_number: '',
+            length_warranty: '',
 
             service_charge: 0,
-            special_discount : 0,
+            special_discount: 0,
         }),
 
         computed: {
@@ -184,9 +188,9 @@
         watch: {
             selectedProduct(val) {
                 var change_product = '';
-                this.allProductData.forEach(function(product) {
-                    if(val === product.id){
-                        change_product =  product;
+                this.allProductData.forEach(function (product) {
+                    if (val === product.id) {
+                        change_product = product;
                     }
                 });
                 this.current_product_quantity = change_product.quantity;
@@ -194,8 +198,8 @@
 
             selectedCustomer(val) {
                 this.previousDue = 0;
-                let url = '/transaction/due/create?customer_id='+val.value;
-                axios.get(url).then((response)=>{
+                let url = '/transaction/due/create?customer_id=' + val.value;
+                axios.get(url).then((response) => {
                     this.previousDue = response.data.previous_record.previousDue ? response.data.previous_record.previousDue : 0;
                 })
             },
@@ -213,7 +217,7 @@
                 let discount = 0;
                 totalTransactions.forEach((product) => {
                     total += product.product.sale_price * product.selected_quantity;
-                    discount += ((product.product.sale_price * product.selected_quantity) * product.selected_percentage) / 100 ;
+                    discount += ((product.product.sale_price * product.selected_quantity) * product.selected_percentage) / 100;
                 });
 
                 this.discount = discount;
@@ -228,12 +232,12 @@
                 //get all product
                 axios.get('/api/products')
                     .then((response) => {
-                        if(response.data.products){
+                        if (response.data.products) {
                             this.products = response.data.products;
                             this.allProductData = response.data.products;
                             var array_products = [];
-                            this.products.forEach((product)=> {
-                                var product = { text: product.name, value : product.id};
+                            this.products.forEach((product) => {
+                                var product = {text: product.name, value: product.id};
                                 array_products.push(product);
                             })
                             this.products = array_products;
@@ -247,11 +251,11 @@
                 // get all customers
                 axios.get('/customers')
                     .then((response) => {
-                        if(response.data.length > 0){
+                        if (response.data.length > 0) {
                             this.customers = response.data;
                             var array_customer = [];
-                            this.customers.forEach((customer)=> {
-                                var customer = { text: customer.name, value : customer.id};
+                            this.customers.forEach((customer) => {
+                                var customer = {text: customer.name, value: customer.id};
                                 array_customer.push(customer);
                             })
                             this.customers = array_customer;
@@ -265,21 +269,21 @@
 
             },
 
-            selectedWarranty(value){
+            selectedWarranty(value) {
                 this.isWarranty = false;
-                if(value === 1){
+                if (value === 1) {
                     this.isWarranty = true;
                 }
 
-                if(value === 0){
+                if (value === 0) {
                     this.isWarranty = false;
                 }
             },
 
-            onCreateTransaction(){
+            onCreateTransaction() {
                 let form = new FormData()
                 let total = this.total_amount_transactions - this.discount - this.special_discount;
-                let url = '/api/customers/'+this.selectedCustomer.value+'/transactions';
+                let url = '/api/customers/' + this.selectedCustomer.value + '/transactions';
 
                 form.append('payment_status', this.selectedPaymentStatus);
                 form.append('discount', this.discount);
@@ -290,7 +294,7 @@
                 form.append('store_id', this.$store.getters.getSelectedShopId);
                 form.append('seller_id', this.$store.getters.getUserId);
 
-                if(this.selectedPaymentStatus > 1){
+                if (this.selectedPaymentStatus > 1) {
                     form.append('payment_due', total - this.paid);
                 }
                 form.append('paid', this.paid);
@@ -299,16 +303,16 @@
                 form.append('products', products);
 
                 axios.post(url, form)
-                    .then((response)=>{
-                        if(response.data){
+                    .then((response) => {
+                        if (response.data) {
                             TransactionEventBus.createProduct('Transaction successfully created');
                             this.$router.push({'name': 'transaction'});
                         }
                     });
             },
 
-            onCancelTransaction(){
-              this.$router.push({name: 'transaction'});
+            onCancelTransaction() {
+                this.$router.push({name: 'transaction'});
             },
 
 
