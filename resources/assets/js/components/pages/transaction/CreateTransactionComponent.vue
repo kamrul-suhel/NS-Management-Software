@@ -6,7 +6,7 @@
                         raised
                         width="100%">
                     <v-card-text>
-                        <h2>Create Transaction</h2>
+                        <h2>Sale product</h2>
                         <v-container grid-list-md>
                             <v-layout row wrap>
                                 <v-flex xs12>
@@ -30,7 +30,7 @@
                             </v-layout>
 
                             <product-component
-                                    v-for="(product, index) in total_product"
+                                        v-for="(product, index) in total_product"
                                     :key="index"
                                     :index="index"
                             ></product-component>
@@ -55,6 +55,18 @@
                                     ></v-select>
                                 </v-flex>
 
+                                <v-flex xs6 v-if="selectedPaymentStatus > 1">
+                                    <v-text-field
+                                            dark
+                                            color="dark"
+                                            label="How much paid"
+                                            v-model="paid"
+                                            type="number"
+                                            hint="Put how much paid">
+
+                                    </v-text-field>
+                                </v-flex>
+
                                 <v-flex xs6>
                                     <v-text-field
                                             dark
@@ -67,9 +79,7 @@
 
                                     </v-text-field>
                                 </v-flex>
-                            </v-layout>
 
-                            <v-layout row wrap>
                                 <v-flex xs6>
                                     <v-text-field
                                             dark
@@ -78,9 +88,7 @@
                                             v-model="special_discount"
                                     ></v-text-field>
                                 </v-flex>
-                            </v-layout>
 
-                            <v-layout row wrap>
                                 <v-flex xs6>
                                     <v-text-field
                                             dark
@@ -92,17 +100,7 @@
                             </v-layout>
 
                             <v-layout row wrap>
-                                <v-flex xs6 v-if="selectedPaymentStatus > 1">
-                                    <v-text-field
-                                            dark
-                                            color="dark"
-                                            label="How much paid"
-                                            v-model="paid"
-                                            type="number"
-                                            hint="Put how much paid">
 
-                                    </v-text-field>
-                                </v-flex>
                             </v-layout>
 
 
@@ -154,7 +152,7 @@
             items: [],
             allProductData: [],
 
-            total_product: 1,
+            total_product: [],
 
             customers: [{text: 'No customer', value: 1}],
             selectedCustomer:{},
@@ -206,6 +204,9 @@
         created() {
             this.initialize();
 
+            //Barcode scannser
+            this.$barcodeScanner.init(this.onBarcodeScanned);
+
             TransactionEventBus.$on('updateProduct', () => {
                 let totalTransactions = this.$store.getters.getProduct;
                 let total = 0;
@@ -242,7 +243,6 @@
                     .catch((error) => {
                         console.log(error)
                     });
-
 
                 // get all customers
                 axios.get('/customers')
@@ -319,6 +319,17 @@
                     this.editedItem = Object.assign({}, this.defaultItem)
                     this.editedIndex = -1
                 }, 300)
+            },
+
+            onBarcodeScanned(code) {
+                console.log('barcode scanned code : ', code);
+                this.barcodeDailog = true;
+                this.total_product.push(code);
+                this.barcode = code;
+                if (code !== '') {
+                    this.barcodeDailog = true;
+                    this.barcode = code;
+                }
             },
 
 

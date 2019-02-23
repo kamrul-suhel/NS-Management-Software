@@ -1,6 +1,6 @@
 <template>
     <v-layout row wrap>
-        <v-flex xs4>
+        <v-flex xs6>
             <v-autocomplete
                     dark
                     color="dark"
@@ -15,7 +15,7 @@
             ></v-autocomplete>
         </v-flex>
 
-        <v-flex xs4>
+        <v-flex xs6>
             <v-text-field
                     dark
                     color="dark"
@@ -26,20 +26,6 @@
                     :hint="'How much you want to sale. your stock is : ' + current_product_quantity"
                     persistent-hint
                     v-model="selectedQuantity"
-            ></v-text-field>
-        </v-flex>
-
-        <v-flex xs4>
-            <v-text-field
-                    dark
-                    color="dark"
-                    label="Discount percentage %"
-                    type="number"
-                    min="1"
-                    placeholder="Select how much you want to give discount this product."
-                    hint="Must be percentage."
-                    persistent-hint
-                    v-model="selectedPercentage"
             ></v-text-field>
         </v-flex>
 
@@ -98,7 +84,6 @@
             },
 
             selectedPercentage(){
-                console.log('calling');
                 this.updateStore(this.selectedProduct.value);
             }
 
