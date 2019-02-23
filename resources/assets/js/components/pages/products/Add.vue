@@ -375,10 +375,12 @@
                         }
                         company.serials = [];
                         for (let i = 0; i < company.quantity; i++) {
-                            if (serials.length > 0) {
-                                company.serials.push({...serials[i]});
-                            } else {
-                                company.serials.push({});
+                            if(i < 20){
+                                if (serials.length > 0) {
+                                    company.serials.push({...serials[i]});
+                                } else {
+                                    company.serials.push({});
+                                }
                             }
 
                         }
@@ -592,7 +594,7 @@
                         this.items.push(response.data);
                         this.snackbar_message = 'Product ' + this.editedItem.name + ' successfully created.';
                         this.snackbar = true;
-                        // this.$router.push({name: 'products'});
+                        this.$router.push({name: 'products'});
                     })
             },
 
