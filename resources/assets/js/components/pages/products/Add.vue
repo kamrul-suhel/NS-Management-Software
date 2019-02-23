@@ -375,7 +375,7 @@
                         }
                         company.serials = [];
                         for (let i = 0; i < company.quantity; i++) {
-                            if(i < 20){
+                            if(i < 100){
                                 if (serials.length > 0) {
                                     company.serials.push({...serials[i]});
                                 } else {
