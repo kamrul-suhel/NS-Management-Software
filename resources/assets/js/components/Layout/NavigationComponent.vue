@@ -81,6 +81,12 @@
                                 icon: 'compare_arrows',
                                 text: 'Transitions',
                                 link: 'transaction'
+                            },
+
+                            {
+                                icon: 'compare_arrows',
+                                text: 'Sale product',
+                                link: 'create_transaction'
                             }
                         ]
                     },
