@@ -82,27 +82,15 @@ class ProductController extends ApiController
      */
     public function store(Request $request)
     {
-        $totalCompanies = json_decode($request->totalCompanies);
+        $totalCompanies = json_decode($request->totalCompanies, true);
 
         // Product create
-        $product = $request->except('totalCompanies');
+        $product = $request->except(['totalCompanies', 'categories','product_type']);
         $product['image'] = '1.jpg';
         //change this when auth is set
         $product['seller_id'] = $request->seller_id;
 
-        if($request->has('quantity_type') && $request->quantity_type !== 'pic'){
-            // Get quantity_per_feet.
-            $quantityPerFeet = $request->total_feet - ($request->quantity * $request->quantity_per_feet);
-
-            $product['feet'] = $quantityPerFeet;
-        }else{
-            $product['feet'] = 0;
-            $product['quantity_per_feet'] = 1;
-        }
-
-
-        // Get barcode
-        $product['barcode'] = Product::generateBarcode();
+        $product['is_barcode'] = $request->product_type;
 
         $product = Product::create($product);
 
@@ -110,22 +98,31 @@ class ProductController extends ApiController
         $productSerialsWithCompany =[];
         $productCompany = [];
         foreach($totalCompanies as $currCompany){
-
             $company = [];
-            $company['company_id'] = $currCompany->selectedCompany->id;
-            $company['product_quantity'] = $currCompany->quantity;
-            $company['product_feet'] = isset($currCompany->feet) ? $currCompany->feet : 0;
+            $company['company_id'] = $currCompany['selectedCompany']['id'];
+            $company['product_quantity'] = $currCompany['quantity'];
 
             $productCompany[] = $company;
-            if($currCompany->serials){
-                foreach($currCompany->serials as $currSerial){
+            if($currCompany['serials'] && !empty($currCompany['serials'])){
+                foreach($currCompany['serials'] as $currSerial){
                     $serial = [];
                     $serial['is_sold'] = 0;
-                    $serial['product_serial'] = $currSerial;
-                    $serial['product_warranty'] = $currCompany->product_warranty;
-                    $serial['company_id'] = $currCompany->selectedCompany->id;
+                    $serial['color'] = $currSerial['color'];
+                    $serial['barcode'] = $currSerial['barcode'];
+                    $serial['imei'] = $currSerial['imei'];
+                    $serial['product_warranty'] = $currCompany['product_warranty'];
+                    $serial['company_id'] = $currCompany['selectedCompany']['id'];
                     $productSerialsWithCompany[] = $serial;
                 }
+            }else{
+                $serial = [];
+                $serial['is_sold'] = 0;
+                $serial['color'] = '';
+                $serial['barcode'] = '';
+                $serial['imei'] = '';
+                $serial['product_warranty'] = $currCompany['product_warranty'];
+                $serial['company_id'] = $currCompany['selectedCompany']['id'];
+                $productSerialsWithCompany[] = $serial;
             }
         }
 

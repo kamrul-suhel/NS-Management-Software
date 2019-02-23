@@ -20,14 +20,11 @@ class CreateProductsTable extends Migration
             $table->string('name');
             $table->string('description', 1000)->nullable();
             $table->integer('quantity')->unsigned();
-            $table->integer('feet')->unsigned()->nullable();
-            $table->integer('quantity_per_feet')->unsigned()->nullable();
             $table->decimal('sale_price')->unsigned()->nullable();
             $table->decimal('purchase_price')->unsigned()->nullable();
-            $table->string('quantity_type')->nullable();
             $table->string('status')->default(Product::UNAVAILABLE_PRODUCT);
             $table->string('image');
-            $table->string('barcode')->nullable()->index();
+            $table->string('is_barcode', 20)->nullable()->index();
             $table->integer('seller_id')->unsigned();
             $table->timestamps();
             $table->softDeletes();

@@ -24,6 +24,8 @@ class Product extends Model
 	const PRODUCTTYPEFEET = 'feet';
 	const PRODUCTTYPEPIC = 'pic';
 
+	const NOWARRANTY = 'No warranty';
+
 
     protected $fillable = [
     	'name',
@@ -38,7 +40,8 @@ class Product extends Model
         'quantity_type',
         'sale_price',
         'purchase_price',
-        'barcode'
+        'barcode',
+        'is_barcode'
     ];
 
     protected $hidden = [

@@ -294,50 +294,6 @@
             ...mapGetters({
                 selectedShop: 'getSelectedShop'
             }),
-
-            formTitle() {
-                return this.editedIndex === -1 ? 'New Product' : 'Edit Product'
-            },
-
-            totalCompanies() {
-                let quantity = 0;
-                let feets = 0;
-                let serials = [];
-                this.selectedCompanies.forEach((company) => {
-                    if (company.serials) {
-                        serials = company.serials;
-                    }
-
-                    feets += Number(company.feet);
-
-                    quantity += Number(company.quantity)
-                    company.serials = [];
-                    for (let i = 0; i < company.quantity; i++) {
-                        if (this.isSerial === 'true') {
-                            if (serials.length > 0) {
-                                company.serials.push(serials[i]);
-                            } else {
-                                company.serials.push('');
-                            }
-                        }
-
-                    }
-                })
-
-                this.editedItem.quantity = quantity;
-
-                if (isNaN(feets)) {
-                    feets = Number(0);
-                }
-
-                this.totalFeets = (quantity * this.quantityToFeet) + feets;
-
-                return this.selectedCompanies;
-            },
-
-            // barcodeDialog(){
-            //     return this.barcodeDialogvalue;
-            // }
         },
 
         watch: {
@@ -349,39 +305,6 @@
                 val || this.close()
             },
 
-            isSerial(value) {
-                this.productSerials = [];
-                if (value === 'true') {
-                    let count = Number(this.editedItem.quantity);
-                    for (let i = 0; i < count; i++) {
-                        this.productSerials.push('0');
-                    }
-                }
-            },
-
-            editedItem(value) {
-                console.log(value);
-                return;
-                if (value.quantity) {
-                    this.productSerials = [];
-                    let count = Number(this.editedItem.quantity);
-                    for (let i = 0; i < count; i++) {
-                        this.productSerials.push('0');
-                    }
-                }
-
-                if (value.companies) {
-
-                }
-            },
-
-            quantityToFeet(value) {
-                let feetPerUnit = Number(value);
-                if (!isNaN(feetPerUnit) && value >= 0) {
-                    this.quantityToFeetError = false;
-                    this.valid = true;
-                }
-            }
         },
 
         created() {
@@ -394,10 +317,8 @@
             initialize() {
                 const shopId = this.selectedShop.id
                 let productsUrl = '/api/products'
-                let categoriesUrl = '/api/categories'
                 if (shopId) {
                     productsUrl += '?shopId=' + shopId
-                    categoriesUrl += '?shopId=' + shopId
                 }
 
                 // get all product
@@ -413,52 +334,6 @@
                     .catch((error) => {
                         console.log(error)
                     });
-
-                // get all categories
-                axios.get(categoriesUrl)
-                    .then((response) => {
-                        let categories = response.data;
-                        categories.forEach((value) => {
-                            let category = {};
-                            category.value = value.id;
-                            category.text = value.name;
-
-                            this.categories.push(category)
-                        })
-                    })
-                    .catch((error) => {
-                        console.log('categories error');
-                        console.log(error)
-                    })
-
-                // get All product
-                axios.get('/api/productcompany')
-                    .then((response) => {
-                        this.companies = response.data;
-                    })
-                    .catch((error) => {
-                        console.log('Companies error');
-                        console.log(error)
-                    })
-            },
-
-            editItem(item) {
-                // get selected product & all categories
-                let url = '/api/products/' + item.id + '/categories';
-
-                axios.get(url)
-                    .then((response) => {
-                        let selectedCategories = response.data;
-                        selectedCategories.forEach((value) => {
-                            let categories = {}
-                            categories.value = value.id
-                            categories.text = value.name
-                            this.selectedCategories.push(categories)
-                        })
-                    })
-                this.editedIndex = this.items.indexOf(item)
-                this.editedItem = Object.assign({}, item)
-                this.dialog = true
             },
 
             openDeleteDialog(deleteItem) {
@@ -485,105 +360,6 @@
                     this.editedItem = Object.assign({}, this.defaultItem);
                     this.editedIndex = -1;
                 }, 300)
-            },
-
-            onAddCompany() {
-                let newcompany = {quantity: 0, companies: this.companies, selectedCompany: {}};
-                this.selectedCompanies.push(newcompany);
-            },
-
-            onRemoveCompany(index) {
-                this.selectedCompanies.splice(index, 1);
-            },
-
-            save() {
-
-                if (!this.$refs.product_form.validate()) {
-                    return;
-                }
-
-                if (this.isSerial === 'true') {
-                    console.log(this.totalCompanies);
-                    let error = false;
-                    this.totalCompanies.forEach((company) => {
-                        if (company.product_warranty === undefined) {
-                            this.productWarrantyError = true;
-                            error = true;
-                        }
-                    })
-
-                    if (error) {
-                        return;
-                    }
-                }
-
-                let form = new FormData();
-                let url = '/api/products';
-
-                form.append('name', this.editedItem.name);
-                form.append('seller_id', this.$store.getters.getUserId);
-                form.append('store_id', this.$store.getters.getSelectedShopId);
-                form.append('description', this.editedItem.description);
-                form.append('purchase_price', this.editedItem.purchase_price);
-                form.append('quantity_per_feet', this.quantityToFeet);
-                form.append('total_feet', this.totalFeets);
-                form.append('sale_price', this.editedItem.sale_price);
-                form.append('quantity', this.editedItem.quantity);
-                form.append('status', this.editedItem.status);
-                form.append('quantity_type', this.editedItem.quantity_type);
-                form.append('totalCompanies', JSON.stringify(this.totalCompanies));
-
-                if (this.selectedCategories) {
-                    form.append('categories', JSON.stringify(this.selectedCategories));
-                }
-
-
-                //check product has pice or feet
-                if (this.editedItem.quantity_type === 'feet') {
-                    if (this.quantityToFeet <= 0) {
-                        this.quantityToFeetError = true;
-                        return;
-                    }
-                }
-
-
-                if (this.editedIndex > -1) {
-                    // update product
-                    form.append('_method', 'PATCH')
-                    url = url + '/' + this.editedItem.id;
-                    axios.post(url, form)
-                        .then((response) => {
-                            Object.assign(this.items[this.editedIndex], this.editedItem);
-                            this.snackbar_message = 'Product ' + this.editedItem.name + ' successfully updated.';
-                            this.snackbar = true;
-                            this.close()
-                            this.initialize();
-                            this.$refs.product_form.reset();
-                            this.selectedCompanies = [];
-                            this.productWarrantyError = false
-                        })
-                } else {
-                    // create product
-                    axios.post(url, form)
-                        .then((response) => {
-
-                            this.items.push(response.data);
-                            this.snackbar_message = 'Product ' + this.editedItem.name + ' successfully created.';
-                            this.snackbar = true;
-                            // update total product & stock
-                            this.total_product++;
-
-                            // let total = this.total_stock.replace(',', '');
-                            // total = Number(total);
-                            // this.total_stock = total + this.editedItem.quantity * this.editedItem.purchase_price;
-                            this.close()
-                            this.initialize();
-                            this.$refs.product_form.reset();
-                            this.selectedCompanies = [];
-                            this.productWarrantyError = false;
-                        })
-                }
-
             },
 
             changeSort(column) {
@@ -625,29 +401,7 @@
                 })
                 return filterItem;
 
-            },
-
-
-            onBarcodeScanned(code) {
-                console.log(code);
-                console.log('barcode scanned');
-                this.barcodeDailog = true;
-                this.barcode = code;
-                this.barcodeDialogvalue = true;
-                if (code !== '') {
-                    this.barcodeDailog = true;
-                    this.barcode = code;
-                }
-            },
-
-            openDialog() {
-                this.barcodeDialogvalue = true;
-            },
-
-            onbarcodeDialogClose() {
-                this.barcodeDialogvalue = false;
-                this.code = '';
-            },
+            }
         }
     }
 </script>
