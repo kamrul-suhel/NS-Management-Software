@@ -58,7 +58,7 @@ class ProductController extends ApiController
             $selectedProduct = $selectedProduct->with('serials')
                 ->whereHas('serials', function($query) use ($code){
                 $query->where('barcode', $code)->orWhere('imei', $code);
-            })->get();
+            })->first();
         }
 
         $data = collect([
