@@ -614,6 +614,10 @@
                 this.barcodeDialogvalue = true;
             },
 
+            close(){
+              this.$router.push({name: 'products'});
+            },
+
             onbarcodeDialogClose() {
                 this.barcodeDialogvalue = false;
                 this.code = '';

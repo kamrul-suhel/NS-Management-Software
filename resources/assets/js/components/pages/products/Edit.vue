@@ -41,13 +41,16 @@
                                                 color="dark"
                                                 label="Does product has barcode ?"
                                                 :items="productHasBarcode"
+                                                item-text="text"
+                                                item-value="value"
+                                                disabled
                                                 required
                                                 :rules="[v => !!v || 'This field required']"
-                                                v-model="editedItem.productHasBarcode"></v-select>
+                                                v-model="editedItem.is_barcode"></v-select>
                                     </v-flex>
 
                                     <v-flex xs12
-                                            v-for="(company, totalCompanyIndex) in editedItem.companies"
+                                            v-for="(company, totalCompanyIndex) in totalCompanies"
                                             :key="totalCompanyIndex">
                                         <v-layout row wrap
                                         >
@@ -56,8 +59,8 @@
                                                         dark
                                                         color="dark"
                                                         label="Which company"
-                                                        :items="companies"
-                                                        v-model="editedItem.companies[totalCompanyIndex]"
+                                                        :items="company.companies"
+                                                        v-model="company.selectedCompany"
                                                         item-text="name"
                                                         item-value="id"
                                                         required
@@ -71,7 +74,7 @@
                                                 <v-text-field
                                                         label="How many quantity"
                                                         dark
-                                                        v-model="company.pivot.product_quantity"
+                                                        v-model="company.quantity"
                                                         required
                                                         mask="####"
                                                         :reles="[v => !!v || 'Quantity is required' ]"
@@ -92,12 +95,14 @@
                                                           v-if="productWarrantyError">Please select warranty</span>
                                                 </v-flex>
 
-                                                <v-flex xs12 v-if="editedItem.productHasBarcode === 'yes'">
+                                                <v-flex xs12 v-if="editedItem.is_barcode === 'yes'">
                                                     <v-layout row wrap
                                                               v-for="(serial, index) in company.serials"
                                                               :key="index">
                                                         <v-flex xs4>
                                                             <v-text-field
+                                                                    required
+                                                                    :reles="[v => !!v || 'Barcode is required' ]"
                                                                     dark
                                                                     color="dark"
                                                                     :label="'Barcode ' + (parseInt(index)+1)"
@@ -107,6 +112,8 @@
 
                                                         <v-flex xs4>
                                                             <v-text-field
+                                                                    required
+                                                                    :reles="[v => !!v || 'IMEI is required' ]"
                                                                     dark
                                                                     color="dark"
                                                                     :label="'IMEI Number '+ (parseInt(index)+1)"
@@ -116,6 +123,8 @@
 
                                                         <v-flex xs4>
                                                             <v-text-field
+                                                                    required
+                                                                    :reles="[v => !!v || 'Color is required' ]"
                                                                     dark
                                                                     color="dark"
                                                                     :label="'Color ' + (parseInt(index)+1)"
@@ -147,23 +156,11 @@
                                                 :rules="[v => !!v || 'Quantity is required']"
                                                 color="dark"
                                                 placeholder="00.00"
+                                                :hint="'Your total quantity is : '+ (parseFloat(prevQuantity) + parseFloat(editedItem.quantity))"
+                                                persistent-hint
                                                 disabled
                                                 v-model="editedItem.quantity"
                                         ></v-text-field>
-                                    </v-flex>
-
-
-                                    <v-flex xs6>
-                                        <v-select
-                                                dark
-                                                color="dark"
-                                                :items="status"
-                                                v-model="editedItem.status"
-                                                label="Status"
-                                                required
-                                                :rules="[v => !!v || 'Status is required']"
-                                                menu-props="auto"
-                                        ></v-select>
                                     </v-flex>
 
                                     <v-flex xs6>
@@ -182,6 +179,7 @@
 
                                     <v-flex xs6>
                                         <v-text-field
+                                                disabled
                                                 dark
                                                 color="dark"
                                                 label="Purchase price per item"
@@ -192,23 +190,6 @@
                                                 :rules="[v => !!v || 'Purchase price is required']"
                                                 v-model="editedItem.purchase_price">
                                         </v-text-field>
-                                    </v-flex>
-
-                                    <v-flex xs6>
-                                        <v-select
-                                                dark
-                                                color="dark"
-                                                label="Categories"
-                                                :items="categories"
-                                                v-model="selectedCategories"
-                                                multiple
-                                                chips
-                                                required
-                                                :rules="[v => !!v || 'Please select category']"
-                                                persistent-hint
-                                                return-object
-                                        >
-                                        </v-select>
                                     </v-flex>
 
                                 </v-layout>
@@ -230,8 +211,8 @@
                                color="dark"
                                raised
                                :disabled="!valid"
-                               @click.native="save">
-                            Update product
+                               @click.native="save">{{ editedIndex === -1 ? 'Create product' :
+                            'Update product' }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -248,6 +229,22 @@
             {{ snackbar_message }}
         </v-snackbar>
 
+        <v-dialog v-model="deleteDialog" persistent max-width="290">
+            <v-card color="error">
+                <v-card-text>
+                    <div class="text-xs-center">
+                        <v-icon color="white" size="50">warning</v-icon>
+                    </div>
+                    <p class="text-xs-center">Are you sure you want to delete {{deleteItem.title}} {{
+                        deleteItem.description}}</p>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="dark darken-1" flat @click.native="deleteDialog = false">Disagree</v-btn>
+                    <v-btn color="dark darken-1" flat @click.native="deleteItemD()">Agree</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 <script>
@@ -256,12 +253,31 @@
     export default {
         data: () => ({
             dialog: false,
+            search: '',
+            pagination: {
+                sortBy: 'name'
+            },
+
+            avaliable_product: 0,
+            unavaliable_product: 0,
+            total_product: 0,
+            total_stock: 0,
+
+            deleteDialog: false,
+            deleteItem: {},
+
 
             snackbar: false,
             snackbar_message: '',
 
             warranties: ['No warranty', '3 Month', '6 Month', '1 Year', '1.5 Year', '2 Year', '3 Year', '4 year', '5 year'],
 
+            quantityToFeetError: false,
+            quantityToFeet: 0,
+            totalFeets: 0,
+
+
+            items: [],
             status: [
                 {
                     text: 'Avaliable',
@@ -272,12 +288,19 @@
                     value: 'unavailable'
                 }
             ],
+            editedIndex: -1,
             editedItem: {},
+            prevQuantity:0,
 
             quantity_type: [],
 
             categories: [],
             selectedCategories: [],
+            update_form: false,
+
+            defaultItem: {},
+
+            purchase_price_field: false,
 
             companies: [],
             selectedCompanies: [],
@@ -294,12 +317,17 @@
 
             barcodeDialogvalue: false,
             barcode: ''
+
         }),
 
         computed: {
             ...mapGetters({
                 selectedShop: 'getSelectedShop'
             }),
+
+            formTitle() {
+                return this.editedIndex === -1 ? 'New Product' : 'Edit Product'
+            },
 
             totalCompanies(value) {
                 let quantity = 0;
@@ -309,7 +337,7 @@
 
                     quantity += Number(company.quantity)
 
-                    if (this.editedItem.productHasBarcode === 'yes') {
+                    if (this.editedItem.is_barcode === 'yes') {
                         if (company.serials) {
                             serials = [...company.serials];
                         }
@@ -378,12 +406,18 @@
                 if (value.companies) {
 
                 }
+            },
+
+            quantityToFeet(value) {
+                let feetPerUnit = Number(value);
+                if (!isNaN(feetPerUnit) && value >= 0) {
+                    this.quantityToFeetError = false;
+                    this.valid = true;
+                }
             }
         },
 
         created() {
-
-            console.log('Product id : ', this.$route.params.id);
             this.initialize();
             //Barcode scannser
             this.$barcodeScanner.init(this.onBarcodeScanned);
@@ -429,12 +463,15 @@
                 axios.get(productUrl)
                     .then((response) => {
                         this.editedItem = {...response.data}
+
+                        this.prevQuantity = this.editedItem.quantity && this.editedItem.quantity;
                         console.log(this.editedItem);
                     })
                     .catch((error) => {
                         console.log(error);
                     });
             },
+
 
             editItem(item) {
                 // get selected product & all categories
@@ -450,6 +487,7 @@
                             this.selectedCategories.push(categories)
                         })
                     })
+                this.editedIndex = this.items.indexOf(item)
                 this.editedItem = Object.assign({}, item)
                 this.dialog = true
             },
@@ -465,47 +503,38 @@
 
             save() {
                 let companies = [];
+
+                // custom validate error
+                let error = false;
+
                 _.map(this.totalCompanies, (company, index) => {
                     let curCompany = {};
                     _.forEach(company, (value, key) => {
-                        console.log('key: ', key);
-                        console.log('value : ', value);
 
                         if (key === 'companies') {
-                            console.log('now companies');
                             return;
                         }
                         if (key === 'serials') {
-                            console.log('now serial: ', value);
                             curCompany.serials = {...value};
                             return;
                         }
 
                         if (key === 'selectedCompany') {
-                            console.log('now company');
                             curCompany.selectedCompany = {...value};
                             return;
                         }
-
                         curCompany[key] = value
-                        console.log('before push ', company);
                     })
 
                     companies.push(curCompany);
                 })
 
-                console.log('sorted data : ', companies);
-                // const stringigy = JSON.stringify(companies);
-                // console.log('After string : ', stringigy);
-
-
                 if (!this.$refs.product_form.validate()) {
                     return;
                 }
 
-                let error = false;
                 this.totalCompanies.forEach((company) => {
-                    if (company.product_warranty === undefined) {
+                    if (!company.product_warranty) {
                         this.productWarrantyError = true;
                         error = true;
                     }
@@ -515,36 +544,32 @@
                     return;
                 }
 
-                let url = '/api/products';
+                let url = '/api/products/'+this.editedItem.id;
                 let formData = new FormData();
+                formData.append('_method', 'PATCH');
+                formData.append('id', this.editedItem.id);
                 formData.append('name', this.editedItem.name);
                 formData.append('seller_id', this.$store.getters.getUserId);
                 formData.append('store_id', this.$store.getters.getSelectedShopId);
                 formData.append('description', this.editedItem.description);
-                formData.append('purchase_price', this.editedItem.purchase_price);
                 formData.append('sale_price', this.editedItem.sale_price);
                 formData.append('quantity', this.editedItem.quantity);
-                formData.append('status', this.editedItem.status);
                 formData.append('product_type', this.editedItem.productHasBarcode);
                 formData.append('totalCompanies', JSON.stringify(companies));
-                if (this.selectedCategories) {
-                    formData.append('categories', JSON.stringify(this.selectedCategories));
-                }
 
                 // create product
                 axios.post(url, formData)
                     .then((response) => {
-
                         this.items.push(response.data);
-                        this.snackbar_message = 'Product ' + this.editedItem.name + ' successfully created.';
+                        this.snackbar_message = 'Product ' + this.editedItem.name + ' successfully updated.';
                         this.snackbar = true;
-                        this.$router.push({name: 'products'});
+                        setTimeout(() => {
+                            this.$router.push({name: 'products'});
+                        }, 2000)
                     })
             },
 
             onBarcodeScanned(code) {
-                console.log(code);
-                console.log('barcode scanned');
                 this.barcodeDailog = true;
                 this.barcode = code;
                 this.barcodeDialogvalue = true;

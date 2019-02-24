@@ -97,8 +97,6 @@ class ProductController extends ApiController
      */
     public function store(Request $request)
     {
-        $totalCompanies = json_decode($request->totalCompanies, true);
-
         // Product create
         $product = $request->except(['totalCompanies', 'categories', 'product_type']);
         $product['image'] = '1.jpg';
@@ -110,6 +108,7 @@ class ProductController extends ApiController
         $product = Product::create($product);
 
         // Product serials key with company
+        $totalCompanies = json_decode($request->totalCompanies, true);
         $productSerialsWithCompany = [];
         $productCompany = [];
         foreach ($totalCompanies as $currCompany) {
@@ -196,46 +195,51 @@ class ProductController extends ApiController
         $product->fill($request->only([
             'name',
             'description',
-            'purchase_price',
-            'quantity_type',
             'sale_price',
-            'status'
         ]));
 
-        $product->quantity = $product->quantity + $request->quantity;
+        $totalQuantity = $product->quantity + $request->quantity;
+        $product->quantity = $totalQuantity;
+
+        if($totalQuantity > 0){
+            $product->status = Product::ABAILABLE_PRODUCT;
+        }
 
         // Product serials key with company
-        $totalCompanies = json_decode($request->totalCompanies);
+        $totalCompanies = json_decode($request->totalCompanies, true);
         $productSerialsWithCompany = [];
         $productCompany = [];
         foreach ($totalCompanies as $currCompany) {
-
             $company = [];
-            $company['company_id'] = $currCompany->selectedCompany->id;
-            $company['product_quantity'] = $currCompany->quantity;
+            $company['company_id'] = $currCompany['selectedCompany']['id'];
+            $company['product_quantity'] = $currCompany['quantity'];
+
             $productCompany[] = $company;
-            if ($currCompany->serials) {
-                foreach ($currCompany->serials as $currSerial) {
+            if ($currCompany['serials'] && !empty($currCompany['serials'])) {
+                foreach ($currCompany['serials'] as $currSerial) {
                     $serial = [];
                     $serial['is_sold'] = 0;
-                    $serial['product_serial'] = $currSerial;
-                    $serial['product_warranty'] = $currCompany->product_warranty;
-                    $serial['company_id'] = $currCompany->selectedCompany->id;
+                    $serial['color'] = $currSerial['color'];
+                    $serial['barcode'] = $currSerial['barcode'];
+                    $serial['imei'] = $currSerial['imei'];
+                    $serial['product_warranty'] = $currCompany['product_warranty'];
+                    $serial['company_id'] = $currCompany['selectedCompany']['id'];
                     $productSerialsWithCompany[] = $serial;
                 }
+            } else {
+                $serial = [];
+                $serial['is_sold'] = 0;
+                $serial['color'] = '';
+                $serial['barcode'] = '';
+                $serial['imei'] = '';
+                $serial['product_warranty'] = $currCompany['product_warranty'];
+                $serial['company_id'] = $currCompany['selectedCompany']['id'];
+                $productSerialsWithCompany[] = $serial;
             }
         }
 
         $companies = $product->companies()->syncWithoutDetaching($productCompany);
         $serial = $product->serials()->createMany($productSerialsWithCompany);
-
-        if ($request->has('categories') && !empty($request->categories)) {
-            $categoriesId = [];
-            foreach (json_decode($request->categories) as $category) {
-                $categoriesId[] = $category->value;
-            }
-            $product->categories()->sync($categoriesId);
-        }
 
         $product->save();
         return $this->showOne($product);
