@@ -345,6 +345,10 @@
             },
 
 
+        },
+
+        destroyed(){
+            this.$store.dispatch();
         }
     }
 </script>

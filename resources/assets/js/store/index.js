@@ -15,7 +15,9 @@ const store = new Vuex.Store({
     },
 
     mutations: {
-
+        resetProductTransition(state){
+            state.product = [];
+        }
     },
 
     actions: {
