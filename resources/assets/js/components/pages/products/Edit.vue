@@ -4,7 +4,7 @@
             <v-layout row wrap>
                 <v-card class="px-2 py-2">
                     <v-card-title>
-                        <span class="headline">{{ formTitle }}</span>
+                        <span class="headline">Edit Product</span>
                     </v-card-title>
 
                     <v-card-text>
@@ -47,7 +47,7 @@
                                     </v-flex>
 
                                     <v-flex xs12
-                                            v-for="(company, totalCompanyIndex) in totalCompanies"
+                                            v-for="(company, totalCompanyIndex) in editedItem.companies"
                                             :key="totalCompanyIndex">
                                         <v-layout row wrap
                                         >
@@ -56,8 +56,8 @@
                                                         dark
                                                         color="dark"
                                                         label="Which company"
-                                                        :items="company.companies"
-                                                        v-model="company.selectedCompany"
+                                                        :items="companies"
+                                                        v-model="editedItem.companies[totalCompanyIndex]"
                                                         item-text="name"
                                                         item-value="id"
                                                         required
@@ -71,7 +71,7 @@
                                                 <v-text-field
                                                         label="How many quantity"
                                                         dark
-                                                        v-model="company.quantity"
+                                                        v-model="company.pivot.product_quantity"
                                                         required
                                                         mask="####"
                                                         :reles="[v => !!v || 'Quantity is required' ]"
@@ -230,8 +230,8 @@
                                color="dark"
                                raised
                                :disabled="!valid"
-                               @click.native="save">{{ editedIndex === -1 ? 'Create product' :
-                            'Update product' }}
+                               @click.native="save">
+                            Update product
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -248,22 +248,6 @@
             {{ snackbar_message }}
         </v-snackbar>
 
-        <v-dialog v-model="deleteDialog" persistent max-width="290">
-            <v-card color="error">
-                <v-card-text>
-                    <div class="text-xs-center">
-                        <v-icon color="white" size="50">warning</v-icon>
-                    </div>
-                    <p class="text-xs-center">Are you sure you want to delete {{deleteItem.title}} {{
-                        deleteItem.description}}</p>
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="dark darken-1" flat @click.native="deleteDialog = false">Disagree</v-btn>
-                    <v-btn color="dark darken-1" flat @click.native="deleteItemD()">Agree</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
     </div>
 </template>
 <script>
@@ -272,31 +256,12 @@
     export default {
         data: () => ({
             dialog: false,
-            search: '',
-            pagination: {
-                sortBy: 'name'
-            },
-
-            avaliable_product: 0,
-            unavaliable_product: 0,
-            total_product: 0,
-            total_stock: 0,
-
-            deleteDialog: false,
-            deleteItem: {},
-
 
             snackbar: false,
             snackbar_message: '',
 
             warranties: ['No warranty', '3 Month', '6 Month', '1 Year', '1.5 Year', '2 Year', '3 Year', '4 year', '5 year'],
 
-            quantityToFeetError: false,
-            quantityToFeet: 0,
-            totalFeets: 0,
-
-
-            items: [],
             status: [
                 {
                     text: 'Avaliable',
@@ -307,18 +272,12 @@
                     value: 'unavailable'
                 }
             ],
-            editedIndex: -1,
             editedItem: {},
 
             quantity_type: [],
 
             categories: [],
             selectedCategories: [],
-            update_form: false,
-
-            defaultItem: {},
-
-            purchase_price_field: false,
 
             companies: [],
             selectedCompanies: [],
@@ -335,17 +294,12 @@
 
             barcodeDialogvalue: false,
             barcode: ''
-
         }),
 
         computed: {
             ...mapGetters({
                 selectedShop: 'getSelectedShop'
             }),
-
-            formTitle() {
-                return this.editedIndex === -1 ? 'New Product' : 'Edit Product'
-            },
 
             totalCompanies(value) {
                 let quantity = 0;
@@ -424,18 +378,12 @@
                 if (value.companies) {
 
                 }
-            },
-
-            quantityToFeet(value) {
-                let feetPerUnit = Number(value);
-                if (!isNaN(feetPerUnit) && value >= 0) {
-                    this.quantityToFeetError = false;
-                    this.valid = true;
-                }
             }
         },
 
         created() {
+
+            console.log('Product id : ', this.$route.params.id);
             this.initialize();
             //Barcode scannser
             this.$barcodeScanner.init(this.onBarcodeScanned);
@@ -475,6 +423,17 @@
                         console.log('Companies error');
                         console.log(error)
                     })
+
+                // Get selected product
+                const productUrl = '/api/products/'+this.$route.params.id;
+                axios.get(productUrl)
+                    .then((response) => {
+                        this.editedItem = {...response.data}
+                        console.log(this.editedItem);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
             },
 
             editItem(item) {
@@ -491,7 +450,6 @@
                             this.selectedCategories.push(categories)
                         })
                     })
-                this.editedIndex = this.items.indexOf(item)
                 this.editedItem = Object.assign({}, item)
                 this.dialog = true
             },

@@ -395,6 +395,10 @@
                 })
                 return filterItem;
 
+            },
+
+            editItem(product){
+                this.$router.push({name: 'editProduct', params: {id: product.id}});
             }
         }
     }

@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import CategoryComponent from '../components/pages/categories/CategoryIndexComponent'
 import ProductComponent from '../components/pages/products/ProductsComponent'
 import ProductAdd from '../components/pages/products/Add'
+import ProductEdit from '../components/pages/products/Edit'
 import TransactionComponent from '../components/pages/transaction/TransactionComponent'
 import CustomerComponent from '../components/pages/customer/CustomerComponent'
 import ShopComponent from '../components/pages/shop/ShopComponent'
@@ -48,6 +49,12 @@ const routes = [
         path: '/products',
         name: 'products',
         component: ProductComponent
+    },
+
+    {
+        path: '/products/:id/edit',
+        name: 'editProduct',
+        component: ProductEdit
     },
 
     {

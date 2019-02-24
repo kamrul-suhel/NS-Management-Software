@@ -43,6 +43,7 @@ Route::get('/',function(){
  */
 Route::get('/products', function(){return view('welcome');});
 Route::get('/products/add', function(){return view('welcome');});
+Route::get('/products/{id}/edit', function(){return view('welcome');});
 
 
 /**

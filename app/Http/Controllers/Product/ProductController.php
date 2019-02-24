@@ -167,6 +167,8 @@ class ProductController extends ApiController
      */
     public function show(Product $product)
     {
+        $product = Product::with('companies')
+            ->findOrFail($product->id);
         return $this->showOne($product, 201);
     }
 
