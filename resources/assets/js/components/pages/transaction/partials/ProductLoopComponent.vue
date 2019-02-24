@@ -109,7 +109,7 @@
                 selectedProduct: {},
                 current_product_quantity: '',
                 current_product_sale_price: 0,
-                selectedQuantity: 0,
+                selectedQuantity: 1,
                 allProductData: '',
                 previous_selected_id: '',
                 serials: [],
@@ -121,7 +121,6 @@
         props: ['index', 'code'],
         watch: {
             selectedProduct(product) {
-                console.log('selected product change : ', product);
                 if (product) {
                     this.updateStore(product.id);
                 }
