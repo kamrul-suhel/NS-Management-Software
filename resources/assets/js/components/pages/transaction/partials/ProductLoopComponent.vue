@@ -25,7 +25,7 @@
                     type="number"
                     min="1"
                     :max="selectedProduct.quantity"
-                    :disabled="selectedProduct.isDisabled"
+                    :disabled="selectedProduct.isDisabled || selectedProduct.is_barcode === 'yes'"
                     :placeholder="'You have '+ selectedProduct.quantity + ' in your stock'"
                     :hint="'You have '+ selectedProduct.quantity + ' in your stock'"
                     persistent-hint
@@ -53,7 +53,7 @@
                     color="dark"
                     label="Barcode"
                     :disabled="selectedProduct.isDisabled || selectedProduct.is_barcode === 'yes'"
-                    :value="selectedProduct.serials && selectedProduct.serials[0].barcode"
+                    :value="selectedSerials.barcode && selectedSerials.barcode"
             ></v-text-field>
         </v-flex>
 
@@ -63,7 +63,7 @@
                     color="dark"
                     label="IMEI"
                     :disabled="selectedProduct.isDisabled || selectedProduct.is_barcode === 'yes'"
-                    :value="selectedProduct.serials && selectedProduct.serials[0].imei"
+                    :value="selectedSerials.imei && selectedSerials.imei"
             ></v-text-field>
         </v-flex>
 
@@ -72,8 +72,8 @@
                     dark
                     color="dark"
                     label="Warranty"
-                    :disabled="selectedProduct.isDisabled || selectedProduct.is_barcode === 'no'"
-                    :value="selectedProduct.serials && selectedProduct.serials[0].product_warranty"
+                    disabled
+                    :value="selectedSerials.product_warranty && selectedSerials.product_warranty"
             ></v-text-field>
         </v-flex>
 
@@ -121,7 +121,7 @@
         props: ['index', 'code'],
         watch: {
             selectedProduct(product) {
-                console.log('Selected product', product.id);
+                console.log('selected product change : ', product);
                 if (product) {
                     this.updateStore(product.id);
                 }
@@ -132,7 +132,7 @@
             },
 
             selectedPercentage() {
-                this.updateStore(this.selectedProduct.value);
+                this.updateStore(this.selectedProduct.id);
             }
 
         },
@@ -183,6 +183,7 @@
             updateStore(id) {
                 this.products.forEach((product) => {
                     if (id === product.id) {
+                        console.log('selected product : ', product);
                         let newProduct = {
                             ...product,
                             index: this.index
@@ -190,9 +191,7 @@
                         newProduct.quantity = this.selectedQuantity;
 
                         if (product.is_barcode === 'yes') {
-                            console.log('Product', product);
                             newProduct.serials = [{...this.selectedSerials}];
-                            this.selectedProduct.serials = [{...this.selectedSerials}]
                         }
 
                         this.$store.dispatch('setTransaction', newProduct)
