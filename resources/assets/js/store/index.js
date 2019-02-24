@@ -16,7 +16,6 @@ const store = new Vuex.Store({
 
     mutations: {
         resetProductTransition(state){
-            console.log('Reseting product');
             state.products = [];
         }
     },
@@ -27,7 +26,6 @@ const store = new Vuex.Store({
             return new Promise((resolve, reject) => {
                 if(state.products.length === 0){
                     state.products.push(product);
-                    console.log(state.products);
                     resolve();
                 }else{
                     if(state.products[product.index] === 'undefined'){
@@ -36,7 +34,6 @@ const store = new Vuex.Store({
                         resolve();
                     }else{
                         state.products[product.index] = product;
-                        console.log(state.products);
                         resolve();
                     }
                 }

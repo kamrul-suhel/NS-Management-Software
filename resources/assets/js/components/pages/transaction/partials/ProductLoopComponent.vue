@@ -132,13 +132,16 @@
 
             selectedPercentage() {
                 this.updateStore(this.selectedProduct.id);
+            },
+
+            selectedSerials(){
+                this.updateStore(this.selectedProduct.id);
             }
 
         },
 
         created() {
             this.initialize();
-            console.log('receiving code: ', this.code);
         },
 
         methods: {
@@ -182,7 +185,6 @@
             updateStore(id) {
                 this.products.forEach((product) => {
                     if (id === product.id) {
-                        console.log('selected product : ', product);
                         let newProduct = {
                             ...product,
                             index: this.index

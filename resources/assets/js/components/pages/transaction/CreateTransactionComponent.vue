@@ -285,7 +285,7 @@
 
             onCreateTransaction() {
                 let form = new FormData()
-                let total = this.total_amount_transactions - this.discount - this.special_discount;
+                let total = this.total_amount_transactions  - this.special_discount;
                 let url = '/api/customers/' + this.selectedCustomer.value + '/transactions';
 
                 form.append('payment_status', this.selectedPaymentStatus);
@@ -348,7 +348,6 @@
         },
 
         destroyed(){
-            console.log('Destroyed product');
             this.$store.commit('resetProductTransition');
         }
     }
