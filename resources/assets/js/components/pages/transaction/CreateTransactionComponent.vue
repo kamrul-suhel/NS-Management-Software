@@ -115,7 +115,7 @@
                                     <p v-if="selectedPaymentStatus > 1"><strong>Due: {{ total_amount_transactions - paid
                                         }}</strong></p>
                                     <p><strong>Discount: {{ discount }}</strong></p>
-                                    <p><strong>Grand total: {{ total_amount_transactions - discount - special_discount
+                                    <p><strong>Grand total: {{ total_amount_transactions - discount
                                         }}</strong></p>
 
                                 </v-flex>
@@ -203,6 +203,10 @@
                     this.previousDue = response.data.previous_record.previousDue ? response.data.previous_record.previousDue : 0;
                 })
             },
+
+            special_discount(discount) {
+                this.discount = discount;
+            }
         },
 
         created() {
@@ -214,14 +218,9 @@
             TransactionEventBus.$on('updateProduct', () => {
                 let totalTransactions = this.$store.getters.getProduct;
                 let total = 0;
-                let discount = 0;
                 totalTransactions.forEach((product) => {
-                    total += product.product.sale_price * product.selected_quantity;
-                    discount += ((product.product.sale_price * product.selected_quantity) * product.selected_percentage) / 100;
+                    total += product.sale_price * product.quantity;
                 });
-
-                this.discount = discount;
-
                 this.total_amount_transactions = total;
             });
         },
@@ -326,7 +325,8 @@
             },
 
             addProduct() {
-                this.totalProduct.push('96557');
+                this.totalProduct.push('72140107');
+                // this.totalProduct.push('12345678');
             },
 
             onBarcodeScanned(code) {

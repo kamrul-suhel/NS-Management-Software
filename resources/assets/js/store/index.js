@@ -27,7 +27,7 @@ const store = new Vuex.Store({
                     console.log(state.products);
                     resolve();
                 }else{
-                    if(state.products[product.product.index] === 'undefined'){
+                    if(state.products[product.index] === 'undefined'){
                         state.products.push(product);
                         console.log(state.products);
                         resolve();

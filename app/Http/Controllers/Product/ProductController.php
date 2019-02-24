@@ -56,7 +56,7 @@ class ProductController extends ApiController
         if($request->has('code') && $request->code !== 1){
             $code = $request->code;
             $selectedProduct = $selectedProduct->with(['serials' => function($query) use($code){
-                $query->where('barcode', $code)->orWhere('imei', $code);
+                $query->where('barcode', $code)->orWhere('imei', $code)->get();
             }])
                 ->whereHas('serials', function($query) use ($code){
                 $query->where('barcode', $code)->orWhere('imei', $code);

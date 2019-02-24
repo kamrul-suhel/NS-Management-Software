@@ -6,9 +6,11 @@
                     color="dark"
                     label="Select Product"
                     :items="products"
-                    :hint="'Per unit sale price: '+ current_product_sale_price"
+                    :hint="'Per unit sale price: '+ selectedProduct.sale_price && selectedProduct.sale_price"
                     append-icon="add_shopping_cart"
                     v-model="selectedProduct"
+                    item-text="name"
+                    item-value="name"
                     chips
                     return-object
                     persistent-hint
@@ -19,13 +21,57 @@
             <v-text-field
                     dark
                     color="dark"
-                    :label="productMessage"
+                    label="Pic"
                     type="number"
                     min="1"
-                    :placeholder="'You have '+ current_product_quantity + ' in your stock'"
-                    :hint="'How much you want to sale. your stock is : ' + current_product_quantity"
+                    :disabled="selectedProduct.isDisabled"
+                    :placeholder="'You have '+ selectedProduct.quantity + ' in your stock'"
                     persistent-hint
                     v-model="selectedQuantity"
+            ></v-text-field>
+        </v-flex>
+
+        <v-flex xs3>
+            <v-autocomplete
+                    v-if="selectedProduct.serials"
+                    label="Color"
+                    dark
+                    color="dark"
+                    :items="selectedProduct.serials"
+                    item-text="color"
+                    item-value="color"
+                    v-model="selectedSerials"
+                    return-object
+            ></v-autocomplete>
+        </v-flex>
+
+        <v-flex xs3 v-if="selectedProduct.is_barcode === 'yes'">
+            <v-text-field
+                    dark
+                    color="dark"
+                    label="Barcode"
+                    :disabled="selectedProduct.isDisabled"
+                    :value="selectedProduct.serials && selectedProduct.serials[0].barcode"
+            ></v-text-field>
+        </v-flex>
+
+        <v-flex xs3 v-if="selectedProduct.is_barcode === 'yes'">
+            <v-text-field
+                    dark
+                    color="dark"
+                    label="IMEI"
+                    :disabled="selectedProduct.isDisabled"
+                    :value="selectedProduct.serials && selectedProduct.serials[0].imei"
+            ></v-text-field>
+        </v-flex>
+
+        <v-flex xs3>
+            <v-text-field
+                    dark
+                    color="dark"
+                    label="Warranty"
+                    :disabled="selectedProduct.isDisabled"
+                    :value="selectedProduct.serials && selectedProduct.serials[0].product_warranty"
             ></v-text-field>
         </v-flex>
 
@@ -58,7 +104,7 @@
         data() {
             return {
                 products: [],
-                selectedProduct: [],
+                selectedProduct: {},
                 current_product_quantity: '',
                 current_product_sale_price: 0,
                 selectedQuantity: 0,
@@ -66,16 +112,16 @@
                 previous_selected_id: '',
                 serials: [],
                 selectedSerials: [],
-                selectedPercentage:0,
                 productMessage: 'Select product'
             }
         },
 
-        props: ['index','code'],
+        props: ['index', 'code'],
         watch: {
-            selectedProduct(val) {
-                if (val) {
-                    this.updateStore(val.value);
+            selectedProduct(product) {
+                console.log('Selected product', product.id);
+                if (product) {
+                    this.updateStore(product.id);
                 }
             },
 
@@ -83,7 +129,7 @@
                 this.updateStore(this.selectedProduct.value);
             },
 
-            selectedPercentage(){
+            selectedPercentage() {
                 this.updateStore(this.selectedProduct.value);
             }
 
@@ -95,40 +141,36 @@
         },
 
         methods: {
-            onSerialChange(){
+            onSerialChange() {
                 this.updateStore(this.selectedProduct.value);
             },
 
             initialize() {
 
-                let url = '/api/products?shopId=' +this.$store.getters.getSelectedShopId;
+                let url = '/api/products?shopId=' + this.$store.getters.getSelectedShopId;
 
-                if(this.code && this.code !== 1){
-                    url = url+ '&code='+this.code
+                if (this.code && this.code !== 1) {
+                    url = url + '&code=' + this.code
                 }
 
                 //get all product for store
                 axios.get(url)
                     .then((response) => {
                         if (response.data.products) {
-                            this.products = response.data.products;
-                            this.allProductData = response.data.products;
-                            var array_products = [];
-                            this.products.forEach((product) => {
-                                var product = {
-                                    text: product.name,
-                                    value: product.id,
-                                    quantity: product.quantity,
-                                    current_product_sale_price: product.sale_price
-                                };
-                                array_products.push(product);
-                            })
-                            this.products = array_products;
-                            // this.selectedProduct = this.products[0];
-                            // this.current_product_quantity = this.products[0].quantity;
-                            // this.current_product_sale_price = this.products[0].current_product_sale_price;
+                            this.selectedProduct = {...response.data.selected_product};
+                            this.products = [...response.data.products];
 
-                            this.updateStore(this.selectedProduct.value);
+                            // set selected quantity if scaned is found
+                            if (!_.isEmpty(this.selectedProduct)) {
+                                this.selectedQuantity = 1;
+                                this.selectedSerials = {...this.selectedProduct.serials[0]};
+                                this.selectedProduct = {
+                                    ...response.data.selected_product,
+                                    isDisabled: true
+                                }
+
+                                this.updateStore(this.selectedProduct.id);
+                            }
                         }
                     })
                     .catch((error) => {
@@ -136,47 +178,21 @@
                     });
             },
 
-            updateStore(val) {
-                let change_product = {};
-                this.allProductData.forEach((product) => {
-                    if (val === product.id) {
-                        console.log(product);
+            updateStore(id) {
+                this.products.forEach((product) => {
+                    if (id === product.id) {
+                        let newProduct = {
+                            ...product,
+                            index: this.index
+                        };
+                        newProduct.quantity = this.selectedQuantity;
 
-                        // Check the product type & change message.
-                        if(product.quantity_type === 'feet'){
-                            this.productMessage = 'How many feet'
-                        }else{
-                            this.productMessage = "How many quantity"
+                        if (product.is_barcode === 'yes') {
+                            console.log('Product', product);
+                            newProduct.serials = [{...this.selectedSerials}];
                         }
 
-                        change_product.selected_quantity = this.selectedQuantity;
-                        change_product.selected_percentage = this.selectedPercentage;
-
-                        // check type of product
-                        if(product.quantity_type === 'feet'){
-                            this.current_product_quantity = (product.quantity * product.quantity_per_feet) + product.feet;
-                        }else{
-                            this.current_product_quantity = product.quantity;
-                        }
-
-                        this.current_product_sale_price = product.sale_price;
-                        change_product.index = this.index;
-                        change_product.product = product;
-                        change_product.selectedSerials = this.selectedSerials;
-
-                        // Check serial keys exists
-                        if (product.serials.length > 0) {
-                            this.serials = [];
-                            product.serials.forEach((serial) => {
-                                let currSerial = {
-                                    'id': serial.id,
-                                    'product_serial': serial.product_serial,
-                                    'product_warranty': serial.product_warranty
-                                };
-                                this.serials.push(currSerial);
-                            })
-                        }
-                        this.$store.dispatch('setTransaction', change_product)
+                        this.$store.dispatch('setTransaction', newProduct)
                             .then(() => {
                                 TransactionEventBus.updateProduct();
                             });
