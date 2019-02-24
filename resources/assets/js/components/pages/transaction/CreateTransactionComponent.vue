@@ -348,6 +348,7 @@
         },
 
         destroyed(){
+            console.log('Destroyed product');
             this.$store.commit('resetProductTransition');
         }
     }
