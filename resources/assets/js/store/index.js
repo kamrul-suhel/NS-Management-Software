@@ -38,7 +38,17 @@ const store = new Vuex.Store({
                     }
                 }
             });
+        },
 
+        removeProduct({state}, removeProduct){
+            return new Promise((resolve, reject) => {
+                const totalProduct = state.products.filter((product, index) => {
+                    return product.id !== removeProduct.id;
+                });
+
+                state.products = [...totalProduct];
+                resolve();
+            });
         }
     },
 

@@ -48,7 +48,7 @@
 
                 <v-flex xs6>
                     <v-card flat class="light-green lighten-1 white--text">
-                        <v-card-title>Not is stock</v-card-title>
+                        <v-card-title>Product Unavailable</v-card-title>
                         <v-card-text class="pt-0">
                             <h2 class="display-2 white--text text-xs-center">
                                 <strong>{{unavaliable_product}}</strong>
@@ -101,12 +101,11 @@
                             <template slot="items" slot-scope="props">
                                 <tr @click="props.expanded = !props.expanded">
                                     <td>{{ props.item.created_at | convertDate }}</td>
-                                    <td class="text-xs-center">{{ props.item.name }}</td>
-                                    <td class="text-xs-center">{{ props.item.quantity }}</td>
-                                    <td class="text-xs-center">{{ props.item.quantity_type }}</td>
-                                    <td class="text-xs-center">TK. {{ props.item.sale_price }}</td>
-                                    <td class="text-xs-center">TK. {{ props.item.purchase_price }}</td>
-                                    <td class="text-xs-center">{{ props.item.status }}</td>
+                                    <td>{{ props.item.name }}</td>
+                                    <td>{{ props.item.quantity }}</td>
+                                    <!--<td class="text-xs-center">TK. {{ props.item.sale_price }}</td>-->
+                                    <td>TK. {{ props.item.sale_price }}</td>
+                                    <td>{{ props.item.status }}</td>
                                     <td class="justify-start layout px-0">
                                         <v-btn dark
                                                color="dark"
@@ -133,16 +132,19 @@
                                     <v-card-text>
                                         <table width="100%">
                                             <tr>
-                                                <td><strong>Serials</strong></td>
+                                                <td><strong>Additional info</strong></td>
                                             </tr>
 
-                                            <tr v-if="props.item.serials && props.item.serials.length > 0">
-                                                <td v-for="(serial, index) in props.item.serials" :key="index">
-                                                    {{ serial.product_serial }}
+                                            <tr v-for="(serial, index) in props.item.serials" :key="index">
+                                                <td>
+                                                    Barcode: {{ serial.barcode }}
                                                 </td>
-                                            </tr>
-                                            <tr v-else>
-                                                <td>This product has no serial.</td>
+                                                <td>
+                                                    IMEI: {{ serial.imei }}
+                                                </td>
+                                                <td>
+                                                    Color: {{ serial.color }}
+                                                </td>
                                             </tr>
                                         </table>
 
@@ -164,6 +166,8 @@
                                                 <td>{{ company.pivot.created_at | convertDate }}</td>
                                             </tr>
                                         </table>
+
+                                        <p>Purchase price : {{ props.item.purchase_price }}</p>
                                     </v-card-text>
                                 </v-card>
                             </template>
@@ -257,18 +261,8 @@
                     sortable: true
                 },
                 {
-                    text: 'Type',
-                    value: 'quantity_types',
-                    sortable: true
-                },
-                {
-                    text: 'Sale price',
+                    text: 'Price',
                     value: 'sale_price',
-                    sortable: true
-                },
-                {
-                    text: 'Purchase price',
-                    value: 'purchase_price',
                     sortable: true
                 },
                 {
@@ -318,7 +312,7 @@
                 const shopId = this.selectedShop.id
                 let productsUrl = '/api/products'
                 if (shopId) {
-                    productsUrl += '?shopId=' + shopId
+                    productsUrl += '?shopId=' + shopId + '&allSerial=true'
                 }
 
                 // get all product
@@ -372,7 +366,7 @@
             },
 
             customFilter(items, search, filter) {
-                search = search.toString().toLowerCase();
+                search = search && search.toString().toLowerCase();
                 if (search === '') {
                     return items;
                 }
@@ -382,7 +376,7 @@
                     let itemSerial = false;
                     if (item.serials.length > 0) {
                         item.serials.forEach((serial) => {
-                            let productSerial = serial.product_serial.toString().toLowerCase();
+                            let productSerial = serial.barcode.toString().toLowerCase();
                             if (productSerial.includes(search)) {
                                 isItem = true;
                             }

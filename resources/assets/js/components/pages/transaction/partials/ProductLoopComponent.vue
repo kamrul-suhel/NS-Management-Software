@@ -17,7 +17,22 @@
             ></v-autocomplete>
         </v-flex>
 
-        <v-flex xs6>
+        <v-flex xs6 :style="{position: 'relative'}">
+            <v-btn
+                    class="remove-item"
+                    absolute
+                    dark
+                    fab
+                    top
+                    right
+                    small
+                    outline
+                    @click="onRemoveProduct()"
+                    color="error"
+            >
+                <v-icon>remove</v-icon>
+            </v-btn>
+
             <v-text-field
                     dark
                     color="dark"
@@ -201,7 +216,21 @@
                             });
                     }
                 });
+            },
+
+            onRemoveProduct(){
+                this.$store.dispatch('removeProduct', this.selectedProduct).then(() => {
+                    TransactionEventBus.removeProduct(this.index);
+                });
             }
         }
     }
 </script>
+
+<style>
+    .v-btn--floating.v-btn--small.remove-item{
+        width:20px;
+        height:20px;
+        top:0;
+    }
+</style>

@@ -100,10 +100,6 @@
                                 </v-flex>
                             </v-layout>
 
-                            <v-layout row wrap>
-
-                            </v-layout>
-
 
                             <v-layout row wrap>
                                 <v-spacer></v-spacer>
@@ -216,17 +212,18 @@
         created() {
             this.initialize();
 
-            //Barcode scannser
+            //Barcode scanner
             this.$barcodeScanner.init(this.onBarcodeScanned);
 
             TransactionEventBus.$on('updateProduct', () => {
-                let totalTransactions = this.$store.getters.getProduct;
-                let total = 0;
-                totalTransactions.forEach((product) => {
-                    total += product.sale_price * product.quantity;
-                });
-                this.total_amount_transactions = total;
+                this.updateStore();
             });
+
+            TransactionEventBus.$on('removeProduct', (index) => {
+                this.totalProduct.splice(index, 1);
+                this.updateStore();
+            });
+
         },
 
         methods: {
@@ -316,6 +313,15 @@
 
             onCancelTransaction() {
                 this.$router.push({name: 'transaction'});
+            },
+
+            updateStore() {
+                let totalTransactions = this.$store.getters.getProduct;
+                let total = 0;
+                totalTransactions.forEach((product) => {
+                    total += product.sale_price * product.quantity;
+                });
+                this.total_amount_transactions = total;
             },
 
 

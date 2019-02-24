@@ -26,7 +26,7 @@ class ProductController extends ApiController
 
         $allSerial = $request->allSerial;
         $products = Product::with(['serials' => function ($quary) use ($allSerial) {
-            if (!$allSerial) {
+            if ($allSerial === 'true') {
                 $quary->where('is_sold', 0);
             }
         }])
@@ -38,7 +38,9 @@ class ProductController extends ApiController
         $products = $products->get();
 
         $totalProduct = $products->count();
-        $totalStock = $products->sum('quantity');
+        $totalStock = $products->sum(function($product){
+            return $product->quantity * $product->sale_price;
+        });
 
         $avaliable_product = Product::where('status', 'available');
         if ($shopId) {
