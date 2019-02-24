@@ -192,6 +192,7 @@
                         if (product.is_barcode === 'yes') {
                             console.log('Product', product);
                             newProduct.serials = [{...this.selectedSerials}];
+                            this.selectedProduct.serials = [{...this.selectedSerials}]
                         }
 
                         this.$store.dispatch('setTransaction', newProduct)
