@@ -52,7 +52,7 @@
                     dark
                     color="dark"
                     label="Barcode"
-                    :disabled="selectedProduct.isDisabled"
+                    :disabled="selectedProduct.isDisabled || selectedProduct.is_barcode === 'yes'"
                     :value="selectedProduct.serials && selectedProduct.serials[0].barcode"
             ></v-text-field>
         </v-flex>
@@ -62,7 +62,7 @@
                     dark
                     color="dark"
                     label="IMEI"
-                    :disabled="selectedProduct.isDisabled"
+                    :disabled="selectedProduct.isDisabled || selectedProduct.is_barcode === 'yes'"
                     :value="selectedProduct.serials && selectedProduct.serials[0].imei"
             ></v-text-field>
         </v-flex>

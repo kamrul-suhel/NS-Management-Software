@@ -243,6 +243,7 @@ class ProductController extends ApiController
     public function destroy(Product $product)
     {
         //
+        $product->serials()->delete();
         $delete = $product->delete();
         if($delete){
             return $this->showOne($product);
