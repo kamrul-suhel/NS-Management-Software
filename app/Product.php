@@ -21,10 +21,10 @@ class Product extends Model
 	const UNAVAILABLE_PRODUCT = 'unavailable';
 	const ABAILABLE_PRODUCT = 'available';
 
-	const PRODUCTTYPEKG = 'kg';
-	const PRODUCTTYPLITTER = 'litter';
-	const PRODUCTTYPEITEM = 'item';
+	const PRODUCTTYPEFEET = 'feet';
 	const PRODUCTTYPEPIC = 'pic';
+
+	const NOWARRANTY = 'No warranty';
 
 
     protected $fillable = [
@@ -32,12 +32,16 @@ class Product extends Model
     	'description',
     	'status',
     	'quantity',
+        'store_id',
+        'feet',
+        'quantity_per_feet',
     	'image',
     	'seller_id',
         'quantity_type',
         'sale_price',
         'purchase_price',
-        'barcode'
+        'barcode',
+        'is_barcode'
     ];
 
     protected $hidden = [
@@ -55,7 +59,7 @@ class Product extends Model
 
     public function companies(){
         return $this->belongsToMany(Company::class)
-            ->withPivot('product_quantity')
+            ->withPivot('product_quantity', 'product_feet')
             ->withTimestamps();
     }
 
@@ -77,14 +81,35 @@ class Product extends Model
 
     public static function getQuantityType(){
         return [
-            self::PRODUCTTYPEKG,
-            self::PRODUCTTYPLITTER,
+            self::PRODUCTTYPEFEET,
             self::PRODUCTTYPEPIC
         ];
     }
 
     public function serials(){
         return $this->hasMany(ProductSerial::class);
+    }
+
+    public static function generateBarcode($length = 11) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        $randomString = '';
+
+        while(true){
+            $charactersLength = strlen($characters);
+            for ($i = 0; $i < $length; $i++) {
+                $randomString .= $characters[rand(0, $charactersLength - 1)];
+            }
+            $product = self::where('barcode', $randomString)
+                ->first();
+
+            if(!$product){
+                break;
+            }
+        }
+
+        return $randomString;
+
     }
 
 }

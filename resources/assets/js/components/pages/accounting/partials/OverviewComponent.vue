@@ -2,7 +2,7 @@
     <v-layout row wrap>
         <v-flex xs6>
         <v-card flat class="cyan lighten-1 white--text">
-                <v-card-title>Payment due {{ title }}</v-card-title>
+                <v-card-title>Customer due {{ title }}</v-card-title>
                 <v-card-text class="pt-0">
                     <h2 class="display-2 white--text text-xs-center">
                         <span style="font-size:12px">TK.</span>
@@ -24,7 +24,7 @@
             <!--</v-card>-->
         <!--</v-flex>-->
 
-        <v-flex xs6>
+        <v-flex xs6 v-if="balance">
             <v-card flat class="light-green lighten-1 white--text">
                 <v-card-title>Discount {{ title }}</v-card-title>
                 <v-card-text class="pt-0">
@@ -36,7 +36,7 @@
             </v-card>
         </v-flex>
 
-        <v-flex xs6>
+        <v-flex xs6 v-if="balance">
             <v-card flat class="orange darken-1 white--text">
                 <v-card-title>Total {{ title }}</v-card-title>
                 <v-card-text class="pt-0">
@@ -48,7 +48,7 @@
             </v-card>
         </v-flex>
 
-        <v-flex xs6>
+        <v-flex xs6 v-if="balance">
             <v-card flat class="primary darken-1 white--text">
                 <v-card-title>{{ title }} expenses</v-card-title>
                 <v-card-text class="pt-0">
@@ -60,7 +60,7 @@
             </v-card>
         </v-flex>
 
-        <v-flex xs6>
+        <v-flex xs6 v-if="balance">
             <v-card flat class="purple darken-1 white--text">
                 <v-card-title>{{ title }} total profit</v-card-title>
                 <v-card-text class="pt-0">
@@ -72,9 +72,9 @@
             </v-card>
         </v-flex>
 
-        <v-flex xs6>
+        <v-flex xs6 v-if="balance">
             <v-card flat class="blue darken-1 white--text">
-                <v-card-title>{{ title }} after expense profit</v-card-title>
+                <v-card-title>{{ title }} net profit</v-card-title>
                 <v-card-text class="pt-0">
                     <h2 class="display-2 white--text text-xs-center">
                         <span style="font-size:12px">TK.</span>
@@ -84,17 +84,41 @@
             </v-card>
         </v-flex>
 
-        <!--<v-flex xs6>-->
-            <!--<v-card flat class="red darken-1 white&#45;&#45;text">-->
-                <!--<v-card-title>After due profit</v-card-title>-->
-                <!--<v-card-text class="pt-0">-->
-                    <!--<h2 class="display-2 white&#45;&#45;text text-xs-center">-->
-                        <!--<span style="font-size:12px">TK.</span>-->
-                        <!--<strong>{{afterDueProfit}}</strong>-->
-                    <!--</h2>-->
-                <!--</v-card-text>-->
-            <!--</v-card>-->
-        <!--</v-flex>-->
+        <v-flex xs6>
+            <v-card flat class="cyan lighten-1 white--text">
+                <v-card-title>Cash</v-card-title>
+                <v-card-text class="pt-0">
+                    <h2 class="display-2 white--text text-xs-center">
+                        <span style="font-size:12px">TK.</span>
+                        <strong>{{cash}}</strong>
+                    </h2>
+                </v-card-text>
+            </v-card>
+        </v-flex>
+
+        <v-flex xs6 v-if="!balance">
+            <v-card flat class="cyan lighten-1 white--text">
+                <v-card-title>Product stock</v-card-title>
+                <v-card-text class="pt-0">
+                    <h2 class="display-2 white--text text-xs-center">
+                        <span style="font-size:12px">TK.</span>
+                        <strong>{{productTotalStock}}</strong>
+                    </h2>
+                </v-card-text>
+            </v-card>
+        </v-flex>
+
+        <v-flex xs6 v-if="!balance">
+            <v-card flat class="blue darken-1 white--text">
+                <v-card-title>Gross profit</v-card-title>
+                <v-card-text class="pt-0">
+                    <h2 class="display-2 white--text text-xs-center">
+                        <span style="font-size:12px">TK.</span>
+                        <strong>{{grossProfit}}</strong>
+                    </h2>
+                </v-card-text>
+            </v-card>
+        </v-flex>
     </v-layout>
 </template>
 
@@ -103,8 +127,12 @@
     export default {
         data(){
             return {
+                totalBalance:0
             }
         },
+
+        props : [
+        ],
 
         computed: {
             ...mapGetters({
@@ -116,7 +144,11 @@
                 totalProfit : 'getProfit',
                 afterExpenseProfit : 'getAfterExpenseProfit',
                 afterDueProfit : 'getAfterDueProfit',
-                title:'getChartTitle'
+                title:'getChartTitle',
+                cash: 'getCash',
+                productTotalStock: 'getProductTotalStock',
+                balance: 'getBalance',
+                grossProfit: 'getGrossProfit'
             }),
 
             totalProfiteAll(){
@@ -124,8 +156,10 @@
             }
         },
 
-        created(){
+        watch: {
+        },
 
+        created(){
         },
 
         methods:{

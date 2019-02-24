@@ -154,31 +154,12 @@
                     axios.post('/login', form_data)
                         .then(response => {
                             LoginEventBus.successLogin();
-                            // this.login_progress = true;
-                            // this.loading = false;
-                            //
-                            // let data = response.data;
-                            // if (data.error) {
-                            //     this.login_prosgress = false;
-                            //     this.loading = false;
-                            //     this.validation.error = true;
-                            //     this.validation.message = data.error_message;
-                            //     return;
-                            // }
-                            //
-                            // this.$store.commit('setUserState', data);
-                            // LoginEventBus.loginSuccess();
-                            //
-                            // // if has previous page then do this
-                            // let request_url = this.$route.query.request_url;
-                            // if(request_url && request_url != ''){
-                            //     request_url = '/'+ request_url;
-                            //     this.$router.push({path: request_url});
-                            // }
-                            //
-                            // if (data.redirect_url != '') {
-                            //     window.location.href = data.redirect_url;
-                            // }
+                            this.$store.commit('setUser', response.data.user);
+
+                            setTimeout(() => {
+                                this.$store.commit('setSelectedShop', response.data.user.store_id)
+                            }, 3000)
+
                         })
                         .catch(error => {
                             this.loading = false;

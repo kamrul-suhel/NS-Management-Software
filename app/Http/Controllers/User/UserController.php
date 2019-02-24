@@ -42,6 +42,15 @@ class UserController extends ApiController
      */
     public function store(Request $request)
     {
+        // If updating only store id then do this.
+        if($request->has('store_id')){
+            $user = User::findOrFail($request->user_id);
+            $user->store_id = $request->store_id;
+            $user->save();
+
+            return $this->showOne($user, 200);
+        }
+
         $rules = [
             'name'      => 'required',
             'email'     => 'required|email|unique:users',
@@ -50,16 +59,17 @@ class UserController extends ApiController
 
         $this->validate($request, $rules);
 
-        $data = $request->all();
+        $password = bcrypt($request->password);
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $password;
+        $user->verification_token = null;
+        $user->admin = User::ADMIN_USER;
 
-        $data['password'] = bcrypt($request->password);
-        $data['verified'] = User::UNVERIFIED_USER;
-        $data['verification_token'] = User::generateVerificationCode();
-        $data['admin'] = User::REGULAR_USER;
+        $user->save();
 
-        $user = User::create($data);
-
-        return $this->showOne($user, 201);
+        return $this->showOne($user, 200);
     }
 
     /**
@@ -108,21 +118,11 @@ class UserController extends ApiController
             $user->password = bcrypt($request->password);
         }
 
-//        if($request->has('admin')){
-//            if(!$user->isVerified()){
-//                return $this->errorResponse('Only verified user can modify the admin field', 409);
-//            }
-//
-//            $user->admin = $request->admin;
-//        }
-
-
         if(!$user->isDirty()){
             return $this->errorResponse('You need to specify a different value', 422);
         }
 
         $user->save();
-
         return $this->showOne($user);
     }
 

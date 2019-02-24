@@ -86,7 +86,7 @@
 </template>
 
 <script>
-    import {mapActions} from 'vuex';
+    import {mapActions, mapGetters} from 'vuex';
     export default {
         data(){
             return {
@@ -122,12 +122,20 @@
         },
 
         computed: {
+            ...mapGetters({
+                selectedShop: 'getSelectedShop'
+            }),
             computedDateFormatted () {
                 return this.formatDate(this.date)
             }
         },
 
         watch: {
+            selectedShop(){
+                let data = this.generateData();
+                this.getTransaction(data);
+            },
+
             date (val) {
                 this.dateFormatted = this.formatDate(this.date)
             },
@@ -158,6 +166,9 @@
                 this.customDate = false;
                 this.customRangeDate = false;
                 let data = {};
+
+                // set store id
+                data.store_id = this.$store.getters.getSelectedShopId;
                 if(this.select.abbr === 'CDT'){
                     this.customDate = true;
                     data.customdate = true;

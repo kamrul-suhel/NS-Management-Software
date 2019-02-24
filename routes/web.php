@@ -38,22 +38,36 @@ Route::get('/',function(){
     return view('welcome');
 })->middleware('guest');
 
-Route::get('/products', function(){
-    return view('welcome');
-});
+/**
+ * Product Route
+ */
+Route::get('/products', function(){return view('welcome');});
+Route::get('/products/add', function(){return view('welcome');});
 
+
+/**
+ * Category route
+ */
 Route::get('/categories', function(){
     return view('welcome');
 });
 
+
+/**
+ * Transaction route
+ */
 Route::get('/transaction', function(){
 	return view('welcome');
+});
+
+Route::get('/account/balance', function(){
+    return view('welcome');
 });
 
 Route::resource('customers', 'Customer\CustomerController')->only(['store', 'index', 'update']);
 Route::resource('customers.transactions', 'Customer\CustomerTransitionController')->only(['index']);
 
-Route::resource('settings', 'SettingController')->only(['index', 'update']);
+Route::resource('shops', 'ShopController')->only(['index', 'update', 'show','store']);
 
 Route::get('transaction/{id}/print', 'Transaction\TransactionController@showPrint');
 Route::get('transaction/{id}/edit', 'Transaction\TransactionController@edit');

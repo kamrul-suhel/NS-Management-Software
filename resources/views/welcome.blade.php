@@ -7,6 +7,7 @@
     <link href="{{asset('fonts/ma-icon/material-icons.css')}}" rel="stylesheet">
     <link href="{{asset("fonts/roboto/roboto.css")}}" rel="stylesheet">
     <link href="{{ asset('css/vuetify.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/print.css') }}" rel="stylesheet" media="print">
 
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 

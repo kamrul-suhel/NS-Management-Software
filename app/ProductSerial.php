@@ -11,7 +11,9 @@ class ProductSerial extends Model
     use SoftDeletes;
 
     public $fillable = [
-        'product_serial',
+        'color',
+        'barcode',
+        'imei',
         'product_warranty',
         'is_sold',
         'company_id'

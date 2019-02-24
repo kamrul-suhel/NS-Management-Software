@@ -6,31 +6,95 @@
                     color="dark"
                     label="Select Product"
                     :items="products"
-                    :hint="'Per unit sale price: '+ current_product_sale_price"
+                    :hint="'Per unit sale price: '+ selectedProduct.sale_price"
                     append-icon="add_shopping_cart"
                     v-model="selectedProduct"
+                    item-text="name"
+                    item-value="name"
                     chips
                     return-object
                     persistent-hint
             ></v-autocomplete>
         </v-flex>
 
-        <v-flex xs6>
+        <v-flex xs6 :style="{position: 'relative'}">
+            <v-btn
+                    class="remove-item"
+                    absolute
+                    dark
+                    fab
+                    top
+                    right
+                    small
+                    outline
+                    @click="onRemoveProduct()"
+                    color="error"
+            >
+                <v-icon>remove</v-icon>
+            </v-btn>
+
             <v-text-field
                     dark
                     color="dark"
-                    label="Quantity"
+                    label="Pic"
                     type="number"
                     min="1"
-                    :placeholder="'You have '+ current_product_quantity + ' in your stock'"
-                    :hint="'How much you want to sale. your stock is : ' + current_product_quantity"
+                    :max="selectedProduct.quantity"
+                    :disabled="selectedProduct.isDisabled || selectedProduct.is_barcode === 'yes'"
+                    :placeholder="'You have '+ selectedProduct.quantity + ' in your stock'"
+                    :hint="'You have '+ selectedProduct.quantity + ' in your stock'"
                     persistent-hint
                     v-model="selectedQuantity"
             ></v-text-field>
         </v-flex>
 
+        <v-flex xs3 v-if="selectedProduct.is_barcode === 'yes'">
+            <v-autocomplete
+                    label="Color"
+                    dark
+                    color="dark"
+                    :disabled="selectedProduct.isDisabled"
+                    :items="selectedProduct.serials"
+                    item-text="color"
+                    item-value="color"
+                    v-model="selectedSerials"
+                    return-object
+            ></v-autocomplete>
+        </v-flex>
+
+        <v-flex xs3 v-if="selectedProduct.is_barcode === 'yes'">
+            <v-text-field
+                    dark
+                    color="dark"
+                    label="Barcode"
+                    :disabled="selectedProduct.isDisabled || selectedProduct.is_barcode === 'yes'"
+                    :value="selectedSerials.barcode && selectedSerials.barcode"
+            ></v-text-field>
+        </v-flex>
+
+        <v-flex xs3 v-if="selectedProduct.is_barcode === 'yes'">
+            <v-text-field
+                    dark
+                    color="dark"
+                    label="IMEI"
+                    :disabled="selectedProduct.isDisabled || selectedProduct.is_barcode === 'yes'"
+                    :value="selectedSerials.imei && selectedSerials.imei"
+            ></v-text-field>
+        </v-flex>
+
+        <v-flex xs3>
+            <v-text-field
+                    dark
+                    color="dark"
+                    label="Warranty"
+                    disabled
+                    :value="selectedSerials.product_warranty && selectedSerials.product_warranty"
+            ></v-text-field>
+        </v-flex>
+
         <v-flex xs6>
             <v-autocomplete
+                    v-if="serials.length > 0"
                     label="Serial Number"
                     dark
                     color="dark"
@@ -57,64 +121,75 @@
         data() {
             return {
                 products: [],
-                selectedProduct: [],
+                selectedProduct: {},
                 current_product_quantity: '',
                 current_product_sale_price: 0,
-                selectedQuantity: 0,
+                selectedQuantity: 1,
                 allProductData: '',
                 previous_selected_id: '',
                 serials: [],
                 selectedSerials: [],
+                productMessage: 'Select product'
             }
         },
 
-        props: ['index'],
+        props: ['index', 'code'],
         watch: {
-            selectedProduct(val) {
-                if (val) {
-                    this.updateStore(val.value);
+            selectedProduct(product) {
+                if (product) {
+                    this.updateStore(product.id);
                 }
             },
 
             selectedQuantity(val) {
-                this.updateStore(this.selectedProduct.value);
+                this.updateStore(this.selectedProduct.id);
             },
+
+            selectedPercentage() {
+                this.updateStore(this.selectedProduct.id);
+            },
+
+            selectedSerials(){
+                this.updateStore(this.selectedProduct.id);
+            }
 
         },
 
         created() {
-            this.initialize()
+            this.initialize();
         },
 
         methods: {
-            onSerialChange(){
+            onSerialChange() {
                 this.updateStore(this.selectedProduct.value);
             },
 
             initialize() {
 
-                //get all product
-                axios.get('/api/products')
+                let url = '/api/products?shopId=' + this.$store.getters.getSelectedShopId;
+
+                if (this.code && this.code !== 1) {
+                    url = url + '&code=' + this.code
+                }
+
+                //get all product for store
+                axios.get(url)
                     .then((response) => {
                         if (response.data.products) {
-                            this.products = response.data.products;
-                            this.allProductData = response.data.products;
-                            var array_products = [];
-                            this.products.forEach((product) => {
-                                var product = {
-                                    text: product.name,
-                                    value: product.id,
-                                    quantity: product.quantity,
-                                    current_product_sale_price: product.sale_price
-                                };
-                                array_products.push(product);
-                            })
-                            this.products = array_products;
-                            // this.selectedProduct = this.products[0];
-                            // this.current_product_quantity = this.products[0].quantity;
-                            // this.current_product_sale_price = this.products[0].current_product_sale_price;
+                            this.selectedProduct = {...response.data.selected_product};
+                            this.products = [...response.data.products];
 
-                            this.updateStore(this.selectedProduct.value);
+                            // set selected quantity if scaned is found
+                            if (!_.isEmpty(this.selectedProduct)) {
+                                this.selectedQuantity = 1;
+                                this.selectedSerials = {...this.selectedProduct.serials[0]};
+                                this.selectedProduct = {
+                                    ...response.data.selected_product,
+                                    isDisabled: true
+                                }
+
+                                this.updateStore(this.selectedProduct.id);
+                            }
                         }
                     })
                     .catch((error) => {
@@ -122,37 +197,40 @@
                     });
             },
 
-            updateStore(val) {
-                var change_product = {};
-                this.allProductData.forEach((product) => {
-                    if (val === product.id) {
-                        change_product.selected_quantity = this.selectedQuantity;
-                        this.current_product_quantity = product.quantity;
-                        this.current_product_sale_price = product.sale_price;
-                        change_product.index = this.index;
-                        change_product.product = product;
-                        change_product.selectedSerials = this.selectedSerials;
-                        console.log('updated ');
+            updateStore(id) {
+                this.products.forEach((product) => {
+                    if (id === product.id) {
+                        let newProduct = {
+                            ...product,
+                            index: this.index
+                        };
+                        newProduct.quantity = this.selectedQuantity;
 
-                        // Check serial keys exists
-                        if (product.serials.length > 0) {
-                            this.serials = [];
-                            product.serials.forEach((serial) => {
-                                let currSerial = {
-                                    'id': serial.id,
-                                    'product_serial': serial.product_serial,
-                                    'product_warranty': serial.product_warranty
-                                };
-                                this.serials.push(currSerial);
-                            })
+                        if (product.is_barcode === 'yes') {
+                            newProduct.serials = [{...this.selectedSerials}];
                         }
-                        this.$store.dispatch('setTransaction', change_product)
+
+                        this.$store.dispatch('setTransaction', newProduct)
                             .then(() => {
                                 TransactionEventBus.updateProduct();
                             });
                     }
                 });
+            },
+
+            onRemoveProduct(){
+                this.$store.dispatch('removeProduct', this.selectedProduct).then(() => {
+                    TransactionEventBus.removeProduct(this.index);
+                });
             }
         }
     }
 </script>
+
+<style>
+    .v-btn--floating.v-btn--small.remove-item{
+        width:20px;
+        height:20px;
+        top:0;
+    }
+</style>

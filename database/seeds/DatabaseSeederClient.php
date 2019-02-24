@@ -5,7 +5,7 @@ use App\CompanyTransaction;
 use App\Customer;
 use App\Expense;
 use App\ExpenseCategory;
-use App\Setting;
+use App\Store;
 use App\User;
 use App\Product;
 use App\Category;
@@ -13,7 +13,7 @@ use App\Transaction;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Faker\Factory as Faker;
-class DatabaseSeeder extends Seeder
+class DatabaseSeederClient extends Seeder
 {
     /**
      * Run the database seeds.
@@ -145,7 +145,7 @@ class DatabaseSeeder extends Seeder
 //
 //        });
 
-        factory(Setting::class, 1)->create();
+        factory(Store::class, 1)->create();
 
 
         /**

@@ -2,9 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import CategoryComponent from '../components/pages/categories/CategoryIndexComponent'
 import ProductComponent from '../components/pages/products/ProductsComponent'
+import ProductAdd from '../components/pages/products/Add'
 import TransactionComponent from '../components/pages/transaction/TransactionComponent'
 import CustomerComponent from '../components/pages/customer/CustomerComponent'
-import SettingComponent from '../components/pages/setting/SettingComponent'
+import ShopComponent from '../components/pages/shop/ShopComponent'
 import CreateTransaction from '../components/pages/transaction/CreateTransactionComponent'
 import CreateDueTransaction from '../components/pages/transaction/CreateDueTransactionComponent'
 import TransactionPrint from '../components/pages/transaction/TransactionPrintComponent'
@@ -15,6 +16,7 @@ import ExpenseCategoryComponent from '../components/pages/expense/ExpenseCategor
 import CompanyComponent from '../components/pages/company/CompanyComponent'
 import CompanyTransaction from '../components/pages/company/CompanyTransitionsComponent'
 import AccountExpenseComponent from '../components/pages/accounting/expense/ExpenseAccountingComponent'
+import BalanceAccountingComponent from '../components/pages/accounting/balance/BalanceAccountingComponent'
 import ProductTransaction from '../components/pages/accounting/product_transaction/TransactionAccountingComponent'
 import CustomerAccountingTransaction from '../components/pages/accounting/customer/CustomerAccountingComponent'
 import UserComponent from '../components/pages/user/UserComponent'
@@ -46,6 +48,12 @@ const routes = [
         path: '/products',
         name: 'products',
         component: ProductComponent
+    },
+
+    {
+        path: '/products/add',
+        name: 'productsAdd',
+        component: ProductAdd
     },
 
     {
@@ -132,9 +140,15 @@ const routes = [
     },
 
     {
-        path: '/settings',
-        name: 'settings',
-        component: SettingComponent
+        path: '/account/balance',
+        name:'account_balance',
+        component: BalanceAccountingComponent
+    },
+
+    {
+        path: '/shops',
+        name: 'shops',
+        component: ShopComponent
     },
 
     {

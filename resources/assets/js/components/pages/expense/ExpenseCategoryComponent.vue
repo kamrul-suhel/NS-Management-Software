@@ -175,7 +175,8 @@
 
         methods: {
             initialize () {
-                axios.get('api/expensecategory')
+                let storeId = this.$store.getters.getSelectedShopId;
+                axios.get('api/expensecategory?store_id='+storeId)
                 .then((response) => {
                     this.items = response.data;
                 })
@@ -215,6 +216,7 @@
 
                 form.append('title', this.editedItem.title);
                 form.append('description', this.editedItem.description);
+                form.append('store_id', this.$store.getters.getSelectedShopId);
 
 
                 if (this.editedIndex > -1) {

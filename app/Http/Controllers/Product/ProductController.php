@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\Product;
 
+use App\Company;
 use App\Http\Controllers\ApiController;
 use App\Product;
-use App\Transformers\ProductTransformer;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 
 class ProductController extends ApiController
 {
@@ -18,34 +16,65 @@ class ProductController extends ApiController
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
-    	$allSerial = $request->allSerial;
-        $products = Product::with(['serials' => function($quary) use ($allSerial) {
-        	if(!$allSerial){
-				$quary->where('is_sold', 0);
-			}
-        }])->get();
+
+        $shopId = $request->has('shopId') ? $request->shopId : null;
+
+        $allSerial = $request->allSerial;
+        $products = Product::with(['serials' => function ($quary) use ($allSerial) {
+            if ($allSerial === 'true') {
+                $quary->where('is_sold', 0);
+            }
+        }])
+            ->with('companies');
+        if ($shopId) {
+            $products = $products->where('store_id', $shopId);
+        }
+
+        $products = $products->get();
 
         $totalProduct = $products->count();
         $totalStock = $products->sum(function($product){
-            return $product->purchase_price * $product->quantity;
+            return $product->quantity * $product->sale_price;
         });
 
-        $avaliable_product = Product::where('status', 'available')->count();
-        $unavaliable_product = Product::where('status', 'unavailable')->count();
+        $avaliable_product = Product::where('status', 'available');
+        if ($shopId) {
+            $avaliable_product = $avaliable_product->where('store_id', $shopId);
+        }
+        $avaliable_product = $avaliable_product->count();
+        $unavaliable_product = Product::where('status', 'unavailable');
+        if ($shopId) {
+            $unavaliable_product = $unavaliable_product->where('store_id', $shopId);
+        }
+        $unavaliable_product = $unavaliable_product->count();
+
+        // If scanned barcode or IMEI code
+        $selectedProduct = new Product();
+        if ($request->has('code') && $request->code !== 1) {
+            $code = $request->code;
+            $selectedProduct = $selectedProduct->with(['serials' => function ($query) use ($code) {
+                $query->where('barcode', $code)->orWhere('imei', $code);
+                $query->where('is_sold', 0);
+            }])
+                ->whereHas('serials', function ($query) use ($code) {
+                    $query->where('barcode', $code)->orWhere('imei', $code);
+                    $query->where('is_sold', 0);
+                })->first();
+        }
 
         $data = collect([
             'products' => $products,
             'quantity_types' => Product::getQuantityType(),
-            'total_stock' => number_format($totalStock,2,'.',','),
+            'total_stock' => number_format($totalStock, 2, '.', ','),
             'avaliable_product' => $avaliable_product,
             'unavaliable_product' => $unavaliable_product,
-            'total_product' => $totalProduct
+            'total_product' => $totalProduct,
+            'selected_product' => $selectedProduct
         ]);
         return $this->showAll($data);
     }
@@ -63,51 +92,65 @@ class ProductController extends ApiController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //
-        $totalCompanies = json_decode($request->totalCompanies);
-
+        $totalCompanies = json_decode($request->totalCompanies, true);
 
         // Product create
-        $product = $request->except('totalCompanies');
+        $product = $request->except(['totalCompanies', 'categories', 'product_type']);
         $product['image'] = '1.jpg';
         //change this when auth is set
-        $product['seller_id'] = 1;
+        $product['seller_id'] = $request->seller_id;
+
+        $product['is_barcode'] = $request->product_type;
+
         $product = Product::create($product);
 
         // Product serials key with company
-        $productSerialsWithCompany =[];
+        $productSerialsWithCompany = [];
         $productCompany = [];
-        foreach($totalCompanies as $currCompany){
-
+        foreach ($totalCompanies as $currCompany) {
             $company = [];
-            $company['company_id'] = $currCompany->selectedCompany->id;
-            $company['product_quantity'] = $currCompany->quantity;
-            $productCompany[] = $company;
+            $company['company_id'] = $currCompany['selectedCompany']['id'];
+            $company['product_quantity'] = $currCompany['quantity'];
 
-            if($currCompany->serials){
-                foreach($currCompany->serials as $currSerial){
+            $productCompany[] = $company;
+            if ($currCompany['serials'] && !empty($currCompany['serials'])) {
+                foreach ($currCompany['serials'] as $currSerial) {
                     $serial = [];
                     $serial['is_sold'] = 0;
-                    $serial['product_serial'] = $currSerial;
-                    $serial['product_warranty'] = $currCompany->product_warranty;
-                    $serial['company_id'] = $currCompany->selectedCompany->id;
+                    $serial['color'] = $currSerial['color'];
+                    $serial['barcode'] = $currSerial['barcode'];
+                    $serial['imei'] = $currSerial['imei'];
+                    $serial['product_warranty'] = $currCompany['product_warranty'];
+                    $serial['company_id'] = $currCompany['selectedCompany']['id'];
                     $productSerialsWithCompany[] = $serial;
                 }
+            } else {
+                $serial = [];
+                $serial['is_sold'] = 0;
+                $serial['color'] = '';
+                $serial['barcode'] = '';
+                $serial['imei'] = '';
+                $serial['product_warranty'] = $currCompany['product_warranty'];
+                $serial['company_id'] = $currCompany['selectedCompany']['id'];
+                $productSerialsWithCompany[] = $serial;
             }
         }
 
-        $companies = $product->companies()->attach($productCompany);
-        $serial = $product->serials()->createMany($productSerialsWithCompany);
+        // Save product company.
+        $product->companies()->attach($productCompany);
+
+        // Save Product serial
+        $product->serials()->createMany($productSerialsWithCompany);
 
         // If product has category then it will link with category in pivot table
-        if($request->has('categories')){
+        if ($request->has('categories')) {
             $categoriesId = [];
-            foreach(json_decode($request->categories) as $category){
+            foreach (json_decode($request->categories) as $category) {
                 $categoriesId[] = $category->value;
             }
             $product->categories()->sync($categoriesId);
@@ -119,7 +162,7 @@ class ProductController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param  \App\Product  $product
+     * @param  \App\Product $product
      * @return \Illuminate\Http\Response
      */
     public function show(Product $product)
@@ -130,7 +173,7 @@ class ProductController extends ApiController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Product  $product
+     * @param  \App\Product $product
      * @return \Illuminate\Http\Response
      */
     public function edit(Product $product)
@@ -141,8 +184,8 @@ class ProductController extends ApiController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Product  $product
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Product $product
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Product $product)
@@ -152,15 +195,41 @@ class ProductController extends ApiController
             'name',
             'description',
             'purchase_price',
-            'quantity',
             'quantity_type',
             'sale_price',
             'status'
         ]));
 
-        if($request->has('categories') && !empty($request->categories)){
+        $product->quantity = $product->quantity + $request->quantity;
+
+        // Product serials key with company
+        $totalCompanies = json_decode($request->totalCompanies);
+        $productSerialsWithCompany = [];
+        $productCompany = [];
+        foreach ($totalCompanies as $currCompany) {
+
+            $company = [];
+            $company['company_id'] = $currCompany->selectedCompany->id;
+            $company['product_quantity'] = $currCompany->quantity;
+            $productCompany[] = $company;
+            if ($currCompany->serials) {
+                foreach ($currCompany->serials as $currSerial) {
+                    $serial = [];
+                    $serial['is_sold'] = 0;
+                    $serial['product_serial'] = $currSerial;
+                    $serial['product_warranty'] = $currCompany->product_warranty;
+                    $serial['company_id'] = $currCompany->selectedCompany->id;
+                    $productSerialsWithCompany[] = $serial;
+                }
+            }
+        }
+
+        $companies = $product->companies()->syncWithoutDetaching($productCompany);
+        $serial = $product->serials()->createMany($productSerialsWithCompany);
+
+        if ($request->has('categories') && !empty($request->categories)) {
             $categoriesId = [];
-            foreach(json_decode($request->categories) as $category){
+            foreach (json_decode($request->categories) as $category) {
                 $categoriesId[] = $category->value;
             }
             $product->categories()->sync($categoriesId);
@@ -171,16 +240,16 @@ class ProductController extends ApiController
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Product  $product
-     * @return \Illuminate\Http\Response
+     * @param Product $product
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function destroy(Product $product)
     {
         //
+        $product->serials()->delete();
         $delete = $product->delete();
-        if($delete){
+        if ($delete) {
             return $this->showOne($product);
         }
     }

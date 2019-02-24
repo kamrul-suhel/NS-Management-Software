@@ -68,6 +68,8 @@ const actions = {
                 commit('setAllCustomers', response.data);
             }
         })
+            .catch(e => {})
+
     },
 
     fetchSelectedCustomerTransactions({commit}, customer) {

@@ -66,10 +66,10 @@
                         <td class="text-xs-left">{{ props.item.description }}</td>
                         <td class="justify-start layout px-0">
                             <v-btn icon class="mx-0" @click="editItem(props.item)">
-                                <v-icon color="primary">edit</v-icon>
+                                <v-icon color="white">edit</v-icon>
                             </v-btn>
                             <v-btn icon class="mx-0" @click="deleteItem(props.item)">
-                                <v-icon color="pink">delete</v-icon>
+                                <v-icon color="white">delete</v-icon>
                             </v-btn>
                         </td>
                     </template>
@@ -196,6 +196,7 @@
 
                 form.append('name', this.editedItem.name);
                 form.append('description', this.editedItem.description);
+                form.append('store_id', this.$store.getters.getSelectedShopId);
 
                 if (this.editedIndex > -1) {
                     form.append('_method', 'PUT');

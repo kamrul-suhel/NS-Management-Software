@@ -7,18 +7,19 @@
                         raised
                         width="100%">
                     <v-card-text>
-                        <h2 class="text-xs-center">{{ data.setting.company_name ? data.setting.company_name : ''}}</h2>
-                        <h3 class="text-xs-center">Address: {{ data.setting.company_address }}</h3>
+                        <h2 class="text-xs-center">{{ data.setting.name ? data.setting.name : ''}}</h2>
+                        <h3 class="text-xs-center">Address: {{ data.setting.address }}</h3>
                         <v-layout row wrap>
                             <v-flex xs6 class="company-info-left">
-                                <p>Phone: {{ data.setting.company_phone }}</p>
-                                <p>Mobile: {{ data.setting.company_mobile }}</p>
-                                <p>Email: {{ data.setting.company_email }}</p>
+                                <p>Phone: {{ data.setting.phone }}</p>p
+                                <p>Mobile: {{ data.setting.mobile }}</p>
+                                <p>Email: {{ data.setting.email }}</p>
                                 <p>Shop Number: {{ data.setting.company_shop_number }}</p>
                             </v-flex>
                             <v-flex xs6 style="text-align:right" class="company-info-right">
                                 <p>Date: {{ new Date().toJSON().slice(0,10).split('-').reverse().join('/') }}</p>
                                 <p>Invoice : {{ data.transaction.invoice_number.toUpperCase() }}</p>
+                                <p>Sell by: {{ data.transaction.seller.name }}</p>
                             </v-flex>
                             <v-spacer></v-spacer>
                         </v-layout>
@@ -50,6 +51,7 @@
                                         <td>S.N - Description</td>
                                         <td>Warranty</td>
                                         <td>Unit Price<br/>(Taka)</td>
+                                        <td>Discount percentage</td>
                                         <td>Qty</td>
                                         <td class="text-xs-right">Total (Taka)</td>
                                     </thead>
@@ -60,8 +62,12 @@
                                             <td><span v-for="(serial, index) in product.productSaleSerial" :key="index">{{ serial.product_serial }} </span></td>
                                             <td>{{ product.productWarranty}}</td>
                                             <td>TK. {{ product.sale_price | price_format }}</td>
-                                            <td>{{ product.sale_quantity }}</td>
-                                            <td class="text-xs-right">TK. {{ product.sale_price * product.sale_quantity }}</td>
+                                            <td>{{ product.discount_percentage }}%</td>
+                                            <td>{{ product.sale_quantity * product.quantity_per_feet + product.sale_feet }}
+                                                <span v-if="product.quantity_type === 'pic'">Pic</span>
+                                                <span v-else>Feets</span>
+                                            </td>
+                                            <td class="text-xs-right">TK. {{ (product.sale_quantity * product.quantity_per_feet + product.sale_feet) * product.sale_price }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -95,11 +101,21 @@
                         <v-divider></v-divider>
 
                         <v-layout row wrap class="print-footer">
-                            <v-flex xs6>
+                            <v-flex xs12>
                                 <p>Please Check Before You Buy. After Used No Return. Thanks For Business With Us.</p>
                                 <p>{{ data.setting.company_website }}</p>
                             </v-flex>
-                            <v-flex xs6></v-flex>
+                        </v-layout>
+
+                        <v-layout row wrap class="print-btn">
+                            <v-flex xs12>
+                                <v-btn raised
+                                       dark
+                                       color="dark"
+                                        @click="onPrint()">
+                                    Print
+                                </v-btn>
+                            </v-flex>
                         </v-layout>
 
                     </v-card-text>
@@ -141,9 +157,13 @@
             initializeSubtotal(){
                 var subtotal = 0;
                 this.data.transaction.products.forEach(function(product){
-                    subtotal += product.sale_quantity * product.sale_price;
+                    subtotal += ( product.sale_quantity * product.quantity_per_feet + product.sale_feet) * product.sale_price;
                 });
                 this.subtotal = subtotal;
+            },
+
+            onPrint(){
+                window.print();
             }
         }
     }

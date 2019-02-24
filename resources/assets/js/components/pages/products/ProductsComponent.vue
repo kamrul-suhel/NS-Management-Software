@@ -1,204 +1,19 @@
 <template>
     <div class="products">
+        <!--<v-dialog-->
+        <!--v-model="barcodeDialog"-->
+        <!--persistent-->
+        <!--max-width="290">-->
+        <!--<v-card>-->
+        <!--<v-card-title class="headline">You scanned a Barcode</v-card-title>-->
+        <!--<v-card-text>Your barcode is : {{ barcode }}</v-card-text>-->
+        <!--<v-card-actions>-->
+        <!--<v-spacer></v-spacer>-->
+        <!--<v-btn color="green darken-1" flat @click.native="onbarcodeDialogClose()">Ok</v-btn>-->
+        <!--</v-card-actions>-->
+        <!--</v-card>-->
+        <!--</v-dialog>-->
 
-        <v-dialog
-                v-model="dialog"
-                persistent>
-            <v-card class="px-2 py-2">
-                <v-card-title>
-                    <span class="headline">{{ formTitle }}</span>
-                </v-card-title>
-
-                <v-card-text>
-                    <v-container fluid grid-list-md>
-                        <v-layout row wrap>
-                            <v-flex xs12>
-                                <v-text-field
-                                        label="Title"
-                                        v-model="editedItem.name"
-                                        dark
-                                        color="dark"
-                                ></v-text-field>
-                            </v-flex>
-
-                            <v-flex xs12>
-                                <v-textarea
-                                        dark
-                                        color="dark"
-                                        label="Description"
-                                        v-model="editedItem.description"
-                                ></v-textarea>
-                            </v-flex>
-
-                            <v-flex xs12>
-                                <v-select
-                                        dark
-                                        color="dark"
-                                        label="Is this product has serial"
-                                        :items="isSerials"
-                                        v-model="isSerial"></v-select>
-                            </v-flex>
-
-                            <v-flex xs12 v-for="(company, totalCompanyIndex) in totalCompanies"
-                                    :key="totalCompanyIndex">
-                                <v-layout row wrap
-                                >
-                                    <v-flex xs6>
-                                        <v-select
-                                                dark
-                                                color="dark"
-                                                label="Which company"
-                                                :items="company.companies"
-                                                v-model="company.selectedCompany"
-                                                item-text="name"
-                                                item-value="id"
-                                                return-object
-                                        ></v-select>
-                                    </v-flex>
-
-                                    <v-flex xs6>
-                                        <v-text-field
-                                                label="How many quantity"
-                                                dark
-                                                v-model="company.quantity"
-                                                color="dark">
-                                        </v-text-field>
-
-                                        <v-btn
-                                                right
-                                                fab
-                                                dark
-                                                small
-                                                color="error"
-                                                style="width:20px;height:20px;position:absolute"
-                                                @click="onRemoveCompany(totalCompanyIndex)"
-                                        >
-                                            <v-icon>remove</v-icon>
-                                        </v-btn>
-                                    </v-flex>
-                                    <v-layout row wrap v-if="isSerial">
-                                        <v-flex xs6>
-                                            <v-autocomplete
-                                                    label="Select warranty"
-                                                    v-model="company.product_warranty"
-                                                    :items="warranties"
-                                            ></v-autocomplete>
-                                        </v-flex>
-
-                                        <v-flex xs6>
-                                            <v-layout row wrap>
-                                                <v-flex xs3
-                                                        v-for="(serial, index) in company.serials"
-                                                        :key="index">
-                                                    <v-text-field
-                                                            dark
-                                                            color="dark"
-                                                            :label="'Product Serial ' +  (Number(index) + 1)"
-                                                            v-model="company.serials[index]"
-                                                    ></v-text-field>
-                                                </v-flex>
-                                            </v-layout>
-                                        </v-flex>
-                                    </v-layout>
-                                </v-layout>
-                            </v-flex>
-
-
-                            <v-flex xs12>
-                                <v-btn
-                                        dark
-                                        color="dark"
-                                        class="ml-0"
-                                        @click="onAddCompany()">Add company
-                                </v-btn>
-                            </v-flex>
-
-                            <v-flex xs6>
-                                <v-text-field
-                                        label="Quantity"
-                                        type="number"
-                                        dark
-                                        color="dark"
-                                        placeholder="00.00"
-                                        v-model="editedItem.quantity"
-                                ></v-text-field>
-                            </v-flex>
-
-                            <v-flex xs6>
-                                <v-select
-                                        dark
-                                        color="dark"
-                                        label="Quantity type"
-                                        :items="quantity_type"
-                                        v-model="editedItem.quantity_type"
-                                        auto
-                                ></v-select>
-                            </v-flex>
-
-                            <v-flex xs6>
-                                <v-select
-                                        dark
-                                        color="dark"
-                                        :items="status"
-                                        v-model="editedItem.status"
-                                        label="Status"
-                                        auto
-                                ></v-select>
-                            </v-flex>
-
-                            <v-flex xs6>
-                                <v-text-field
-                                        dark
-                                        color="dark"
-                                        label="Sale Price"
-                                        type="number"
-                                        placeholder="00.00"
-                                        prefix="TK"
-                                        v-model="editedItem.sale_price"
-                                ></v-text-field>
-                            </v-flex>
-
-                            <v-flex xs6>
-                                <v-text-field
-                                        dark
-                                        color="dark"
-                                        label="Purchase price"
-                                        type="number"
-                                        placeholder="00.00"
-                                        prefix="TK"
-                                        v-model="editedItem.purchase_price">
-                                </v-text-field>
-                            </v-flex>
-
-                            <v-flex xs6>
-                                <v-select
-                                        dark
-                                        color="dark"
-                                        label="Categories"
-                                        :items="categories"
-                                        v-model="selectedCategories"
-                                        multiple
-                                        chips
-                                        persistent-hint
-                                        return-object
-                                >
-                                </v-select>
-                            </v-flex>
-                        </v-layout>
-                    </v-container>
-                </v-card-text>
-
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-
-                    <v-btn dark color="dark" raised @click.native="close">Cancel</v-btn>
-
-                    <v-btn dark color="dark" raised @click.native="save">{{ editedIndex === -1 ? 'Create product' :
-                        'Update product' }}
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
         <v-container grid-list-md class="pt-0">
             <v-layout row wrap>
                 <v-flex xs12 class="pt-0">
@@ -233,7 +48,7 @@
 
                 <v-flex xs6>
                     <v-card flat class="light-green lighten-1 white--text">
-                        <v-card-title>Not is stock</v-card-title>
+                        <v-card-title>Product Unavailable</v-card-title>
                         <v-card-text class="pt-0">
                             <h2 class="display-2 white--text text-xs-center">
                                 <strong>{{unavaliable_product}}</strong>
@@ -260,7 +75,7 @@
             <v-layout row wrap>
                 <v-card width="100%">
                     <v-card-title>
-                        <v-btn dark fab small color="dark" @click="dialog = true">
+                        <v-btn dark fab small color="dark" @click="$router.push('products/add')">
                             <v-icon>add</v-icon>
                         </v-btn>
 
@@ -286,12 +101,11 @@
                             <template slot="items" slot-scope="props">
                                 <tr @click="props.expanded = !props.expanded">
                                     <td>{{ props.item.created_at | convertDate }}</td>
-                                    <td class="text-xs-center">{{ props.item.name }}</td>
-                                    <td class="text-xs-center">{{ props.item.quantity }}</td>
-                                    <td class="text-xs-center">{{ props.item.quantity_type }}</td>
-                                    <td class="text-xs-center">TK. {{ props.item.sale_price }}</td>
-                                    <td class="text-xs-center">TK. {{ props.item.purchase_price }}</td>
-                                    <td class="text-xs-center">{{ props.item.status }}</td>
+                                    <td>{{ props.item.name }}</td>
+                                    <td>{{ props.item.quantity }}</td>
+                                    <!--<td class="text-xs-center">TK. {{ props.item.sale_price }}</td>-->
+                                    <td>TK. {{ props.item.sale_price }}</td>
+                                    <td>{{ props.item.status }}</td>
                                     <td class="justify-start layout px-0">
                                         <v-btn dark
                                                color="dark"
@@ -311,15 +125,49 @@
                                 </tr>
                             </template>
 
+                            <v-divider></v-divider>
+
                             <template slot="expand" slot-scope="props">
                                 <v-card flat>
                                     <v-card-text>
-                                        <h3>Serials:</h3>
-                                        <ul>
-                                            <li v-for="(serial, index) in props.item.serials" :key="index">{{
-                                                serial.product_serial }}
-                                            </li>
-                                        </ul>
+                                        <table width="100%">
+                                            <tr>
+                                                <td><strong>Additional info</strong></td>
+                                            </tr>
+
+                                            <tr v-for="(serial, index) in props.item.serials" :key="index">
+                                                <td>
+                                                    Barcode: {{ serial.barcode }}
+                                                </td>
+                                                <td>
+                                                    IMEI: {{ serial.imei }}
+                                                </td>
+                                                <td>
+                                                    Color: {{ serial.color }}
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <v-divider></v-divider>
+
+                                        <table with="100%">
+                                            <tr>
+                                                <td><strong>Companies</strong></td>
+                                                <td><strong>Mobile</strong></td>
+                                                <td><strong>Phone</strong></td>
+                                                <td><strong>Quantity</strong></td>
+                                                <td><strong>Purchased date</strong></td>
+                                            </tr>
+                                            <tr v-for="(company, index) in props.item.companies" :key="index">
+                                                <td>{{ company.name}}</td>
+                                                <td>{{ company.mobile }}</td>
+                                                <td>{{ company.phone }}</td>
+                                                <td>{{ company.pivot.product_quantity }}</td>
+                                                <td>{{ company.pivot.created_at | convertDate }}</td>
+                                            </tr>
+                                        </table>
+
+                                        <p>Purchase price : {{ props.item.purchase_price }}</p>
                                     </v-card-text>
                                 </v-card>
                             </template>
@@ -366,13 +214,10 @@
     </div>
 </template>
 <script>
-    /* eslint-disable no-unreachable */
-
-    import axios from 'axios'
+    import {mapGetters} from 'vuex'
 
     export default {
         data: () => ({
-            dialog: false,
             search: '',
             pagination: {
                 sortBy: 'name'
@@ -390,7 +235,11 @@
             snackbar: false,
             snackbar_message: '',
 
-            warranties: ['3 Month', '6 Month', '1 Year', '1.5 Year', '2 Year'],
+            warranties: ['3 Month', '6 Month', '1 Year', '1.5 Year', '2 Year', '3 Year', '4 year', '5 year'],
+
+            quantityToFeetError: false,
+            quantityToFeet: 0,
+            totalFeets: 0,
 
             headers: [
                 {
@@ -412,18 +261,8 @@
                     sortable: true
                 },
                 {
-                    text: 'Type',
-                    value: 'quantity_types',
-                    sortable: true
-                },
-                {
-                    text: 'Sale price',
+                    text: 'Price',
                     value: 'sale_price',
-                    sortable: true
-                },
-                {
-                    text: 'Purchase price',
-                    value: 'purchase_price',
                     sortable: true
                 },
                 {
@@ -438,119 +277,46 @@
             ],
 
             items: [],
-            status: [
-                {
-                    text: 'Avaliable',
-                    value: 'available'
-                },
-                {
-                    text: 'Unavaliable',
-                    value: 'unavailable'
-                }
-            ],
-            editedIndex: -1,
-            editedItem: {
-                id: '',
-                name: 'new title',
-                description: 'soe description',
-                quantity: 1,
-                status: 'available',
-                sale_price: '120',
-                purchase_price: '100',
-                quantity_type: 'pic'
-            },
-
-            quantity_type: [],
-
-            categories: [],
-            selectedCategories: [],
-            update_form: false,
-
-            defaultItem: {
-                name: '',
-                descriptin: ''
-            },
             row_per_page: [20, 30, 50, {'text': 'All', 'value': -1}],
 
-            purchase_price_field: false,
-
-            companies: [],
-            selectedCompanies: [],
-
-            isSerials: [{text: 'yes', value: true}, {text: 'No', value: false}],
-            isSerial: false,
-            productSerials: [],
-
+            barcodeDialogvalue: false,
+            barcode: ''
 
         }),
 
         computed: {
-            formTitle() {
-                return this.editedIndex === -1 ? 'New Product' : 'Edit Product'
-            },
-
-            totalCompanies() {
-                let quantity = 0;
-                let serials = [];
-                this.selectedCompanies.forEach((company) => {
-                    if (company.serials) {
-                        serials = company.serials;
-                    }
-
-                    quantity += Number(company.quantity)
-                    company.serials = [];
-                    for (let i = 0; i < company.quantity; i++) {
-                        if (this.isSerial) {
-                            if (serials.length > 0) {
-                                company.serials.push(serials[i]);
-                            } else {
-                                company.serials.push('');
-                            }
-                        }
-
-                    }
-                })
-
-                this.editedItem.quantity = quantity;
-
-                return this.selectedCompanies;
-            }
+            ...mapGetters({
+                selectedShop: 'getSelectedShop'
+            }),
         },
 
         watch: {
+            selectedShop() {
+                this.initialize();
+            },
+
             dialog(val) {
                 val || this.close()
             },
 
-            isSerial(value) {
-                this.productSerials = [];
-                if (value) {
-                    let count = Number(this.editedItem.quantity);
-                    for (let i = 0; i < count; i++) {
-                        this.productSerials.push('0');
-                    }
-                }
-            },
-
-            editedItem(value) {
-                if (value.quantity) {
-                    this.productSerials = [];
-                    let count = Number(this.editedItem.quantity);
-                    for (let i = 0; i < count; i++) {
-                        this.productSerials.push('0');
-                    }
-                }
-            }
         },
 
         created() {
-            this.initialize()
+            this.initialize();
+            //Barcode scannser
+            this.$barcodeScanner.init(this.onBarcodeScanned);
         },
 
         methods: {
             initialize() {
+                const shopId = this.selectedShop.id
+                let productsUrl = '/api/products'
+                if (shopId) {
+                    productsUrl += '?shopId=' + shopId + '&allSerial=true'
+                }
+
                 // get all product
-                axios.get('/api/products')
+                axios.get(productsUrl)
                     .then((response) => {
                         this.items = response.data.products;
                         this.quantity_type = response.data.quantity_types;
@@ -562,52 +328,6 @@
                     .catch((error) => {
                         console.log(error)
                     });
-
-                // get all categories
-                axios.get('/api/categories')
-                    .then((response) => {
-                        let categories = response.data;
-                        categories.forEach((value) => {
-                            let category = {};
-                            category.value = value.id;
-                            category.text = value.name;
-
-                            this.categories.push(category)
-                        })
-                    })
-                    .catch((error) => {
-                        console.log('categories error');
-                        console.log(error)
-                    })
-
-                // get All product
-                axios.get('/api/productcompany')
-                    .then((response) => {
-                        this.companies = response.data;
-                    })
-                    .catch((error) => {
-                        console.log('Companies error');
-                        console.log(error)
-                    })
-            },
-
-            editItem(item) {
-                // get selected categories & all categories
-                let url = '/api/products/' + item.id + '/categories';
-
-                axios.get(url)
-                    .then((response) => {
-                        let selectedCategories = response.data;
-                        selectedCategories.forEach((value) => {
-                            let categories = {}
-                            categories.value = value.id
-                            categories.text = value.name
-                            this.selectedCategories.push(categories)
-                        })
-                    })
-                this.editedIndex = this.items.indexOf(item)
-                this.editedItem = Object.assign({}, item)
-                this.dialog = true
             },
 
             openDeleteDialog(deleteItem) {
@@ -623,6 +343,7 @@
                     this.items.splice(index, 1)
                     this.snackbar_message = 'You successfully delete ' + this.deleteItem.name;
                     this.snackbar = true;
+                    this.initialize();
                 });
             },
 
@@ -635,65 +356,6 @@
                 }, 300)
             },
 
-            onAddCompany() {
-                let newcompany = {quantity: 0, companies: this.companies, selectedCompany: {}};
-                this.selectedCompanies.push(newcompany);
-                console.log(this.totalCompanies);
-            },
-
-            onRemoveCompany(index) {
-                this.selectedCompanies.splice(index, 1);
-            },
-
-            save() {
-                let form = new FormData();
-                let url = '/api/products';
-
-                form.append('name', this.editedItem.name);
-                form.append('description', this.editedItem.description);
-                form.append('purchase_price', this.editedItem.purchase_price);
-                form.append('sale_price', this.editedItem.sale_price);
-                form.append('quantity', this.editedItem.quantity);
-                form.append('status', this.editedItem.status);
-                form.append('quantity_type', this.editedItem.quantity_type);
-                form.append('totalCompanies', JSON.stringify(this.totalCompanies));
-
-                if (this.selectedCategories) {
-                    form.append('categories', JSON.stringify(this.selectedCategories));
-                }
-
-                if (this.editedIndex > -1) {
-                    // update product
-                    form.append('_method', 'PATCH')
-                    url = url + '/' + this.editedItem.id;
-                    axios.post(url, form)
-                        .then((response) => {
-                            Object.assign(this.items[this.editedIndex], this.editedItem);
-                            this.initialize();
-                            this.snackbar_message = 'Product ' + this.editedItem.name + ' successfully updated.';
-                            this.snackbar = true;
-                            this.close()
-                        })
-                } else {
-                    // create product
-                    axios.post(url, form)
-                        .then((response) => {
-                            this.items.push(response.data);
-                            this.initialize();
-                            this.snackbar_message = 'Product ' + this.editedItem.name + ' successfully created.';
-                            this.snackbar = true;
-                            // update total product & stock
-                            this.total_product++;
-
-                            // let total = this.total_stock.replace(',', '');
-                            // total = Number(total);
-                            // this.total_stock = total + this.editedItem.quantity * this.editedItem.purchase_price;
-                            this.close()
-                        })
-                }
-
-            },
-
             changeSort(column) {
                 if (this.pagination.sortBy === column) {
                     this.pagination.descending = !this.pagination.descending
@@ -704,22 +366,30 @@
             },
 
             customFilter(items, search, filter) {
-                search = search.toString().toLowerCase();
+                search = search && search.toString().toLowerCase();
                 if (search === '') {
                     return items;
                 }
                 let filterItem = [];
                 items.forEach((item) => {
                     let isItem = false;
+                    let itemSerial = false;
                     if (item.serials.length > 0) {
                         item.serials.forEach((serial) => {
-                            if (serial.product_serial.includes(search) || item.name.includes(search)) {
+                            let productSerial = serial.barcode.toString().toLowerCase();
+                            if (productSerial.includes(search)) {
                                 isItem = true;
-                                return;
                             }
                         })
+
                     }
-                    if (isItem) {
+
+                    let itemName = item.name.toString().toLowerCase();
+                    if (itemName.includes(search)) {
+                        itemSerial = true
+                    }
+
+                    if (isItem || itemSerial) {
                         filterItem.push(item);
                     }
                 })

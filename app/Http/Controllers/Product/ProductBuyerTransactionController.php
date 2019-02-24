@@ -6,9 +6,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Customer\CustomerDueController;
 use App\Product;
 use App\ProductSerial;
-use App\Seller;
 use App\Transaction;
-use App\User;
 use App\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -33,12 +31,18 @@ class ProductBuyerTransactionController extends ApiController
             $attach_product = [];
             $unique_id = $this->getUniqueId();
 
+            $type = $request->payment_status === '1' ? 'paid' : 'due-paid';
+
             $transaction = Transaction::create([
                 'customer_id' => $customer->id,
+                'seller_id' => $request->seller_id,
+                'store_id' => $request->store_id,
                 'invoice_number' => $unique_id,
                 'discount_amount' => $request->discount,
-                'total' => $request->total,
+                'special_discount' => $request->special_discount,
+                'total' => $request->total + $request->service_charge,
                 'payment_status' => $request->payment_status,
+                'type' => $type,
                 'payment_due' => $request->payment_due ? $request->payment_due : 0,
                 'paid' => $request->paid,
 				'service_charge' => $request->service_charge
@@ -65,29 +69,29 @@ class ProductBuyerTransactionController extends ApiController
                 ]);
             }
 
-            $products = json_decode($request->products);
-
+            $products = json_decode($request->products, true);
 
             foreach ($products as $product) {
                 // check if has selected serials
-                if ($product->selectedSerials) {
+                // check if has selected serials
+                if ($product['serials']) {
                     // Find the serials key
-                    $serials = ProductSerial::where('product_id', $product->product->id)
-                        ->whereIn('product_serial', $product->selectedSerials)->get();
-                    foreach ($serials as $serial) {
+                    foreach ($product['serials'] as $serial) {
+                        $serial = ProductSerial::findOrFail($serial['id']);
                         $serial->is_sold = 1;
                         $serial->transaction_id = $transaction->id;
                         $serial->update();
                     }
                 }
 
-                $cur_product = Product::find($product->product->id);
-                $selected_quantity = $product->selected_quantity;
-                $cur_product->quantity -= $selected_quantity;
+                $attach_product[$product['id']] = [
+                    'sale_quantity' => $product['quantity']
+                ];
 
-                $attach_product[$product->product->id] = ['sale_quantity' => $product->selected_quantity];
+                $curProduct = Product::findOrFail($product['id']);
+                $curProduct->quantity = $curProduct->quantity - $product['quantity'];
 
-                $cur_product->save();
+                $curProduct->save();
             }
 
             $transaction->products()->sync($attach_product);

@@ -12,7 +12,8 @@ class ExpenseCategory extends Model
 
     protected $fillable = [
         'title',
-        'description'
+        'description',
+        'store_id'
     ];
 
     //

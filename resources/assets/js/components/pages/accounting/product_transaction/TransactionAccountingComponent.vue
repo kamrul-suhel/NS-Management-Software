@@ -36,7 +36,6 @@
         },
 
         computed: {
-
         },
 
         watch: {
@@ -44,6 +43,7 @@
         },
 
         created () {
+            this.$store.commit('setBalance', true)
             // this.getTransaction()
         },
 

@@ -59,6 +59,13 @@
                             },
 
                             {
+                                icon: 'history',
+                                text: 'Add Product',
+                                link:'productsAdd'
+                            },
+
+
+                            {
                                 icon: 'subscriptions',
                                 text: 'Categories',
                                 link:'categories'
@@ -74,6 +81,12 @@
                                 icon: 'compare_arrows',
                                 text: 'Transitions',
                                 link: 'transaction'
+                            },
+
+                            {
+                                icon: 'compare_arrows',
+                                text: 'Sale product',
+                                link: 'create_transaction'
                             }
                         ]
                     },
@@ -151,6 +164,12 @@
 
                             {
                                 icon: 'timeline',
+                                text: 'Balance',
+                                link: 'account_balance'
+                            },
+
+                            {
+                                icon: 'timeline',
                                 text: 'A Product',
                                 link: 'expenses'
                             }
@@ -163,8 +182,8 @@
                         navs: [
                             {
                                 icon: 'settings',
-                                text: 'Settings',
-                                link: 'settings'
+                                text: 'Shops',
+                                link: 'shops'
                             },
 
                             {

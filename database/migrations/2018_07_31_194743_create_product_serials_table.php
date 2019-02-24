@@ -18,8 +18,10 @@ class CreateProductSerialsTable extends Migration
             $table->integer('product_id');
             $table->integer('company_id');
             $table->integer('transaction_id')->nullable();
-            $table->string('product_serial')->nullable()->index();
-            $table->enum('product_warranty',['3 Month','6 Month','1 Year', '1.5 Year', '2 Year'])->nullable()->index();
+            $table->string('color', 50)->nullable()->index();
+            $table->string('barcode',120)->nullable()->index();
+            $table->string('imei',120)->nullable()->index();
+            $table->enum('product_warranty',['No warranty','3 Month','6 Month','1 Year', '1.5 Year', '2 Year'])->nullable()->index();
             $table->integer('is_sold')->nullable()->unsigned()->index();
             $table->softDeletes();
             $table->timestamps();

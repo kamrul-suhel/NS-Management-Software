@@ -16,5 +16,9 @@ mix.js('resources/assets/js/app.js', 'public/js')
     .version()
     .sourceMaps();
 
+mix.sass('resources/assets/sass/print.scss', 'public/css')
+    .version()
+    .sourceMaps();
+
 
 mix.copy('node_modules/vuetify/dist/vuetify.min.css', 'public/css/vuetify.min.css');
