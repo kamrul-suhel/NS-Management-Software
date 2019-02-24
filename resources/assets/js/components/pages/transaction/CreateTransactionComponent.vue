@@ -348,7 +348,7 @@
         },
 
         destroyed(){
-            this.$store.dispatch();
+            this.$store.commit('resetProductTransition');
         }
     }
 </script>
