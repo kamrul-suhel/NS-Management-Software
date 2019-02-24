@@ -6,7 +6,7 @@
                     color="dark"
                     label="Select Product"
                     :items="products"
-                    :hint="'Per unit sale price: '+ selectedProduct.sale_price && selectedProduct.sale_price"
+                    :hint="'Per unit sale price: '+ selectedProduct.sale_price"
                     append-icon="add_shopping_cart"
                     v-model="selectedProduct"
                     item-text="name"
@@ -24,19 +24,21 @@
                     label="Pic"
                     type="number"
                     min="1"
+                    :max="selectedProduct.quantity"
                     :disabled="selectedProduct.isDisabled"
                     :placeholder="'You have '+ selectedProduct.quantity + ' in your stock'"
+                    :hint="'You have '+ selectedProduct.quantity + ' in your stock'"
                     persistent-hint
                     v-model="selectedQuantity"
             ></v-text-field>
         </v-flex>
 
-        <v-flex xs3>
+        <v-flex xs3 v-if="selectedProduct.is_barcode === 'yes'">
             <v-autocomplete
-                    v-if="selectedProduct.serials"
                     label="Color"
                     dark
                     color="dark"
+                    :disabled="selectedProduct.isDisabled"
                     :items="selectedProduct.serials"
                     item-text="color"
                     item-value="color"
@@ -70,7 +72,7 @@
                     dark
                     color="dark"
                     label="Warranty"
-                    :disabled="selectedProduct.isDisabled"
+                    :disabled="selectedProduct.isDisabled || selectedProduct.is_barcode === 'no'"
                     :value="selectedProduct.serials && selectedProduct.serials[0].product_warranty"
             ></v-text-field>
         </v-flex>
@@ -126,7 +128,7 @@
             },
 
             selectedQuantity(val) {
-                this.updateStore(this.selectedProduct.value);
+                this.updateStore(this.selectedProduct.id);
             },
 
             selectedPercentage() {

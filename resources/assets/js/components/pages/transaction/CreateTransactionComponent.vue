@@ -115,7 +115,7 @@
                                     <p v-if="selectedPaymentStatus > 1"><strong>Due: {{ total_amount_transactions - paid
                                         }}</strong></p>
                                     <p><strong>Discount: {{ discount }}</strong></p>
-                                    <p><strong>Grand total: {{ total_amount_transactions - discount
+                                    <p><strong>Grand total: {{ parseFloat(total_amount_transactions) + parseFloat(service_charge) - parseFloat(discount)
                                         }}</strong></p>
 
                                 </v-flex>
@@ -206,6 +206,10 @@
 
             special_discount(discount) {
                 this.discount = discount;
+            },
+
+            service_charge(serviceCharge){
+
             }
         },
 
