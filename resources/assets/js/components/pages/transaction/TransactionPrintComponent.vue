@@ -8,14 +8,14 @@
                         width="100%">
                     <v-card-text>
                         <h2 class="text-xs-center logo">{{ data.setting.name ? data.setting.name : ''}}</h2>
-                        <h3 class="logo-description">First Authorized <span>ni</span> store in syshet</h3>
+                        <h3 class="logo-description">First Authorized <span class="description-style">mi</span> store in syshet</h3>
                         <div class="logo-img">
                             <img src="/images/xmlogo.png"/>
                         </div>
                         <h3 class="text-xs-center">Address: {{ data.setting.address }}</h3>
                         <v-layout row wrap>
                             <v-flex xs6 class="company-info-left">
-                                <p>Phone: {{ data.setting.phone }}</p>p
+                                <p>Phone: {{ data.setting.phone }}</p>
                                 <p>Mobile: {{ data.setting.mobile }}</p>
                                 <p>Email: {{ data.setting.email }}</p>
                                 <p>Shop Number: {{ data.setting.company_shop_number }}</p>
@@ -52,7 +52,8 @@
                                 <table width="100%">
                                     <thead>
                                         <td>Item</td>
-                                        <td>S.N - Description</td>
+                                        <td>IMEI Number</td>
+                                        <td>Barcode</td>
                                         <td>Warranty</td>
                                         <td>Unit Price<br/>(Taka)</td>
                                         <td>Discount Amount</td>
@@ -63,7 +64,8 @@
                                     <tbody>
                                         <tr v-for="product in data.transaction.products" :key="product.id">
                                             <td>{{ product.name }}</td>
-                                            <td><span v-for="(serial, index) in product.productSaleSerial" :key="index">{{ serial.product_serial }} </span></td>
+                                            <td><span v-for="(serial, index) in product.productSaleSerial" :key="index">{{ serial.imei }} </span></td>
+                                            <td><span v-for="(serial, index) in product.productSaleSerial" :key="index">{{ serial.barcode }} </span></td>
                                             <td>{{ product.productWarranty}}</td>
                                             <td>TK. {{ product.sale_price | price_format }}</td>
                                             <td>{{ product.discount_amount }}</td>

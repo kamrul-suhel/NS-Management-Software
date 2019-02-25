@@ -16,6 +16,12 @@
   font-size: 10px;
 }
 
+.transaction-print .logo-description .description-style {
+  display: inline-block;
+  background: #cdcdcd;
+  color: #FF4500;
+}
+
 .transaction-print table {
   border-collapse: collapse;
 }

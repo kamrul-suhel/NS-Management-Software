@@ -1,7 +1,13 @@
 @media print {
+  //html, body {
+  //  width: 210mm;
+  //  height: 297mm;
+  //  background:#fff;
+  //}
+
   html, body {
-    width: 210mm;
-    height: 297mm;
+    width: 150mm;
+    height: 135mm;
     background:#fff;
   }
 
@@ -9,10 +15,17 @@
     background:#fff;
     color:#000;
   }
+  //@page
+  //{
+  //  size: 5.5in 8.5in;
+  //  size: portrait;
+  //}
+
   @page
   {
-    size: 5.5in 8.5in;
-    size: portrait;
+    size: 1in 2.5in;
+    size: landscape;
+    margin:0;
   }
 
   .v-navigation-drawer{
