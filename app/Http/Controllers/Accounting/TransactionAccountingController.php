@@ -146,11 +146,11 @@ class TransactionAccountingController extends Controller
         $totalProduct = $transactions->pluck('products')->collapse();
 
         $salePrice = $totalProduct->sum(function ($product) {
-            return ($product->pivot->sale_quantity * $product->quantity_per_feet + $product->pivot->sale_feet) * $product->sale_price;
+            return $product->pivot->sale_quantity * $product->sale_price;
         });
 
         $purchasePrice = $totalProduct->sum(function ($product) {
-            return ($product->pivot->sale_quantity * $product->quantity_per_feet + $product->pivot->sale_feet) * $product->purchase_price;
+            return $product->pivot->sale_quantity  * $product->purchase_price;
         });
 
         // get company total debit
@@ -168,7 +168,7 @@ class TransactionAccountingController extends Controller
             ->get();
 
         $totalStock = $products->sum(function($product){
-            return ($product->quantity * $product->quantity_per_feet + $product->feet) * $product->purchase_price;
+            return $product->quantity * $product->purchase_price;
         });
 
         $data = [
@@ -184,7 +184,7 @@ class TransactionAccountingController extends Controller
             'total_expense' => number_format((float)$totalExpenses, 2, '.', ''),
             'profit_after' => number_format((float)$profitAfter, 2, '.', ''),
             'total_profit_after_due' => number_format($totalProfitAfterDue, 2, '.', ''),
-            'cash' => $cash
+            'cash' => number_format($cash, 2,'.', '')
         ];
 
         return $this->successResponse($data, 200);
