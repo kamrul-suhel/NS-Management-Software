@@ -8,6 +8,7 @@
                         width="100%">
                     <v-card-text>
                         <h2 class="text-xs-center logo">{{ data.setting.name ? data.setting.name : ''}}</h2>
+                        <h3 class="logo-description">First Authorized <span>ni</span> store in syshet</h3>
                         <div class="logo-img">
                             <img src="/images/xmlogo.png"/>
                         </div>
