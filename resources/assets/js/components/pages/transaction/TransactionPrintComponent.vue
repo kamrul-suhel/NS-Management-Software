@@ -8,7 +8,7 @@
                         width="100%">
                     <v-card-text>
                         <h2 class="text-xs-center logo">{{ data.setting.name ? data.setting.name : ''}}</h2>
-                        <h3 class="logo-description">First Authorized <span class="description-style">mi</span> store in syshet</h3>
+                        <h3 class="logo-description">First Authorized <span class="description-style">mi</span> store in sylhet</h3>
                         <div class="logo-img">
                             <img src="/images/xmlogo.png"/>
                         </div>
@@ -49,7 +49,7 @@
 
                         <v-layout row wrap class="transaction-print-table">
                             <v-flex xs12>
-                                <table width="100%">
+                                <table width="100%" class="ns-table">
                                     <thead>
                                         <td>Item</td>
                                         <td>IMEI Number</td>

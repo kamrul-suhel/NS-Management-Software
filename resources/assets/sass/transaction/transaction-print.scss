@@ -6,7 +6,7 @@
   //}
 
   html, body {
-    width: 150mm;
+    width: 210mm;
     height: 135mm;
     background:#fff;
   }
@@ -23,7 +23,7 @@
 
   @page
   {
-    size: 1in 2.5in;
+    size: 2in 4.5in;
     size: landscape;
     margin:0;
   }
@@ -64,5 +64,12 @@
     text-align: center;
     margin-top: -15px;
     font-size: 10px;
+  }
+
+  .transaction-print-table{
+    table {
+      width:100% !important;
+      border-collapse: collapse;
+    }
   }
 }
