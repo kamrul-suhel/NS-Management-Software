@@ -39,7 +39,7 @@ class ProductController extends ApiController
 
         $totalProduct = $products->count();
         $totalStock = $products->sum(function($product){
-            return $product->quantity * $product->sale_price;
+            return $product->quantity * $product->purchase_price;
         });
 
         $avaliable_product = Product::where('status', 'available');
