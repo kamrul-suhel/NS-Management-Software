@@ -8,6 +8,9 @@
                         width="100%">
                     <v-card-text>
                         <h2 class="text-xs-center logo">{{ data.setting.name ? data.setting.name : ''}}</h2>
+                        <div class="logo-img">
+                            <img src="/images/xmlogo.png"/>
+                        </div>
                         <h3 class="text-xs-center">Address: {{ data.setting.address }}</h3>
                         <v-layout row wrap>
                             <v-flex xs6 class="company-info-left">

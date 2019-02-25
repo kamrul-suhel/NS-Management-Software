@@ -1,3 +1,37 @@
+.transaction-print .logo {
+  font-size: 30px;
+}
+
+.transaction-print .logo-img img {
+  width: 200px;
+  height: auto;
+  margin: 15px auto;
+  display: block;
+}
+
+.transaction-print table {
+  border-collapse: collapse;
+}
+
+.transaction-print p {
+  margin-bottom: 0;
+}
+
+.transaction-print .print-signature-section {
+  margin-top: 30px;
+}
+
+.transaction-print .logo {
+  font-size: 50px;
+  font-weight: bold;
+}
+
+.transaction-print-table th,
+.transaction-print-table td {
+  border-bottom: 1px solid #ddd;
+  padding: 15px;
+}
+
 .transaction-component table.table tbody td:first-child,
 .transaction-component table.table tbody td:not(:first-child),
 .transaction-component table.table tbody th:first-child,

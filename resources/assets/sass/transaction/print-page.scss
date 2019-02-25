@@ -1,4 +1,16 @@
 .transaction-print{
+  .logo{
+    font-size:30px;
+
+  }
+  .logo-img{
+    img{
+      width:200px;
+      height:auto;
+      margin:15px auto;
+      display:block;
+    }
+  }
   table {
     border-collapse: collapse;
   }
@@ -25,7 +37,7 @@
 }
 
 .transaction-print{
-  .print-btn{
-    display:none;
-  }
+  //.print-btn{
+  //  display:none;
+  //}
 }

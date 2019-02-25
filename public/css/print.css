@@ -1,3 +1,14 @@
+.transaction-print .logo {
+  font-size: 30px;
+}
+
+.transaction-print .logo-img img {
+  width: 200px;
+  height: auto;
+  margin: 15px auto;
+  display: block;
+}
+
 .transaction-print table {
   border-collapse: collapse;
 }
@@ -19,10 +30,6 @@
 .transaction-print-table td {
   border-bottom: 1px solid #ddd;
   padding: 15px;
-}
-
-.transaction-print .print-btn {
-  display: none;
 }
 
 @media print {
@@ -67,6 +74,10 @@
     font-size: 50px;
     font-weight: bold;
     text-transform: uppercase;
+  }
+
+  .transaction-print .print-btn {
+    display: none;
   }
 }
 
