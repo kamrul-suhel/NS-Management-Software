@@ -52,8 +52,7 @@
                                 <table width="100%" class="ns-table">
                                     <thead>
                                         <td>Item</td>
-                                        <td>IMEI Number</td>
-                                        <td>Barcode</td>
+                                        <td>IMEI Number<br/>Barcode</td>
                                         <td>Warranty</td>
                                         <td>Unit Price<br/>(Taka)</td>
                                         <td>Discount Amount</td>
@@ -64,8 +63,10 @@
                                     <tbody>
                                         <tr v-for="product in data.transaction.products" :key="product.id">
                                             <td>{{ product.name }}</td>
-                                            <td><span v-for="(serial, index) in product.productSaleSerial" :key="index">{{ serial.imei }} </span></td>
-                                            <td><span v-for="(serial, index) in product.productSaleSerial" :key="index">{{ serial.barcode }} </span></td>
+                                            <td>
+                                                <span v-for="(serial, index) in product.productSaleSerial" :key="index">{{ serial.imei }} </span><br/>
+                                                <span v-for="(serial, index) in product.productSaleSerial" :key="index">{{ serial.barcode }} </span>
+                                            </td>
                                             <td>{{ product.productWarranty}}</td>
                                             <td>TK. {{ product.sale_price | price_format }}</td>
                                             <td>{{ product.discount_amount }}</td>
