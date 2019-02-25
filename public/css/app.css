@@ -60,3 +60,21 @@
   padding-right: 25px !important;
 }
 
+.header-section {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding-bottom: 10px;
+}
+
+.header-section .v-list__tile__title {
+  height: 50px;
+}
+
+.header-section .store-logo img {
+  width: 50%;
+  height: auto;
+  display: block;
+  /* margin: 0 auto; */
+  image-rendering: optimizeQuality;
+  /* border-bottom: 1px solid; */
+}
+
