@@ -7,7 +7,7 @@
                         raised
                         width="100%">
                     <v-card-text>
-                        <h2 class="text-xs-center">{{ data.setting.name ? data.setting.name : ''}}</h2>
+                        <h2 class="text-xs-center logo">{{ data.setting.name ? data.setting.name : ''}}</h2>
                         <h3 class="text-xs-center">Address: {{ data.setting.address }}</h3>
                         <v-layout row wrap>
                             <v-flex xs6 class="company-info-left">
@@ -156,6 +156,7 @@
             initializeSubtotal(){
                 var subtotal = 0;
                 this.data.transaction.products.forEach(function(product){
+                    console.log(product);
                     subtotal += product.sale_quantity * product.sale_price;
                 });
                 this.subtotal = subtotal;
