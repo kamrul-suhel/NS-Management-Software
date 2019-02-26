@@ -70,9 +70,8 @@
   }
 
   .transaction-print .logo {
-    font-size: 10px !important;
+    font-size: 18px !important;
     font-weight: bold;
-    text-transform: uppercase;
   }
 
   .transaction-print .logo-description {
