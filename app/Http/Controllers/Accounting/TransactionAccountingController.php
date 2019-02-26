@@ -161,7 +161,7 @@ class TransactionAccountingController extends Controller
 
         $profitAfter = $totalProfit - $totalExpenses - $discount;
         $totalProfitAfterDue = $totalProfit - $paymentDue;
-        $cash = $total - $paymentDue -$totalExpenses - $companyTotalDebit;
+        $cash = $total - $paymentDue - $totalExpenses - $companyTotalDebit - $discount;
 
 
         $products = Product::where('store_id', $request->store_id)
