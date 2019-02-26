@@ -153,15 +153,25 @@ class TransactionAccountingController extends Controller
             return $product->pivot->sale_quantity  * $product->purchase_price;
         });
 
-        // get company total debit
-        $companyTotalDebit = $companyTransaction->sum('debit');
+        // get company debit
+        $companyDebit = $companyTransaction->sum('debit');
+
+        // Get company due.
+        $companyDue = $companyTransaction->sum('balance');
+
+        $company = CompanyTransaction::select('debit', 'credit')
+            ->get();
+
+        $companyTotalDebit = $company->sum('debit');
+        $companyTotalDue = $company->sum('credit');
+
 
         $totalProfit = $salePrice - $purchasePrice + $totalServices;
         $totalExpenses = $expenses->sum('amount');
 
         $profitAfter = $totalProfit - $totalExpenses - $discount;
         $totalProfitAfterDue = $totalProfit - $paymentDue;
-        $cash = $total - $paymentDue - $totalExpenses - $companyTotalDebit - $discount;
+        $cash = $total - $paymentDue - $totalExpenses - $companyDebit - $discount;
 
 
         $products = Product::where('store_id', $request->store_id)
@@ -180,6 +190,10 @@ class TransactionAccountingController extends Controller
             'paid' => number_format((float)$paid, 2, '.', ''),
             'transactions' => $transactions,
             'chart_data' => $chartData,
+            'company_debit' => number_format($companyDebit, 2),
+            'company_due' => number_format($companyDue, 2),
+            'company_total_debit' => number_format($companyTotalDebit, 2),
+            'company_total_due' => number_format($companyTotalDue, 2),
             'total_profit' => number_format((float)$totalProfit, 2, '.', ''),
             'total_expense' => number_format((float)$totalExpenses, 2, '.', ''),
             'profit_after' => number_format((float)$profitAfter, 2, '.', ''),
