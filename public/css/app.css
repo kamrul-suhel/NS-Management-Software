@@ -56,6 +56,80 @@
   padding: 0 5px;
 }
 
+@media print {
+  html,
+  body {
+    width: 6.0in;
+    height: 8.5in;
+    background: #fff;
+    margin: 5px !important;
+  }
+
+  .transaction-print .print-btn {
+    display: none;
+  }
+
+  .transaction-print .logo {
+    font-size: 10px !important;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .transaction-print .logo-description {
+    color: #000;
+    font-weight: bold;
+    text-align: center;
+    margin-top: -5px;
+    font-size: 10px;
+  }
+
+  .transaction-print .logo-img img {
+    width: 30px !important;
+    height: auto;
+    margin: 15px auto;
+    display: block;
+  }
+
+  .transaction-print table.ns-table-print td {
+    padding: 5px;
+  }
+
+  .transaction-print-table table {
+    width: 100% !important;
+    border-collapse: collapse;
+  }
+
+  .application .theme--dark.card,
+  .theme--dark .card {
+    background: #fff;
+    color: #000;
+  }
+
+@page {
+    size: portrait;
+    margin: 0 !important;
+}
+
+  .v-navigation-drawer {
+    display: none;
+  }
+
+  .v-content {
+    padding: 0 !important;
+    width: 100% !important;
+    background: #fff !important;
+  }
+
+  .application .theme--dark.divider,
+  .theme--dark .divider {
+    background-color: #777;
+  }
+
+  .v-toolbar {
+    display: none;
+  }
+}
+
 .v-text-field__prefix {
   padding-right: 25px !important;
 }
