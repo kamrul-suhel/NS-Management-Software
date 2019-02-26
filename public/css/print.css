@@ -48,10 +48,10 @@
 @media print {
   html,
   body {
-    width: 200mm;
-    height: 135mm;
+    width: 400mm;
+    height: 335mm;
     background: #fff;
-    margin: 0 !important;
+    margin: 5 !important;
   }
 
   html .transaction-print .print-btn,
@@ -97,7 +97,7 @@
   }
 
 @page {
-    size: 2.5in 4.5in;
+    size: 12.5in 8.5in;
     size: landscape;
     margin: 0 !important;
 }
