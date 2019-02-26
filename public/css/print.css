@@ -62,6 +62,7 @@
 @page {
     size: 2.5in 4.5in;
     size: portrait;
+    margin: 0 !important;
 }
 
   .v-navigation-drawer {
