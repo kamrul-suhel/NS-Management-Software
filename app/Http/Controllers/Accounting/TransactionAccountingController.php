@@ -193,7 +193,7 @@ class TransactionAccountingController extends Controller
             'company_debit' => number_format($companyDebit, 2),
             'company_due' => number_format($companyDue, 2),
             'company_total_debit' => number_format($companyTotalDebit, 2),
-            'company_total_due' => number_format($companyTotalDue, 2),
+            'company_total_due' => number_format($companyTotalDue - $companyTotalDebit, 2),
             'total_profit' => number_format((float)$totalProfit, 2, '.', ''),
             'total_expense' => number_format((float)$totalExpenses, 2, '.', ''),
             'profit_after' => number_format((float)$profitAfter, 2, '.', ''),
