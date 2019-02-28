@@ -35,6 +35,10 @@ class ProductController extends ApiController
             $products = $products->where('store_id', $shopId);
         }
 
+        if($request->has('status') && $request->status === 'available'){
+            $products = $products->where('status', 'available');
+        }
+
         $products = $products->get();
 
         $totalProduct = $products->count();
