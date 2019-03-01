@@ -172,7 +172,7 @@ class TransactionAccountingController extends Controller
 
         $profitAfter = $totalProfit - $totalExpenses - $discount;
         $totalProfitAfterDue = $totalProfit - $paymentDue;
-        $cash = $total - $paymentDue - $totalExpenses - $companyDebit - $discount;
+        $cash = $total - $paymentDue - $totalExpenses - $companyDebit;
 
         // Total expanse
         $totalExpanse = Expense::select('amount')->get()->sum('amount');
