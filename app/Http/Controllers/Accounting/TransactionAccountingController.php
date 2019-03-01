@@ -118,7 +118,7 @@ class TransactionAccountingController extends Controller
         $expenses = $expenses->orderBy('created_at', 'desc')->get();
 
         $total = $transactions->sum(function($transaction){
-        	return$transaction->total + $transaction->service_charge;
+        	return $transaction->total + $transaction->service_charge;
 		});
 
         $totalServices = $transactions->sum('service_charge');
