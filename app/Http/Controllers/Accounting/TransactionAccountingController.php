@@ -10,6 +10,7 @@ use App\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class TransactionAccountingController extends Controller
 {
@@ -173,6 +174,16 @@ class TransactionAccountingController extends Controller
         $totalProfitAfterDue = $totalProfit - $paymentDue;
         $cash = $total - $paymentDue - $totalExpenses - $companyDebit - $discount;
 
+        // Total expanse
+        $totalExpanse = Expense::select('amount')->get()->sum('amount');
+
+        // Get all transitions
+        $totalTransitions = DB::table('transactions')
+            ->select(DB::raw('sum(total - payment_due) as total_transaction'))
+            ->first();
+
+        // Current balance
+        $currentBalance = $totalTransitions->total_transaction - $totalExpanse - $companyTotalDebit;
 
         $products = Product::where('store_id', $request->store_id)
             ->get();
@@ -198,7 +209,8 @@ class TransactionAccountingController extends Controller
             'total_expense' => number_format((float)$totalExpenses, 2, '.', ''),
             'profit_after' => number_format((float)$profitAfter, 2, '.', ''),
             'total_profit_after_due' => number_format($totalProfitAfterDue, 2, '.', ''),
-            'cash' => number_format($cash, 2,'.', '')
+            'cash' => number_format($cash, 2,'.', ''),
+            'current_balance' => number_format($currentBalance, 2,'.', '')
         ];
 
         return $this->successResponse($data, 200);
