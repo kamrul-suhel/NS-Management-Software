@@ -6,6 +6,7 @@ use App\Http\Controllers\ApiController;
 use App\Store;
 use App\Traits\ApiResponser;
 use App\Transaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 
@@ -30,6 +31,11 @@ class TransactionController extends ApiController
             ->orderBy('id', 'DESC')
             ->get();
 
+        $todayTransaction = Transaction::where('created_at', '>', Carbon::now()->startOfDay())
+            ->where('created_at', '<', Carbon::now()->endOfDay())
+            ->get()
+            ->count();
+
         $transactions = $transactions->each(function ($transaction) {
             foreach ($transaction->products as $product) {
                 $product->sale_quantity = $product->pivot->sale_quantity;
@@ -45,6 +51,7 @@ class TransactionController extends ApiController
             'transactions' => $transactions,
             'total_tk' => $amount_transactions,
             'total_transactions' => $total,
+            'today_total_transaction' => $todayTransaction,
             'payment_type' => $payment_type
         ]);
 

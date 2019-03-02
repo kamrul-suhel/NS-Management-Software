@@ -115,6 +115,7 @@ class TransactionAccountingController extends Controller
 
 
         $transactions = $transactions->orderBy('created_at', 'desc')->get();
+        $totalTransaction = $transactions->count();
         $expenses = $expenses->orderBy('created_at', 'desc')->get();
 
         $total = $transactions->sum(function($transaction){
@@ -195,6 +196,7 @@ class TransactionAccountingController extends Controller
         $data = [
             'total_stock' => $totalStock,
             'total' => number_format((float)$total, 2, '.', ''),
+            'total_transaction' => $totalTransaction,
             'payment_due' => number_format((float)$paymentDue, 2, '.', ''),
             'discount' => number_format((float)$discount, 2, '.', ''),
             'total_product' => $total_product,
