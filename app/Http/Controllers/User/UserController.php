@@ -65,7 +65,7 @@ class UserController extends ApiController
         $user->email = $request->email;
         $user->password = $password;
         $user->verification_token = null;
-        $user->admin = User::ADMIN_USER;
+        $user->role = User::ADMIN_USER;
 
         $user->save();
 
@@ -102,7 +102,7 @@ class UserController extends ApiController
         $rules =[
             'email'     => 'email|unique:users, email'.$user->id,
             'password'  => 'min:6|confirmed',
-            'admin'     => 'in:'. User::ADMIN_USER . ','. User::REGULAR_USER,
+            'role'     => 'in:'. User::ADMIN_USER . ','. User::REGULAR_USER,
         ];
 
         if($request->has('name')){
@@ -116,6 +116,10 @@ class UserController extends ApiController
 
         if($request->has('password')){
             $user->password = bcrypt($request->password);
+        }
+
+        if($request->has('role')){
+            $user->role = $request->role;
         }
 
         if(!$user->isDirty()){
