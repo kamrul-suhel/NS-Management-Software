@@ -27,7 +27,8 @@ class ProductBuyerTransactionController extends ApiController
      */
     public function store(Request $request, Customer $customer)
     {
-        $transaction = DB::transaction(function () use ($request, $customer) {
+        $transactionId = 0;
+        $transaction = DB::transaction(function () use ($request, $customer, &$transactionId) {
             $attach_product = [];
             $unique_id = $this->getUniqueId();
 
@@ -48,6 +49,7 @@ class ProductBuyerTransactionController extends ApiController
 				'service_charge' => $request->service_charge
             ]);
 
+            $transactionId = $transaction->id;
 
             if ($request->payment_due && $request->payment_due > 0) {
                 $request['customer_id'] = $customer->id;
@@ -94,6 +96,7 @@ class ProductBuyerTransactionController extends ApiController
                 $curProduct->save();
             }
 
+
             $transaction->products()->sync($attach_product);
             return $transaction;
         });
@@ -103,6 +106,8 @@ class ProductBuyerTransactionController extends ApiController
             ->with('customer')
             ->first();
 
+        $product->transaction_id = $transactionId;
+//
         return $this->showOne($product);
     }
 
