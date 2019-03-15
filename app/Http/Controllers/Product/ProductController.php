@@ -35,6 +35,11 @@ class ProductController extends ApiController
             $products = $products->where('store_id', $shopId);
         }
 
+        if($request->has('category_id')){
+            $products = $products->leftJoin('category_product', 'products.id', '=', 'category_product.product_id');
+            $products = $products->where('category_product.category_id', '=', $request->category_id);
+        }
+
         if($request->has('status') && $request->status === 'available'){
             $products = $products->where('status', 'available');
         }
@@ -42,6 +47,7 @@ class ProductController extends ApiController
         $products = $products->get();
 
         $totalProduct = $products->count();
+        $totalProductStock = $products->sum('quantity');
         $totalStock = $products->sum(function($product){
             return $product->quantity * $product->purchase_price;
         });
@@ -78,6 +84,7 @@ class ProductController extends ApiController
             'avaliable_product' => $avaliable_product,
             'unavaliable_product' => $unavaliable_product,
             'total_product' => $totalProduct,
+            'stock_product' => $totalProductStock,
             'selected_product' => $selectedProduct
         ]);
         return $this->showAll($data);
