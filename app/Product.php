@@ -90,6 +90,14 @@ class Product extends Model
         return $this->hasMany(ProductSerial::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function soldSerials(){
+        return $this->hasMany('App\ProductSerial')
+            ->where('is_sold', '1');
+    }
+
     public static function generateBarcode($length = 11) {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 

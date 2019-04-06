@@ -107,10 +107,21 @@ class TransactionController extends ApiController
     public function showPrint(Request $request, int $id)
     {
         if ($request->ajax()) {
-            $transaction = Transaction::with(['products.serials','serials', 'customer','seller'])
-                ->with('products')
-                ->where('id', '=', $id)
-                ->first();
+            // For sale return.
+            if($request->has('sale_return')){
+                $transaction = Transaction::with(['products.soldSerials']);
+                $transaction = $transaction->where('invoice_number', 'LIKE', '%'.$request->sale_return.'%');
+            }else{
+                $transaction = Transaction::with(['products','products.serials','serials', 'customer','seller']);
+                $transaction = $transaction
+                    ->where('id', '=', $id);
+            }
+            $transaction = $transaction->first();
+
+            if($request->has('sale_return')){
+                return response()->json($transaction);
+            }
+
             foreach ($transaction->products as $product) {
 
             	$serials = $transaction->serials;
@@ -163,6 +174,30 @@ class TransactionController extends ApiController
         }
 
         return view('welcome');
+    }
+
+    public function searchByInvoice(Request $request){
+        $transaction = Transaction::select([
+            'transactions.id as transaction_id',
+            'transactions.invoice_number',
+            'transactions.total',
+            'product_transaction.product_id',
+            'product_transaction.sale_quantity',
+            'products.name',
+            'products.sale_price',
+            'products.purchase_price',
+            'product_serials.color',
+            'product_serials.barcode',
+            'product_serials.imei',
+            'product_serials.id as product_serial_id'
+        ])
+            ->leftJoin('product_transaction', 'product_transaction.transaction_id', '=', 'transactions.id')
+            ->leftJoin('products', 'products.id', '=', 'product_transaction.product_id')
+            ->leftJoin('product_serials', 'product_serials.transaction_id', '=', 'product_transaction.transaction_id')
+            ->where('transactions.invoice_number', 'LIKE', '%'.$request->invoice_number.'%')
+            ->get();
+
+        return response()->json($transaction);
     }
 
     /**

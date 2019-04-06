@@ -61,6 +61,13 @@ Route::get('/transaction', function(){
 	return view('welcome');
 });
 
+/**
+ * Sales return
+ */
+Route::get('/sale-return', function(){
+    return view('welcome');
+});
+
 Route::get('/account/balance', function(){
     return view('welcome');
 });

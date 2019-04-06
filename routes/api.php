@@ -53,7 +53,14 @@ Route::post('customer/{customer_id}/due/transactions', 'Customer\CustomerDueCont
 Route::resource('transactions','Transaction\TransactionController',['only' => ['index', 'show']]);
 Route::resource('transactions.categories','Transaction\TransactionCategoryController',['only' => ['index']]);
 Route::resource('transactions.sellers','Transaction\TransactionSellerController',['only' => ['index']]);
+Route::get('transactions/search/search','Transaction\TransactionController@searchByInvoice');
 Route::get('transactions/{id}/delete','Transaction\TransactionController@destroy');
+
+
+/*
+*  Sale Return route
+*/
+Route::post('sale-return', 'SaleReturnController@store');
 
 
 /*
