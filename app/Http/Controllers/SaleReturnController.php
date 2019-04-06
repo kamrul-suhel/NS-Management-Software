@@ -61,7 +61,7 @@ class SaleReturnController extends Controller
                         $saleReturnLine = new SaleReturnLine();
                         $saleReturnLine->product_id = $product['product_id'];
                         $saleReturnLine->sale_return_id = $saleReturn->id;
-                        $saleReturnLine->product_serial_id = isset($product['product_serial_id']) && $product['product_serial_id'] > 0 ?  $product['product_serial_id'] : 0;
+                        isset($product['product_serial_id']) && $product['product_serial_id'] > 0 ? $saleReturnLine->product_serial_id = $product['product_serial_id'] : null;
                         $saleReturnLine->quantity = $product['saleReturnQuantity'];
                         $saleReturnLine->save();
 
