@@ -22,7 +22,7 @@ class ProductController extends ApiController
     public function index(Request $request)
     {
 
-        $perPage = $request->has('per_page') ? $request->per_page : 2;
+        $perPage = $request->has('rowsPerPage') ? $request->rowsPerPage : 2;
 
         $shopId = $request->has('shopId') ? $request->shopId : null;
 
@@ -46,7 +46,12 @@ class ProductController extends ApiController
             $products = $products->where('status', 'available');
         }
 
-        $products = $products->paginate($perPage);
+        // Check query type, if it is productpage then do pagination or return all data
+        if($request->has('query_type') && $request->query_type === 'productPage'){
+            $products = $products->paginate($perPage);
+        }else{
+            $products = $products->get();
+        }
 
         $totalProduct = $products->count();
         $totalProductStock = $products->sum('quantity');
