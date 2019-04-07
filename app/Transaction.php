@@ -19,6 +19,7 @@ class Transaction extends Model
     const PAYMENT_PAID = 1;
     const PAYMENT_DUE = 2;
     const PAYMENT_HALF_PAID = 3;
+    const PAYMENT_PENDING = 4;
 
     //
     protected $fillable = [

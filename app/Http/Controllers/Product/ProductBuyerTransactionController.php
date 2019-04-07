@@ -32,7 +32,24 @@ class ProductBuyerTransactionController extends ApiController
             $attach_product = [];
             $unique_id = $this->getUniqueId();
 
-            $type = $request->payment_status === '1' ? 'paid' : 'due-paid';
+            $type = '';
+            switch($request->payment_status) {
+                case '1':
+                    $type = 'paid';
+                    break;
+                case '2':
+                    $type = 'due-paid';
+                    break;
+                case '3':
+                    $type = 'half-paid';
+                    break;
+                case '4':
+                    $type = 'pending';
+                    break;
+
+                default:
+                    $type = null;
+            }
 
             $transaction = Transaction::create([
                 'customer_id' => $customer->id,
