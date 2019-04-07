@@ -141,13 +141,15 @@ class TransactionAccountingController extends Controller
         	return $transaction->total + $transaction->service_charge;
 		});
 
+        $totalSalereturn = $salesReturn->sum('total');
+
+        $total = $total - $totalSalereturn;
+
         $totalServices = $transactions->sum('service_charge');
         $paymentDue = $transactions->sum('payment_due');
         $discount = $transactions->sum('discount_amount');
         $paid = $transactions->sum('paid');
         $total_product = $transactions->pluck('products')->collapse()->count();
-
-        $totalSalereturn = $salesReturn->sum('total');
 
         $chartData = [];
 
@@ -192,7 +194,7 @@ class TransactionAccountingController extends Controller
         $totalProfit = $salePrice - $purchasePrice + $totalServices;
         $totalExpenses = $expenses->sum('amount');
 
-        $profitAfter = $totalProfit - $totalExpenses - $discount - $totalSalereturn;
+        $profitAfter = $totalProfit - $totalExpenses - $discount;
         $totalProfitAfterDue = $totalProfit - $paymentDue;
         $cash = $total - $paymentDue - $totalExpenses - $companyDebit;
 
