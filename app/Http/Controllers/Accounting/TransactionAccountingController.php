@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Accounting;
 use App\CompanyTransaction;
 use App\Expense;
 use App\Product;
+use App\SaleReturn;
 use App\Traits\ApiResponser;
 use App\Transaction;
 use Carbon\Carbon;
@@ -22,6 +23,7 @@ class TransactionAccountingController extends Controller
         $transactions = Transaction::with(['products', 'customer']);
         $expenses = new Expense();
         $companyTransaction = new CompanyTransaction();
+        $salesReturn = SaleReturn::select('total');
 
         if ($request->select['abbr'] === 'TDT') {
             $transactions = $transactions->where('created_at', '>', Carbon::now()->startOfDay())
@@ -32,6 +34,9 @@ class TransactionAccountingController extends Controller
 
             $companyTransaction = $companyTransaction->where('created_at', '>', Carbon::now()->startOfDay())
                 ->where('created_at', '<', Carbon::now()->endOfDay());
+
+            $salesReturn = $salesReturn->where('created_at', '>', Carbon::now()->startOfDay())
+                ->where('created_at', '<', Carbon::now()->endOfDay());
         }
 
         if ($request->select['abbr'] === 'YDT') {
@@ -39,12 +44,16 @@ class TransactionAccountingController extends Controller
             $expenses = $expenses->where('created_at', '>', Carbon::yesterday());
 
             $companyTransaction = $companyTransaction->where('created_at', '>', Carbon::yesterday());
+
+            $salesReturn = $salesReturn->where('created_at', '>', Carbon::yesterday());
         }
 
         if ($request->select['abbr'] === 'TWT') {
             $transactions = $transactions->where('created_at', '>', Carbon::now()->startOfWeek());
             $expenses = $expenses->where('created_at', '>', Carbon::now()->startOfWeek());
             $companyTransaction = $companyTransaction->where('created_at', '>', Carbon::now()->startOfWeek());
+
+            $salesReturn = $salesReturn->where('created_at', '>', Carbon::now()->startOfWeek());
         }
         if ($request->select['abbr'] === 'LWT') {
             $currentDate = Carbon::now();
@@ -56,6 +65,8 @@ class TransactionAccountingController extends Controller
             $expenses = $expenses->whereBetween('created_at', [$agoDate, $endDate]);
 
             $companyTransaction = $companyTransaction->whereBetween('created_at', [$agoDate, $endDate]);
+
+            $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
         if ($request->select['abbr'] === 'TMT') {
@@ -67,6 +78,8 @@ class TransactionAccountingController extends Controller
             $expenses = $expenses->whereBetween('created_at', [$agoDate, $endDate]);
 
             $companyTransaction = $companyTransaction->whereBetween('created_at', [$agoDate, $endDate]);
+
+            $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
         if ($request->select['abbr'] === 'LMT') {
@@ -74,6 +87,8 @@ class TransactionAccountingController extends Controller
             $expenses = $expenses->whereMonth('created_at', Carbon::now()->subMonth()->month);
 
             $companyTransaction = $companyTransaction->whereMonth('created_at', Carbon::now()->subMonth()->month);
+
+            $salesReturn = $salesReturn->whereMonth('created_at', Carbon::now()->subMonth()->month);
         }
 
         if ($request->select['abbr'] === 'TYT') {
@@ -85,6 +100,7 @@ class TransactionAccountingController extends Controller
             $expenses = $expenses->whereBetween('created_at', [$agoDate, $endDate]);
 
             $companyTransaction = $companyTransaction->whereBetween('created_at', [$agoDate, $endDate]);
+            $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
         if ($request->customdate) {
@@ -94,6 +110,7 @@ class TransactionAccountingController extends Controller
             $expenses = $expenses->whereBetween('created_at', [$begainDate, $endDate]);
 
             $companyTransaction = $companyTransaction->whereBetween('created_at', [$begainDate, $endDate]);
+            $salesReturn = $salesReturn->whereBetween('created_at', [$begainDate, $endDate]);
         }
 
         if ($request->customdate && $request->customrangerate) {
@@ -103,6 +120,7 @@ class TransactionAccountingController extends Controller
             $expenses = $expenses->whereBetween('created_at', [$agoDate, $endDate]);
 
             $companyTransaction = $companyTransaction->whereBetween('created_at', [$agoDate, $endDate]);
+            $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
         // get store specifice transaction.
@@ -113,6 +131,7 @@ class TransactionAccountingController extends Controller
 
         $request->has('store_id') ? $companyTransaction->where('store_id', $request->store_id) : '';
 
+        $request->has('store_id') ? $salesReturn->where('store_id', $request->store_id) : '';
 
         $transactions = $transactions->orderBy('created_at', 'desc')->get();
         $totalTransaction = $transactions->count();
@@ -127,6 +146,8 @@ class TransactionAccountingController extends Controller
         $discount = $transactions->sum('discount_amount');
         $paid = $transactions->sum('paid');
         $total_product = $transactions->pluck('products')->collapse()->count();
+
+        $totalSalereturn = $salesReturn->sum('total');
 
         $chartData = [];
 
@@ -171,7 +192,7 @@ class TransactionAccountingController extends Controller
         $totalProfit = $salePrice - $purchasePrice + $totalServices;
         $totalExpenses = $expenses->sum('amount');
 
-        $profitAfter = $totalProfit - $totalExpenses - $discount;
+        $profitAfter = $totalProfit - $totalExpenses - $discount - $totalSalereturn;
         $totalProfitAfterDue = $totalProfit - $paymentDue;
         $cash = $total - $paymentDue - $totalExpenses - $companyDebit;
 
