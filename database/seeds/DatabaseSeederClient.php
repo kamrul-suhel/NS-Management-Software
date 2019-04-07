@@ -47,14 +47,17 @@ class DatabaseSeederClient extends Seeder
         Company::flushEventListeners();
         CompanyTransaction::flushEventListeners();
 
-        $usersQuantity = 10;
+        $usersQuantity = 1;
         $customerQuantity = 10;
         $categoriesQuantity = 100;
         $productsQuantity = 20;
         $transactionQuantity = 200;
 
+        factory(Store::class, 1)->create();
+
         $categoryRoot = Category::create([
             'name' => 'category 1',
+            'store_id' => 1,
             'description' => 'Category description',
             'parent_id'   => null,
             'lft'          => 1,
@@ -64,6 +67,7 @@ class DatabaseSeederClient extends Seeder
 
         $categoryRoot->children()->create([
             'name' => 'category 2',
+            'store_id' => 1,
             'description' => 'Category description',
             'parent_id'   => 1,
             'lft'          => 2,
@@ -119,7 +123,6 @@ class DatabaseSeederClient extends Seeder
 //        });
 
 
-
         factory(User::class, $usersQuantity)->create();
 //        factory(Customer::class, $customerQuantity)->create();
 
@@ -144,8 +147,6 @@ class DatabaseSeederClient extends Seeder
 //                ]);
 //
 //        });
-
-        factory(Store::class, 1)->create();
 
 
         /**
