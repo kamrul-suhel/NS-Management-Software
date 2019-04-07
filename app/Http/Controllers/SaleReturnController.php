@@ -69,12 +69,12 @@ class SaleReturnController extends Controller
                             // Now roll back all product
                             $updateProduct = Product::findOrFail($product['product_id']);
                             $updateProduct->quantity = $updateProduct->quantity + $product['saleReturnQuantity'];
-                            $updateProduct->transaction_id = null;
                             $updateProduct->save();
 
                             // Now rollback product serial if exists
                             if($product['product_serial_id'] > 0){
                                 $productSerial = ProductSerial::find($product['product_serial_id']);
+                                $updateProduct->transaction_id = null;
                                 $productSerial->is_sold = 0;
                                 $productSerial->save();
                             }
