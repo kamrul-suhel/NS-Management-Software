@@ -2,6 +2,8 @@
   "private": true,
   "main": "index.js",
   "scripts": {
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
     "electron": "electron .",
     "build": "electron-packager . System",
     "dev": "npm run development",
@@ -11,6 +13,12 @@
     "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
     "prod": "npm run production",
     "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+  },
+  "build": {
+    "appId": "System",
+    "mac": {
+      "category": "First category"
+    }
   },
   "dependencies": {
     "amcharts3": "^3.21.14",
@@ -22,6 +30,7 @@
     "axios": "^0.18.0",
     "cross-env": "^5.2.0",
     "electron": "^4.1.4",
+    "electron-builder": "^20.39.0",
     "electron-packager": "^13.1.1",
     "laravel-mix": "^4.0.15",
     "lodash": "^4.17.11",
