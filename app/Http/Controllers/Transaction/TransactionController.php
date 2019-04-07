@@ -24,11 +24,21 @@ class TransactionController extends ApiController
      */
     public function index(Request $request)
     {
+        $perPage = $request->has('rowsPerPage') ? $request->rowsPerPage : 2;
+        $shopId = $request->has('shopId') ? $request->shopId : null;
 
         $transactions = Transaction::with(['products', 'serials', 'seller', 'customer'])
-            ->where('store_id', $request->shopId)
-            ->orderBy('id', 'DESC')
-            ->get();
+            ->where('store_id', $shopId)
+            ->orderBy('created_at', 'DESC');
+
+        $totalRows = 0;
+        if($request->has('query_type') && $request->query_type === 'transactionPage'){
+            $transactions = $transactions->paginate($perPage);
+            $totalRows = $transactions->total();
+        }else{
+            $transactions = $transactions->get();
+            $totalRows = $transactions->count();
+        }
 
         $todayTransaction = Transaction::where('created_at', '>', Carbon::now()->startOfDay())
             ->where('created_at', '<', Carbon::now()->endOfDay())
@@ -40,9 +50,15 @@ class TransactionController extends ApiController
                 $product->sale_quantity = $product->pivot->sale_quantity;
             }
         });
-        $total = $transactions->count();
+        $total = Transaction::select('id')
+            ->where('store_id', $shopId)
+            ->get()
+            ->count();
 
-        $amount_transactions = $transactions->sum('total');
+        $amount_transactions = Transaction::select('total')
+            ->where('store_id', $shopId)
+            ->get()
+            ->sum('total');
 
         $payment_type = Transaction::getPaymentStatusType();
 
@@ -51,7 +67,8 @@ class TransactionController extends ApiController
             'total_tk' => $amount_transactions,
             'total_transactions' => $total,
             'today_total_transaction' => $todayTransaction,
-            'payment_type' => $payment_type
+            'payment_type' => $payment_type,
+            'total_rows' => $totalRows
         ]);
 
         return $this->showAll($collect);
