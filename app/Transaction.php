@@ -73,4 +73,8 @@ class Transaction extends Model
      	return $this->belongsTo(User::class, 'seller_id', 'id');
 	 }
 
+	 public function saleReturn(){
+         return '';
+     }
+
 }

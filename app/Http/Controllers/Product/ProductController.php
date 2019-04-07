@@ -22,6 +22,8 @@ class ProductController extends ApiController
     public function index(Request $request)
     {
 
+        $perPage = $request->has('per_page') ? $request->per_page : 2;
+
         $shopId = $request->has('shopId') ? $request->shopId : null;
 
         $allSerial = $request->allSerial;
@@ -44,7 +46,7 @@ class ProductController extends ApiController
             $products = $products->where('status', 'available');
         }
 
-        $products = $products->get();
+        $products = $products->paginate($perPage);
 
         $totalProduct = $products->count();
         $totalProductStock = $products->sum('quantity');
