@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Transaction;
 
 use App\Http\Controllers\ApiController;
+use App\SaleReturn;
 use App\Store;
 use App\Traits\ApiResponser;
 use App\Transaction;
@@ -60,11 +61,15 @@ class TransactionController extends ApiController
             ->get()
             ->sum('total');
 
+        // Get Sale return
+        $saleReturn = SaleReturn::select('total_sale_price')->get()
+            ->sum();
+
         $payment_type = Transaction::getPaymentStatusType();
 
         $collect = collect([
             'transactions' => $transactions,
-            'total_tk' => $amount_transactions,
+            'total_tk' => $amount_transactions - $saleReturn,
             'total_transactions' => $total,
             'today_total_transaction' => $todayTransaction,
             'payment_type' => $payment_type,
