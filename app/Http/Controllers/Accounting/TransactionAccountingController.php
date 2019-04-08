@@ -141,9 +141,10 @@ class TransactionAccountingController extends Controller
         	return $transaction->total + $transaction->service_charge;
 		});
 
-        $totalSalereturn = $salesReturn->sum('total');
+        $totalSalePrice = $salesReturn->sum('total_sale_price');
+        $totalPurchasePrice = $salesReturn->sum('total_purchase_price');
 
-        $total = $total - $totalSalereturn;
+        $total = $total - $totalPurchasePrice;
 
         $totalServices = $transactions->sum('service_charge');
         $paymentDue = $transactions->sum('payment_due');

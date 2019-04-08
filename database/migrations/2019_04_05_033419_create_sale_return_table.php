@@ -18,7 +18,8 @@ class CreateSaleReturnTable extends Migration
             $table->integer('store_id')->index()->unsigned();
             $table->integer('seller_id')->index()->unsigned();
             $table->integer('transaction_id')->index()->unsigned();
-            $table->double('total')->index();
+            $table->double('total_sale_price');
+            $table->double('total_purchase_price');
             $table->text('note')->nullable();
             $table->timestamps();
         });

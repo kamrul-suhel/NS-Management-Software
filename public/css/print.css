@@ -62,6 +62,7 @@
     width: 5.4in;
     height: 8.1in;
     background: #fff;
+    color: #000 !important;
     margin: 5px !important;
   }
 
@@ -69,6 +70,10 @@
   body .container {
     padding: 0;
     margin: 0;
+  }
+
+  .transaction-print {
+    color: #000;
   }
 
   .transaction-print .print-btn {
@@ -91,10 +96,12 @@
   .transaction-print .subtitle {
     font-size: 12px;
     margin-top: -8px;
+    color: #000;
   }
 
   .transaction-print .address {
     font-size: 10px;
+    color: #000;
   }
 
   .transaction-print .logo-img img {
@@ -104,8 +111,21 @@
     display: block;
   }
 
+  .transaction-print table.ns-table-print {
+    color: #000;
+  }
+
   .transaction-print table.ns-table-print td {
     padding: 5px;
+  }
+
+  .transaction-print h2,
+  .transaction-print h3 {
+    color: #000;
+  }
+
+  .transaction-print p {
+    color: #000;
   }
 
   .transaction-print-table table {

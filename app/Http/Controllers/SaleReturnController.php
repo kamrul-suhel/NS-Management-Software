@@ -48,7 +48,8 @@ class SaleReturnController extends Controller
             $saleReturn->store_id = $request->store_id;
             $saleReturn->seller_id = $request->seller_id;
             $saleReturn->transaction_id = $request->transaction_id;
-            $saleReturn->total = $request->total;
+            $saleReturn->total_sale_price = $request->total_sale_price;
+            $saleReturn->total_purchase_price = $request->total_purchase_price;
             $request->has('note') ? $saleReturn->note = $request->note : null;
 
             $saleReturn->save();
