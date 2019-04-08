@@ -15,6 +15,7 @@ class SaleReturn extends Model
         'store_id',
         'seller_id',
         'note',
-        'total'
+        'total_sale_price',
+        'total_purchase_price'
     ];
 }

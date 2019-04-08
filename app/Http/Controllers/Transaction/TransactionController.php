@@ -62,8 +62,10 @@ class TransactionController extends ApiController
             ->sum('total');
 
         // Get Sale return
-        $saleReturn = SaleReturn::select('total_sale_price')->get()
-            ->sum();
+        $saleReturn = SaleReturn::select('total_sale_price')
+            ->get()
+            ->sum('total_sale_price');
+        
 
         $payment_type = Transaction::getPaymentStatusType();
 
