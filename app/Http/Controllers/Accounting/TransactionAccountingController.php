@@ -23,7 +23,7 @@ class TransactionAccountingController extends Controller
         $transactions = Transaction::with(['products', 'customer']);
         $expenses = new Expense();
         $companyTransaction = new CompanyTransaction();
-        $salesReturn = SaleReturn::select('total');
+        $salesReturn = SaleReturn::select('total_sale_price', 'total_purchase_price');
 
         if ($request->select['abbr'] === 'TDT') {
             $transactions = $transactions->where('created_at', '>', Carbon::now()->startOfDay())
