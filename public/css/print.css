@@ -117,6 +117,7 @@
 
   .transaction-print table.ns-table-print td {
     padding: 5px;
+    border-color: #000;
   }
 
   .transaction-print h2,
