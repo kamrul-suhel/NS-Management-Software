@@ -26,7 +26,7 @@ class TransactionAccountingController extends Controller
         $salesReturn = SaleReturn::select('total_sale_price', 'total_purchase_price');
 
         // Transaction exclude pending
-        $transactions = $transactions->where('payment_status', '!=', '3');
+        $transactions = $transactions->where('payment_status', '!=', '4');
 
         if ($request->select['abbr'] === 'TDT') {
             $transactions = $transactions->where('created_at', '>', Carbon::now()->startOfDay())
@@ -136,7 +136,8 @@ class TransactionAccountingController extends Controller
 
         $request->has('store_id') ? $salesReturn->where('store_id', $request->store_id) : '';
 
-        $transactions = $transactions->orderBy('created_at', 'desc')->get();
+        $transactions = $transactions->orderBy('created_at', 'desc')
+            ->get();
         $totalTransaction = $transactions->count();
         $expenses = $expenses->orderBy('created_at', 'desc')->get();
 
