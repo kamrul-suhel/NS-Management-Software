@@ -59,6 +59,7 @@ class TransactionController extends ApiController
 
         $amount_transactions = Transaction::select('total')
             ->where('store_id', $shopId)
+            ->where('payment_status', '!=', '4')
             ->get()
             ->sum('total');
 
@@ -256,15 +257,8 @@ class TransactionController extends ApiController
 
         // First get product with transaction
 
-        $products = Product::select([
-            'products.id',
-            'product_serials.id as product_serial_id',
-            'transactions.id as transaction_id'
-        ])
-            ->leftJoin('transactions', 'transactions.product_id', '=', 'products.id')
-            ->leftJoin('product_serials', 'product_serials.id', '=', 'products.id')
-            ->where('transactions.id', $transaction->id)
-            ->get();
+        $products = Transaction::with(['products','serials'])
+            ->findOrFail($request->id);
 
         return response()->json($products, 422);
 
