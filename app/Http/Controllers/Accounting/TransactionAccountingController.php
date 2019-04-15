@@ -25,6 +25,9 @@ class TransactionAccountingController extends Controller
         $companyTransaction = new CompanyTransaction();
         $salesReturn = SaleReturn::select('total_sale_price', 'total_purchase_price');
 
+        // Transaction exclude pending
+        $transactions = $transactions->where('payment_status', '!=', '3');
+
         if ($request->select['abbr'] === 'TDT') {
             $transactions = $transactions->where('created_at', '>', Carbon::now()->startOfDay())
                 ->where('created_at', '<', Carbon::now()->endOfDay());

@@ -40,6 +40,7 @@ class ProductController extends ApiController
         if($request->has('category_id')){
             $products = $products->leftJoin('category_product', 'products.id', '=', 'category_product.product_id');
             $products = $products->where('category_product.category_id', '=', $request->category_id);
+            $products = $products->where('category_product.product_id', '=', 'products.id');
         }
 
         if($request->has('status') && $request->status === 'available'){

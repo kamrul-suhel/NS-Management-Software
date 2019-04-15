@@ -78,4 +78,18 @@ class Transaction extends Model
          return '';
      }
 
+     public static function getPaymentStatus($status){
+         switch($status){
+             case 'paid':
+                 return 1;
+
+             case 'due-paid':
+                 return 2;
+             case 'half-paid':
+                 return 3;
+             case 'pending':
+                 return 4;
+         }
+     }
+
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Transaction;
 
 use App\Http\Controllers\ApiController;
+use App\Product;
 use App\SaleReturn;
 use App\Store;
 use App\Traits\ApiResponser;
@@ -233,18 +234,41 @@ class TransactionController extends ApiController
     public function update(Request $request, Transaction $transaction)
     {
         //
+        if($request->has('payment_type')){
+            $transaction->type = $request->payment_type;
+
+            $transaction->payment_status = Transaction::getPaymentStatus($request->payment_type);
+
+            $transaction->save();
+        }
+
+        return response()->json($transaction);
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Transaction $transaction
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Transaction $transaction
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, Transaction $transaction)
     {
+
+        // First get product with transaction
+
+        $products = Product::select([
+            'products.id',
+            'product_serials.id as product_serial_id',
+            'transactions.id as transaction_id'
+        ])
+            ->leftJoin('transactions', 'transactions.product_id', '=', 'products.id')
+            ->leftJoin('product_serials', 'product_serials.id', '=', 'products.id')
+            ->where('transactions.id', $transaction->id)
+            ->get();
+
+        return response()->json($products, 422);
+
         //
-        $transaction = Transaction::find($request->id);
         $transaction->products()->detach();
         if($transaction->delete()){
             return $this->successResponse($transaction, 200);
