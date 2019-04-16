@@ -253,7 +253,7 @@ class TransactionController extends ApiController
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function destroy(Request $request, Transaction $transaction)
+    public function destroy(Request $request)
     {
         // First get product with transaction
         $transactions = Transaction::select([
@@ -290,6 +290,7 @@ class TransactionController extends ApiController
             $productSerial->save();
         });
 
+        $transaction = Transaction::findOrFail($request->id);
         $transaction->products()->detach();
         if($transaction->delete()){
             return $this->successResponse($transaction, 200);
