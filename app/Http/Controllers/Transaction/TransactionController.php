@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Transaction;
 
 use App\Http\Controllers\ApiController;
 use App\Product;
+use App\ProductSerial;
 use App\SaleReturn;
 use App\Store;
 use App\Traits\ApiResponser;
@@ -254,19 +255,41 @@ class TransactionController extends ApiController
      */
     public function destroy(Request $request, Transaction $transaction)
     {
-
         // First get product with transaction
+        $transactions = Transaction::select([
+            'transactions.id',
+            'product_transaction.product_id',
+            'product_transaction.sale_quantity',
+            'products.name'
 
-        $products = Transaction::with(['products','serials'])
-            ->findOrFail($request->id);
+        ])
+            ->leftJoin('product_transaction', 'transactions.id', '=', 'product_transaction.transaction_id')
+            ->leftJoin('products','products.id', '=', 'product_transaction.product_id')
+            ->where('transactions.id', $request->id)
+            ->get();
 
-        foreach($products->products as $product){
-            dd($product->pivot->sale_feet);
-        }
+        $transactions->each(function($transaction){
+           $product =  Product::findOrfail($transaction->product_id);
+           $product->quantity = $product->quantity + $transaction->sale_quantity;
+           $product->save();
+        });
 
-        return response()->json($products, 422);
+        // Role back serials
+        $serials = Transaction::select([
+            'transactions.id',
+            'product_serials.id as serial_id'
+        ])
+            ->leftJoin('product_serials', 'transactions.id', '=', 'product_serials.transaction_id')
+            ->where('transactions.id', $request->id)
+            ->get();
 
-        //
+        $serials->each(function($serial){
+            $productSerial = ProductSerial::findOrFail($serial->serial_id);
+            $productSerial->transaction_id = NULL;
+            $productSerial->is_sold = 0;
+            $productSerial->save();
+        });
+
         $transaction->products()->detach();
         if($transaction->delete()){
             return $this->successResponse($transaction, 200);
