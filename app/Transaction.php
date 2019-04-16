@@ -40,7 +40,7 @@ class Transaction extends Model
     ];
 
     protected $hidden =[
-        'deleted_at','pivot'
+        'deleted_at'
     ];
 
      public function customer(){
@@ -48,7 +48,7 @@ class Transaction extends Model
      }
 
      public function products(){
-     	return $this->belongsToMany(Product::class)
+     	return $this->belongsToMany('App\Product')
             ->withPivot(['sale_quantity','sale_feet','discount_percentage'])
             ->withTimestamps();
      }

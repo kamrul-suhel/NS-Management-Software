@@ -37,26 +37,27 @@ class ProductController extends ApiController
             $products = $products->where('store_id', $shopId);
         }
 
-        if($request->has('category_id')){
-            $products = $products->leftJoin('category_product', 'products.id', '=', 'category_product.product_id');
-            $products = $products->where('category_product.category_id', '=', $request->category_id);
-            $products = $products->where('category_product.product_id', '=', 'products.id');
-        }
-
         if($request->has('status') && $request->status === 'available'){
             $products = $products->where('status', 'available');
         }
 
+        if($request->has('category_id')){
+            $products = $products->leftJoin('category_product', 'products.id', '=', 'category_product.product_id');
+            $products = $products->where('category_product.category_id', '=', $request->category_id);
+        }
+
         // Check query type, if it is productpage then do pagination or return all data
         if($request->has('query_type') && $request->query_type === 'productPage'){
+            $productsCalculate = $products->get();
             $products = $products->paginate($perPage);
         }else{
+            $productsCalculate = $products->get();
             $products = $products->get();
         }
 
-        $totalProduct = $products->count();
-        $totalProductStock = $products->sum('quantity');
-        $totalStock = $products->sum(function($product){
+        $totalProduct = $productsCalculate->count();
+        $totalProductStock = $productsCalculate->sum('quantity');
+        $totalStock = $productsCalculate->sum(function($product){
             return $product->quantity * $product->purchase_price;
         });
 

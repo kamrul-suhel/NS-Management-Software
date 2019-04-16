@@ -260,6 +260,10 @@ class TransactionController extends ApiController
         $products = Transaction::with(['products','serials'])
             ->findOrFail($request->id);
 
+        foreach($products->products as $product){
+            dd($product->pivot->sale_feet);
+        }
+
         return response()->json($products, 422);
 
         //
