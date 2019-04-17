@@ -268,11 +268,11 @@ class TransactionController extends ApiController
             ->where('transactions.id', $request->id)
             ->get();
 
-        $transactions->each(function($transaction){
-           $product =  Product::findOrfail($transaction->product_id);
-           $product->quantity = $product->quantity + $transaction->sale_quantity;
-           $product->save();
-        });
+//        $transactions->each(function($transaction){
+//           $product =  Product::findOrfail($transaction->product_id);
+//           $product->quantity = $product->quantity + $transaction->sale_quantity;
+//           $product->save();
+//        });
 
         // Role back serials
         $serials = Transaction::select([
@@ -282,6 +282,8 @@ class TransactionController extends ApiController
             ->leftJoin('product_serials', 'transactions.id', '=', 'product_serials.transaction_id')
             ->where('transactions.id', $request->id)
             ->get();
+
+        return response()->json($serials);
 
         $serials->each(function($serial){
             if($serial->serial_id === null){
