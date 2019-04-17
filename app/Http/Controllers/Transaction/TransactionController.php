@@ -284,6 +284,9 @@ class TransactionController extends ApiController
             ->get();
 
         $serials->each(function($serial){
+            if($serial->serial_id === null){
+                return;
+            }
             $productSerial = ProductSerial::findOrFail($serial->serial_id);
             $productSerial->transaction_id = NULL;
             $productSerial->is_sold = 0;
