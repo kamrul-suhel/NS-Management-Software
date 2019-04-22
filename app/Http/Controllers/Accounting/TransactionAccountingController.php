@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Accounting;
 
+use App\Bkash;
 use App\CompanyTransaction;
 use App\Expense;
 use App\Product;
@@ -24,6 +25,7 @@ class TransactionAccountingController extends Controller
         $expenses = new Expense();
         $companyTransaction = new CompanyTransaction();
         $salesReturn = SaleReturn::select('total_sale_price', 'total_purchase_price');
+        $bkash = Bkash::where('status', 0);
 
         // Transaction exclude pending
         $transactions = $transactions->where('payment_status', '!=', '4');
@@ -40,6 +42,9 @@ class TransactionAccountingController extends Controller
 
             $salesReturn = $salesReturn->where('created_at', '>', Carbon::now()->startOfDay())
                 ->where('created_at', '<', Carbon::now()->endOfDay());
+
+            $bkash = $bkash->where('created_at', '>', Carbon::now()->startOfDay())
+                ->where('created_at', '<', Carbon::now()->endOfDay());
         }
 
         if ($request->select['abbr'] === 'YDT') {
@@ -49,6 +54,8 @@ class TransactionAccountingController extends Controller
             $companyTransaction = $companyTransaction->where('created_at', '>', Carbon::yesterday());
 
             $salesReturn = $salesReturn->where('created_at', '>', Carbon::yesterday());
+
+            $bkash = $bkash->where('created_at', '>', Carbon::yesterday());
         }
 
         if ($request->select['abbr'] === 'TWT') {
@@ -57,6 +64,7 @@ class TransactionAccountingController extends Controller
             $companyTransaction = $companyTransaction->where('created_at', '>', Carbon::now()->startOfWeek());
 
             $salesReturn = $salesReturn->where('created_at', '>', Carbon::now()->startOfWeek());
+            $bkash = $bkash->where('created_at', '>', Carbon::now()->startOfWeek());
         }
         if ($request->select['abbr'] === 'LWT') {
             $currentDate = Carbon::now();
@@ -70,6 +78,8 @@ class TransactionAccountingController extends Controller
             $companyTransaction = $companyTransaction->whereBetween('created_at', [$agoDate, $endDate]);
 
             $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
+
+            $bkash = $bkash->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
         if ($request->select['abbr'] === 'TMT') {
@@ -83,6 +93,7 @@ class TransactionAccountingController extends Controller
             $companyTransaction = $companyTransaction->whereBetween('created_at', [$agoDate, $endDate]);
 
             $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
+            $bkash = $bkash->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
         if ($request->select['abbr'] === 'LMT') {
@@ -92,6 +103,7 @@ class TransactionAccountingController extends Controller
             $companyTransaction = $companyTransaction->whereMonth('created_at', Carbon::now()->subMonth()->month);
 
             $salesReturn = $salesReturn->whereMonth('created_at', Carbon::now()->subMonth()->month);
+            $bkash = $bkash->whereMonth('created_at', Carbon::now()->subMonth()->month);
         }
 
         if ($request->select['abbr'] === 'TYT') {
@@ -104,6 +116,7 @@ class TransactionAccountingController extends Controller
 
             $companyTransaction = $companyTransaction->whereBetween('created_at', [$agoDate, $endDate]);
             $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
+            $bkash = $bkash->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
         if ($request->customdate) {
@@ -114,6 +127,7 @@ class TransactionAccountingController extends Controller
 
             $companyTransaction = $companyTransaction->whereBetween('created_at', [$begainDate, $endDate]);
             $salesReturn = $salesReturn->whereBetween('created_at', [$begainDate, $endDate]);
+            $bkash = $bkash->whereBetween('created_at', [$begainDate, $endDate]);
         }
 
         if ($request->customdate && $request->customrangerate) {
@@ -124,7 +138,10 @@ class TransactionAccountingController extends Controller
 
             $companyTransaction = $companyTransaction->whereBetween('created_at', [$agoDate, $endDate]);
             $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
+            $bkash = $bkash->whereBetween('created_at', [$agoDate, $endDate]);
         }
+
+        $totalBkash = $bkash->sum('amount');
 
         // get store specifice transaction.
         $request->has('store_id') ? $transactions->where('store_id', $request->store_id) : '';
@@ -201,7 +218,7 @@ class TransactionAccountingController extends Controller
 
         $profitAfter = $totalProfit - $totalExpenses - $discount;
         $totalProfitAfterDue = $totalProfit - $paymentDue;
-        $cash = $total - $paymentDue - $totalExpenses - $companyDebit;
+        $cash = $total - $paymentDue - $totalExpenses - $companyDebit - $totalBkash;
 
         // Total expanse
         $totalExpanse = Expense::select('amount')->get()->sum('amount');
