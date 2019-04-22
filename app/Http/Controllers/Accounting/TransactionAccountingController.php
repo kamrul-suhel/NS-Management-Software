@@ -258,6 +258,7 @@ class TransactionAccountingController extends Controller
             'profit_after' => number_format((float)$profitAfter, 2, '.', ''),
             'total_profit_after_due' => number_format($totalProfitAfterDue, 2, '.', ''),
             'cash' => number_format($cash, 2,'.', ''),
+            'bkash' => number_format($totalBkash, 2, '.',','),
             'current_balance' => number_format($currentBalance, 2,'.', '')
         ];
 
