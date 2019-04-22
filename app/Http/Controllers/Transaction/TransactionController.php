@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Transaction;
 
+use App\Bkash;
 use App\Http\Controllers\ApiController;
 use App\Product;
 use App\ProductSerial;
@@ -30,7 +31,7 @@ class TransactionController extends ApiController
         $perPage = $request->has('rowsPerPage') ? $request->rowsPerPage : 2;
         $shopId = $request->has('shopId') ? $request->shopId : null;
 
-        $transactions = Transaction::with(['products', 'serials', 'seller', 'customer'])
+        $transactions = Transaction::with(['products', 'serials', 'seller', 'customer','bkash'])
             ->where('store_id', $shopId)
             ->orderBy('created_at', 'DESC');
 
@@ -235,7 +236,15 @@ class TransactionController extends ApiController
      */
     public function update(Request $request, Transaction $transaction)
     {
-        //
+        // change Bkash status
+        if($request->has('bkash_status')){
+            $bkash = Bkash::findOrFail($request->bkash_id);
+            $bkash->status = $request->bkash_status;
+            $bkash->save();
+            return response()->json($bkash);
+        }
+
+        // Change transaction payment type
         if($request->has('payment_type')){
             $transaction->type = $request->payment_type;
 

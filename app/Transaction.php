@@ -78,6 +78,10 @@ class Transaction extends Model
          return '';
      }
 
+     public function bkash(){
+         return $this->hasOne('App\Bkash');
+     }
+
      public static function getPaymentStatus($status){
          switch($status){
              case 'paid':

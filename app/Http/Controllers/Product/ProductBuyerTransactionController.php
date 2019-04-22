@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Product;
 
+use App\Bkash;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Customer\CustomerDueController;
 use App\Product;
@@ -65,6 +66,15 @@ class ProductBuyerTransactionController extends ApiController
                 'paid' => $request->paid,
 				'service_charge' => $request->service_charge
             ]);
+
+            // If bkash exists then make a record
+            if($request->has('bkash') && $request->bkash == 1){
+                $bkash = new Bkash();
+                $bkash->transaction_id = $transaction->id;
+                $bkash->phone_number = $request->phone_number;
+                $bkash->amount = $request->amount;
+                $bkash->save();
+            }
 
             $transactionId = $transaction->id;
 
