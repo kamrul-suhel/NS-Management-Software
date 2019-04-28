@@ -15,13 +15,17 @@ class CreateAccountsTable extends Migration
     {
         Schema::create('accounts', function (Blueprint $table) {
             $table->increments('id');
+            $table->tinyInteger('status')->index()->default(1);
             $table->integer('bank_id')->index()->unsigned()->notNull();
             $table->string('name','100')->index();
-            $table->string('account_number', 20)->index()->notNull();
-
+            $table->string('account_number', 20)->unique()->index()->notNull();
             $table->timestamps();
+            $table->softDeletes();
 
-            $table->foreign('bank_id')->references('id')->on('banks')->onDelete('cascade');
+            $table->foreign('bank_id')
+                ->references('id')
+                ->on('banks')
+                ->onDelete('cascade');
         });
     }
 
@@ -32,6 +36,8 @@ class CreateAccountsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('accounts');
+        Schema::table('accounts', function(Blueprint $table){
+            $table->dropIfExists('accounts');
+        });
     }
 }

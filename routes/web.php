@@ -126,6 +126,18 @@ Route::get('account/customer', function(){
    return view('welcome');
 });
 
+Route::get('banks', function(){
+    return view('welcome');
+});
+
+Route::get('banks/{id}/accounts', function(){
+    return view('welcome');
+});
+
+Route::get('banks/{bankId}/accounts/{accountId}/transactions', function(){
+    return view('welcome');
+});
+
 
 
 /*

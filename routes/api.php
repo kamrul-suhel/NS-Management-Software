@@ -125,3 +125,27 @@ Route::resource('customers', 'Customer\CustomerController');
  * ************************************************
  */
 Route::post('accounting/transaction', 'Accounting\TransactionAccountingController@index')->name('transaction.accounting');
+
+
+/*
+ * ************************************************
+ * Bank go here
+ * ************************************************
+ */
+Route::resource('banks', 'Bank\BankController', ['only'=> ['index','store', 'update','destroy']]);
+
+
+/*
+ * ************************************************
+ * Bank accounts go here
+ * ************************************************
+ */
+Route::resource('banks.accounts', 'Bank\AccountController', ['only'=> ['index','store', 'update','destroy']]);
+
+
+/*
+ * ************************************************
+ * Account Transaction go here
+ * ************************************************
+ */
+Route::resource('banks.accounts.transactions', 'Bank\AccountTransactionController', ['only'=> ['index','store', 'update','destroy']]);
