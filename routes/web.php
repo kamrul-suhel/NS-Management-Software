@@ -138,6 +138,13 @@ Route::get('banks/{bankId}/accounts/{accountId}/transactions', function(){
     return view('welcome');
 });
 
+/*
+ * ************************************************
+ * Database backup process
+ * ************************************************
+ */
+Route::get('backup/create', 'DBBackupController@create');
+
 
 
 /*
