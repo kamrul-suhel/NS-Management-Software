@@ -31,7 +31,7 @@ class TransactionController extends ApiController
         $perPage = $request->has('rowsPerPage') ? $request->rowsPerPage : 2;
         $shopId = $request->has('shopId') ? $request->shopId : null;
 
-        $transactions = Transaction::with(['products', 'serials', 'seller', 'customer','bkash'])
+        $transactions = Transaction::with(['products', 'serials', 'seller', 'customer','bkash', 'accountTransaction.account'])
             ->where('store_id', $shopId)
             ->orderBy('created_at', 'DESC');
 

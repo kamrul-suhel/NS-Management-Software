@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Bank;
 
+use App\Account;
 use App\AccountTransaction;
+use App\Bank;
 use App\Company;
 use App\CompanyTransaction;
 use App\Http\Controllers\Controller;
@@ -53,7 +55,25 @@ class AccountTransactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $accountTransaction = new AccountTransaction();
+        $accountTransaction->amount = $request->amount;
+        $accountTransaction->account_id = $request->account_id;
+
+        switch($request->payment_type){
+            case 'Transaction':
+                $request->has('transaction_id') ? $accountTransaction->transaction_id = $request->transaction_id : null;
+                break;
+
+            case 'Company':
+                $request->has('company_id') ? $accountTransaction->company_id = $request->company_id : null;
+                break;
+        }
+
+        $request->has('reference') ? $accountTransaction->reference = $request->reference : null;
+        $accountTransaction->payment_type = $request->payment_type;
+        $accountTransaction->save();
+
+        return response()->json($accountTransaction);
     }
 
     /**
@@ -91,13 +111,15 @@ class AccountTransactionController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\AccountTransaction  $accountTransaction
-     * @return \Illuminate\Http\Response
+     * @param Bank $bank
+     * @param Account $account
+     * @param AccountTransaction $accountTransaction
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function destroy(AccountTransaction $accountTransaction)
+    public function destroy(Bank $bank, Account $account, AccountTransaction $accountTransaction)
     {
-        //
+        $accountTransaction->delete();
+        return response()->json($accountTransaction);
     }
 }

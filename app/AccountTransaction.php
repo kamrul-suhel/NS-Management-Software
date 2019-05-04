@@ -3,9 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AccountTransaction extends Model
 {
+    use SoftDeletes;
 
     CONST PAYMENT_TYPE_COMPANY = 1;
     CONST PAYMENT_TYPE_INVEST = 2;
@@ -27,7 +29,7 @@ class AccountTransaction extends Model
      * @param $paymentType
      * @return string
      */
-    public function getPaymentType($paymentType){
+    public function getPaymentTypeAttribute($paymentType){
         switch($paymentType){
             case self::PAYMENT_TYPE_COMPANY:
                 return 'Company';
@@ -49,6 +51,10 @@ class AccountTransaction extends Model
                 return 'Transaction';
                 break;
         }
+    }
+
+    public function account(){
+        return $this->belongsTo('App\Account', 'account_id','id');
     }
 
     /**

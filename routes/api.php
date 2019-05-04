@@ -141,6 +141,7 @@ Route::resource('banks', 'Bank\BankController', ['only'=> ['index','store', 'upd
  * ************************************************
  */
 Route::resource('banks.accounts', 'Bank\AccountController', ['only'=> ['index','store', 'update','destroy']]);
+Route::get('bankaccounts', 'Bank\AccountController@getAllAccount');
 
 
 /*
@@ -148,4 +149,4 @@ Route::resource('banks.accounts', 'Bank\AccountController', ['only'=> ['index','
  * Account Transaction go here
  * ************************************************
  */
-Route::resource('banks.accounts.transactions', 'Bank\AccountTransactionController', ['only'=> ['index','store', 'update','destroy']]);
+Route::resource('banks.accounts.accountTransactions', 'Bank\AccountTransactionController', ['only'=> ['index','store', 'update','destroy']]);

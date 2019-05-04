@@ -16,7 +16,7 @@ class CreateBkashesTable extends Migration
         Schema::create('bkashes', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('transaction_id')->unsigned()->index()->notNull();
-            $table->integer('phone_number')->unsigned()->index();
+            $table->string('phone_number', '20')->index();
             $table->float('amount')->unsigned()->notNull();
             $table->tinyInteger('status')->unsigned()->default(0)->index();
             $table->timestamps();

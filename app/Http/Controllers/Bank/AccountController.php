@@ -96,6 +96,11 @@ class AccountController extends Controller
         return response()->json($account);
     }
 
+    public function getAllAccount(){
+        $accounts = Account::select('id', 'name')->orderBy('name')->get();
+        return response()->json($accounts);
+    }
+
     /**
      * @param int $length
      * @return string

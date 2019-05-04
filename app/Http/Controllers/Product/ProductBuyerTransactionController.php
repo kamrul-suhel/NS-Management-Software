@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Product;
 
+use App\AccountTransaction;
 use App\Bkash;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Customer\CustomerDueController;
@@ -68,12 +69,23 @@ class ProductBuyerTransactionController extends ApiController
             ]);
 
             // If bkash exists then make a record
-            if($request->has('bkash') && $request->bkash == 1){
+            if($request->has('payment_type') && $request->payment_type == 'bkash'){
                 $bkash = new Bkash();
                 $bkash->transaction_id = $transaction->id;
                 $bkash->phone_number = $request->phone_number;
                 $bkash->amount = $request->amount;
                 $bkash->save();
+            }
+
+            // If payment type bank
+            if($request->has('payment_type') && $request->payment_type == 'Transaction'){
+                $account = new AccountTransaction();
+                $account->account_id = $request->account_id;
+                $account->transaction_id = $transaction->id;
+                $account->payment_type = $request->payment_type;
+                $account->amount = $request->total + $request->service_charge;
+                $account->reference = $request->reference;
+                $account->save();
             }
 
             $transactionId = $transaction->id;
