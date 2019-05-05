@@ -79,9 +79,13 @@ class AccountController extends Controller
      * @param  \App\Account  $account
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Account $account)
+    public function update(Request $request, Bank $bank, Account $account)
     {
-        //
+        $request->has('account_number') ? $account->account_number = $request->account_number : null;
+        $request->has('name') ? $account->name = $request->name : null;
+        $account->save();
+
+        return response()->json($account);
     }
 
     /**
