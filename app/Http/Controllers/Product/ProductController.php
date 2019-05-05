@@ -46,6 +46,10 @@ class ProductController extends ApiController
             $products = $products->where('category_product.category_id', '=', $request->category_id);
         }
 
+        if($request->has('search') && !empty($request->search)){
+            $products = $products->where('name', 'LIKE', '%'.$request->search . '%');
+        }
+
         // Check query type, if it is productpage then do pagination or return all data
         if($request->has('query_type') && $request->query_type === 'productPage'){
             $productsCalculate = $products->get();
