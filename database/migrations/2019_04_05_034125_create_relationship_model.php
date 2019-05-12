@@ -15,9 +15,17 @@ class CreateRelationshipModel extends Migration
     {
         //
         Schema::table('sale_return_line', function(Blueprint $table){
-            $table->foreign('sale_return_id')->references('id')->on('sales_return')->onDelete('cascade');
-            $table->foreign('product_id')->references('id')->on('products');
-            $table->foreign('product_serial_id')->references('id')->on('product_serials');
+            $table->foreign('sale_return_id')->references('id')
+                ->on('sales_return')
+                ->onDelete('cascade');
+
+            $table->foreign('product_id')
+                ->references('id')
+                ->on('products');
+
+            $table->foreign('product_serial_id')
+                ->references('id')
+                ->on('product_serials');
         });
 
         Schema::table('sales_return', function(Blueprint $table){
@@ -34,6 +42,5 @@ class CreateRelationshipModel extends Migration
      */
     public function down()
     {
-        //
     }
 }

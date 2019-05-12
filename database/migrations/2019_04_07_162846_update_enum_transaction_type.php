@@ -24,6 +24,6 @@ class UpdateEnumTransactionType extends Migration
      */
     public function down()
     {
-        DB::statement("ALTER TABLE transactions MODIFY COLUMN values ENUM('paid','due-paid')");
+        DB::statement("ALTER TABLE transactions MODIFY type ENUM('paid','due-paid')");
     }
 }

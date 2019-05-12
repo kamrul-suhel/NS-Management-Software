@@ -28,8 +28,8 @@ class SetForeignkeyPrductTransaction extends Migration
     public function down()
     {
         Schema::table('product_transaction', function($table){
-            $table->dropForeign('product_id');
-            $table->dropForeign('transaction_id');
+            $table->dropForeign(['product_id']);
+            $table->dropForeign(['transaction_id']);
         });
     }
 }
