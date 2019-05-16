@@ -2,7 +2,7 @@
 
 use App\Company;
 use App\Customer;
-use App\Setting;
+use App\Store;
 use App\User;
 use App\Product;
 use App\Category;
@@ -21,14 +21,18 @@ use Faker\Generator as Faker;
 */
 
 $factory->define(User::class, function (Faker $faker) {
+
+    $storeId = Store::get()->random()->id;
+
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
+        'store_id' => $storeId,
         'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
         'remember_token' => str_random(10),
         'verified' => $verified = $faker->randomElement([User::VERIFIED_USER, User::UNVERIFIED_USER]),
         'verification_token' => $verified == User::VERIFIED_USER ? null : User::generateVerificationCode(),
-        'admin' => $faker->randomElement([User::ADMIN_USER, User::REGULAR_USER])
+        'role' => $faker->randomElement([User::ADMIN_USER, User::REGULAR_USER])
     ];
 });
 
@@ -45,8 +49,10 @@ $factory->define(Customer::class, function (Faker $faker) {
 
 
 $factory->define(Category::class, function (Faker $faker) {
+    $store_id = Store::all()->random();
     return [
         'name' => $faker->word,
+        'store_id' => $store_id->id,
         'description' => $faker->paragraph(1)
     ];
 });
@@ -57,26 +63,27 @@ $factory->define(Product::class, function (Faker $faker) {
      * product serial
      * *********************************
      */
-
+    $store_id = Store::all()->random();
 
     return [
+        'store_id' => $store_id->id,
         'name' => $faker->word,
         'description' => $faker->paragraph(1),
         'quantity' => $faker->numberBetween(1, 10),
         'sale_price' => $sale_price = $faker->numberBetween(150, 200),
         'purchase_price' => $sale_price - $faker->numberBetween(10, $sale_price),
         'status' => $faker->randomElement([Product::UNAVAILABLE_PRODUCT, Product::ABAILABLE_PRODUCT]),
-        'quantity_type' => $faker->randomElement([Product::PRODUCTTYPEITEM, Product::PRODUCTTYPEKG, Product::PRODUCTTYPLITTER]),
+        'is_barcode' => $faker->randomElement(['yes', 'no']),
         'image' => $faker->randomElement(['1.jpg', '2.jpg', '3.jpg', '4.jpg']),
-        'barcode' => $faker->ean13,
         'seller_id' => User::all()->random()->id,
-
     ];
 });
 
 $factory->define(Transaction::class, function (Faker $faker) {
 
     $customer = Customer::all()->random();
+    $seller = User::all()->random();
+    $store = Store::all()->random();
 
 
     $unique_id='';
@@ -91,31 +98,33 @@ $factory->define(Transaction::class, function (Faker $faker) {
     }
 
     return[
-        'customer_id' => $customer->id,
-        'payment_status' => $faker->randomElement([Transaction::TRANSACTION_STATUS_DUE, Transaction::TRANSICTION_STATUS_OK]),
-        'payment_due'   => $faker->randomFloat($nbMaxDecimals = 2, $min = 0, $max = 4000),
-        'paid'         => $faker->randomFloat($nbMaxDecimals =2, $min = 0, $max = 2000),
-        'discount_amount' => $faker->numberBetween(20, 50),
-        'invoice_number' => $unique_id,
-        'type'  => $faker->randomElement(['paid', 'due-paid']),
-        'total' => $faker->numberBetween(3000, 4000),
-        'created_at'    => $faker->dateTimeBetween($startDate = '-1 month', $endDate = 'now'),
-//        'created_at'    => $faker->dateTimeBetween($startDate = '-5 month', $endDate = 'now'),
-        'updated_at'    => $faker->dateTimeBetween($startDate = '-6 day', $endDate = 'now')
+        'store_id'          => $store->id,
+        'customer_id' 		=> $customer->id,
+		'seller_id' 		=> $seller->id,
+        'payment_status' 	=> $faker->randomElement([Transaction::TRANSACTION_STATUS_DUE, Transaction::TRANSICTION_STATUS_OK]),
+        'payment_due'   	=> $faker->randomFloat($nbMaxDecimals = 2, $min = 0, $max = 4000),
+        'paid'         		=> $faker->randomFloat($nbMaxDecimals =2, $min = 0, $max = 2000),
+        'discount_amount' 	=> $faker->numberBetween(20, 50),
+        'invoice_number' 	=> $unique_id,
+        'type' 				=> $faker->randomElement(['paid', 'due-paid']),
+        'total' 			=> $faker->numberBetween(3000, 4000),
+        'created_at'    	=> $faker->dateTimeBetween($startDate = '-1 month', $endDate = 'now'),
+//        'created_at'    	=> $faker->dateTimeBetween($startDate = '-5 month', $endDate = 'now'),
+        'updated_at'    	=> $faker->dateTimeBetween($startDate = '-6 day', $endDate = 'now')
     ];
 });
 
-$factory->define(Setting::class, function(Faker $faker){
+$factory->define(Store::class, function(Faker $faker){
     return [
-        'company_name'      => $faker->company,
-        'company_address'   => $faker->address,
-        'company_phone'     => $faker->phoneNumber,
-        'company_mobile'    => $faker->phoneNumber,
-        'company_email'     => $faker->email,
-        'company_fax'       => $faker->phoneNumber,
-        'company_shop_number'=> $faker->bankAccountNumber,
-        'company_website'=> $faker->url,
-        'company_logo'=> 'logo',
+        'name'      => $faker->company,
+        'address'   => $faker->address,
+        'phone'     => $faker->phoneNumber,
+        'mobile'    => $faker->phoneNumber,
+        'email'     => $faker->email,
+        'fax'       => $faker->phoneNumber,
+        'serial'=> $faker->bankAccountNumber,
+        'website'=> $faker->url,
+        'logo'=> 'logo',
     ];
 });
 
@@ -123,21 +132,25 @@ $factory->define(Setting::class, function(Faker $faker){
  * Expense section
  */
 $factory->define(App\Expense::class, function (Faker $faker) {
+    $store = Store::all()->random();
     return [
         //
+        'store_id'  => $store->id,
         'title' => $faker->title,
         'expense_categories_id' => $faker->numberBetween(1, 10),
         'description'   => $faker->paragraph(1),
         'payment_type'  => $faker->randomElement(['check', 'cheque']),
         'amount'        => $faker->randomFloat($nbMaxDecimals =2, $min = 0, $max = 2000),
         'created_at'    => $faker->dateTimeBetween($startDate = '-12 month', $endDate = 'now'),
-        'updated_at'    => $faker->dateTimeBetween($startDate = '-5 month', $endDate = 'now')
+        'updated_at'    => $faker->dateTimeBetween($startDate = '-1 month', $endDate = 'now')
     ];
 });
 
 $factory->define(App\ExpenseCategory::class, function (Faker $faker) {
+    $store = Store::all()->random();
     return [
         //
+        'store_id' => $store->id,
         'title' => $faker->title,
         'description'   => $faker->paragraph(1),
     ];
@@ -149,8 +162,10 @@ $factory->define(App\ExpenseCategory::class, function (Faker $faker) {
  * Company
  */
 $factory->define(App\Company::class, function (Faker $faker) {
+    $store = Store::all()->random();
     return [
         //
+//        'store_id' => $store->id,
         'name' => $faker->company,
         'address' => $faker->address,
         'description' => $faker->paragraph(1),
@@ -169,9 +184,10 @@ $factory->define(App\Company::class, function (Faker $faker) {
 
 
 $factory->define(\App\CompanyTransaction::class, function (Faker $faker) {
+    $store = Store::all()->random();
     return [
         //
-
+        'store_id'  => $store->id,
         'company_id' => Company::all()->random()->id,
         'payment_type' => $faker->randomElement(['cash', 'cheque','product', 'other']),
         'reference' => generateRandomString(),

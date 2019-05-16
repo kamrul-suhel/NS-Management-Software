@@ -15,6 +15,7 @@ class CreateCompanyTransactionsTable extends Migration
     {
         Schema::create('company_transactions', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('store_id')->index()->unsigned();
             $table->integer('company_id')->unsigned()->index();
             $table->string('payment_type')->index();
             $table->string('reference')->index();

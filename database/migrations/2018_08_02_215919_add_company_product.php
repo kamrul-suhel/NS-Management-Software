@@ -18,6 +18,7 @@ class AddCompanyProduct extends Migration
             $table->integer('company_id')->index()->unsigned();
             $table->integer('product_id')->index()->unsigned();
             $table->integer('product_quantity')->nullable()->unsigned();
+            $table->float('product_feet')->nullable()->unsigned();
             $table->timestamps();
         });
     }

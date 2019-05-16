@@ -1,3 +1,27 @@
+.transaction-print .logo {
+  font-size: 30px;
+}
+
+.transaction-print .logo-img img {
+  width: 80px;
+  height: auto;
+  margin: 15px auto;
+  display: block;
+}
+
+.transaction-print .logo-description {
+  font-weight: bold;
+  text-align: center;
+  margin-top: -15px;
+  font-size: 10px;
+}
+
+.transaction-print .logo-description .description-style {
+  display: inline-block;
+  background: #cdcdcd;
+  color: #FF4500;
+}
+
 .transaction-print table {
   border-collapse: collapse;
 }
@@ -10,49 +34,15 @@
   margin-top: 30px;
 }
 
+.transaction-print .logo {
+  font-size: 50px;
+  font-weight: bold;
+}
+
 .transaction-print-table th,
 .transaction-print-table td {
   border-bottom: 1px solid #ddd;
   padding: 15px;
-}
-
-@media print {
-  html,
-  body {
-    width: 210mm;
-    height: 297mm;
-    background: #fff;
-  }
-
-  .application .theme--dark.card,
-  .theme--dark .card {
-    background: #fff;
-    color: #000;
-  }
-
-@page {
-    size: 5.5in 8.5in;
-    size: portrait;
-}
-
-  .navigation-drawer {
-    display: none;
-  }
-
-  .content {
-    padding: 0 !important;
-    width: 100% !important;
-    background: #fff !important;
-  }
-
-  .application .theme--dark.divider,
-  .theme--dark .divider {
-    background-color: #777;
-  }
-
-  .toolbar {
-    display: none;
-  }
 }
 
 .transaction-component table.table tbody td:first-child,
@@ -66,7 +56,134 @@
   padding: 0 5px;
 }
 
+@media print {
+  html,
+  body {
+    width: 5.4in;
+    height: 8.1in;
+    background: #fff;
+    color: #000 !important;
+    margin: 5px !important;
+  }
+
+  html .container,
+  body .container {
+    padding: 0;
+    margin: 0;
+  }
+
+  .transaction-print {
+    color: #000;
+  }
+
+  .transaction-print .print-btn {
+    display: none;
+  }
+
+  .transaction-print .logo {
+    font-size: 24px !important;
+    font-weight: bold;
+  }
+
+  .transaction-print .logo-description {
+    color: #000;
+    font-weight: bold;
+    text-align: center;
+    margin-top: -5px;
+    font-size: 10px;
+  }
+
+  .transaction-print .subtitle {
+    font-size: 12px;
+    margin-top: -8px;
+    color: #000;
+  }
+
+  .transaction-print .address {
+    font-size: 10px;
+    color: #000;
+  }
+
+  .transaction-print .logo-img img {
+    width: 30px !important;
+    height: auto;
+    margin: 15px auto;
+    display: block;
+  }
+
+  .transaction-print table.ns-table-print {
+    color: #000;
+  }
+
+  .transaction-print table.ns-table-print td {
+    padding: 5px;
+    border-color: #000;
+  }
+
+  .transaction-print h2,
+  .transaction-print h3 {
+    color: #000;
+  }
+
+  .transaction-print p {
+    color: #000;
+  }
+
+  .transaction-print-table table {
+    width: 100% !important;
+    border-collapse: collapse;
+  }
+
+  .application .theme--dark.card,
+  .theme--dark .card {
+    background: #fff;
+    color: #000;
+  }
+
+@page {
+    size: portrait;
+    margin: 0 !important;
+}
+
+  .v-navigation-drawer {
+    display: none;
+  }
+
+  .v-content {
+    padding: 0 !important;
+    width: 100% !important;
+    background: #fff !important;
+  }
+
+  .application .theme--dark.divider,
+  .theme--dark .divider {
+    background-color: #777;
+  }
+
+  .v-toolbar {
+    display: none;
+  }
+}
+
 .v-text-field__prefix {
   padding-right: 25px !important;
+}
+
+.header-section {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding-bottom: 10px;
+}
+
+.header-section .v-list__tile__title {
+  height: 50px;
+}
+
+.header-section .store-logo img {
+  width: 50px;
+  height: auto;
+  display: block;
+  /* margin: 0 auto; */
+  image-rendering: optimizeQuality;
+  /* border-bottom: 1px solid; */
 }
 

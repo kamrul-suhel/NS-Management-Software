@@ -19,8 +19,8 @@ class User extends Authenticatable
     const VERIFIED_USER = "1";
     const UNVERIFIED_USER = "0";
 
-    const ADMIN_USER = 'true';
-    const REGULAR_USER = 'false';
+    const ADMIN_USER = 'admin';
+    const REGULAR_USER = 'staff';
 
     protected $table = 'users';
 
@@ -31,7 +31,7 @@ class User extends Authenticatable
      *
      */
 
-    public $transformer = UserTransformer::class;
+//    public $transformer = UserTransformer::class;
 
 
     /**
@@ -40,8 +40,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 
-        'email', 
+        'name',
+        'email',
         'password',
         'verified',
         'verification_token',

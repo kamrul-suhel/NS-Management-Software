@@ -19,7 +19,8 @@ class Category extends Node
 
     protected $fillable = [
     	'name',
-    	'description'
+    	'description',
+        'store_id'
     ];
 
     protected $hidden =[

@@ -50,10 +50,17 @@ Route::post('customer/{customer_id}/due/transactions', 'Customer\CustomerDueCont
 *  Transition route
 */
 
-Route::resource('transactions','Transaction\TransactionController',['only' => ['index', 'show']]);
+Route::resource('transactions','Transaction\TransactionController',['only' => ['index', 'show', 'update']]);
 Route::resource('transactions.categories','Transaction\TransactionCategoryController',['only' => ['index']]);
 Route::resource('transactions.sellers','Transaction\TransactionSellerController',['only' => ['index']]);
+Route::get('transactions/search/search','Transaction\TransactionController@searchByInvoice');
 Route::get('transactions/{id}/delete','Transaction\TransactionController@destroy');
+
+
+/*
+*  Sale Return route
+*/
+Route::post('sale-return', 'SaleReturnController@store');
 
 
 /*
@@ -118,3 +125,28 @@ Route::resource('customers', 'Customer\CustomerController');
  * ************************************************
  */
 Route::post('accounting/transaction', 'Accounting\TransactionAccountingController@index')->name('transaction.accounting');
+
+
+/*
+ * ************************************************
+ * Bank go here
+ * ************************************************
+ */
+Route::resource('banks', 'Bank\BankController', ['only'=> ['index','store', 'update','destroy']]);
+
+
+/*
+ * ************************************************
+ * Bank accounts go here
+ * ************************************************
+ */
+Route::resource('banks.accounts', 'Bank\AccountController', ['only'=> ['index','store', 'update','destroy']]);
+Route::get('bankaccounts', 'Bank\AccountController@getAllAccount');
+
+
+/*
+ * ************************************************
+ * Account Transaction go here
+ * ************************************************
+ */
+Route::resource('banks.accounts.accountTransactions', 'Bank\AccountTransactionController', ['only'=> ['index','store', 'update','destroy']]);

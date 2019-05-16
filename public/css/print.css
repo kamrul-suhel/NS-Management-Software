@@ -1,0 +1,167 @@
+.transaction-print .logo {
+  font-size: 30px;
+}
+
+.transaction-print .logo-img img {
+  width: 80px;
+  height: auto;
+  margin: 15px auto;
+  display: block;
+}
+
+.transaction-print .logo-description {
+  font-weight: bold;
+  text-align: center;
+  margin-top: -15px;
+  font-size: 10px;
+}
+
+.transaction-print .logo-description .description-style {
+  display: inline-block;
+  background: #cdcdcd;
+  color: #FF4500;
+}
+
+.transaction-print table {
+  border-collapse: collapse;
+}
+
+.transaction-print p {
+  margin-bottom: 0;
+}
+
+.transaction-print .print-signature-section {
+  margin-top: 30px;
+}
+
+.transaction-print .logo {
+  font-size: 50px;
+  font-weight: bold;
+}
+
+.transaction-print-table th,
+.transaction-print-table td {
+  border-bottom: 1px solid #ddd;
+  padding: 15px;
+}
+
+.transaction-component table.table tbody td:first-child,
+.transaction-component table.table tbody td:not(:first-child),
+.transaction-component table.table tbody th:first-child,
+.transaction-component table.table tbody th:not(:first-child),
+.transaction-component table.table thead td:first-child,
+.transaction-component table.table thead td:not(:first-child),
+.transaction-component table.table thead th:first-child,
+.transaction-component table.table thead th:not(:first-child) {
+  padding: 0 5px;
+}
+
+@media print {
+  html,
+  body {
+    width: 5.4in;
+    height: 8.1in;
+    background: #fff;
+    color: #000 !important;
+    margin: 5px !important;
+  }
+
+  html .container,
+  body .container {
+    padding: 0;
+    margin: 0;
+  }
+
+  .transaction-print {
+    color: #000;
+  }
+
+  .transaction-print .print-btn {
+    display: none;
+  }
+
+  .transaction-print .logo {
+    font-size: 24px !important;
+    font-weight: bold;
+  }
+
+  .transaction-print .logo-description {
+    color: #000;
+    font-weight: bold;
+    text-align: center;
+    margin-top: -5px;
+    font-size: 10px;
+  }
+
+  .transaction-print .subtitle {
+    font-size: 12px;
+    margin-top: -8px;
+    color: #000;
+  }
+
+  .transaction-print .address {
+    font-size: 10px;
+    color: #000;
+  }
+
+  .transaction-print .logo-img img {
+    width: 30px !important;
+    height: auto;
+    margin: 15px auto;
+    display: block;
+  }
+
+  .transaction-print table.ns-table-print {
+    color: #000;
+  }
+
+  .transaction-print table.ns-table-print td {
+    padding: 5px;
+    border-color: #000;
+  }
+
+  .transaction-print h2,
+  .transaction-print h3 {
+    color: #000;
+  }
+
+  .transaction-print p {
+    color: #000;
+  }
+
+  .transaction-print-table table {
+    width: 100% !important;
+    border-collapse: collapse;
+  }
+
+  .application .theme--dark.card,
+  .theme--dark .card {
+    background: #fff;
+    color: #000;
+  }
+
+@page {
+    size: portrait;
+    margin: 0 !important;
+}
+
+  .v-navigation-drawer {
+    display: none;
+  }
+
+  .v-content {
+    padding: 0 !important;
+    width: 100% !important;
+    background: #fff !important;
+  }
+
+  .application .theme--dark.divider,
+  .theme--dark .divider {
+    background-color: #777;
+  }
+
+  .v-toolbar {
+    display: none;
+  }
+}
+

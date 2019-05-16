@@ -18,19 +18,21 @@ class CompanyController extends Controller
     public function index(Request $request)
     {
         //
-        $companies = Company::with('transactions')->orderBy('id', 'DESC')->get();
-//        $companiesTransaction = Company::with(['transactions' => function($query){
-//            $query->sum('company_transactions.balance');
-//        }])->get()
-//        ->pluck('transactions')->each(function($product){
-//            $product->total = $product->sum('balance');
-//            });
 
         if($request->ajax()){
+			$companies = Company::with('transactions')->orderBy('id', 'DESC')->get();
+			$companiesTransaction = Company::with('transactions')
+				->get()
+				->pluck('transactions')
+				->collapse()
+				->each(function($product){
+					return $product->sum('balance');
+				});
+
         	$data = [
         		'companies' => $companies,
 				'totalCompany' => $companies->count(),
-//				'companyTransaction'	=> $companiesTransaction
+				'companyTransaction'	=> $companiesTransaction
 			];
             return $this->successResponse($data, 200);
         }

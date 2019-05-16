@@ -27,7 +27,7 @@ class LoginController extends Controller
             ];
 
             if ($request->ajax() || $request->isJson()) {
-                return $this->errorResponse('Invalid login, please try again.');
+                return $this->errorResponse('Invalid login, please try again.', 422);
             }
 
             return Redirect::to('login' . $redirect)->with($error);
@@ -40,6 +40,10 @@ class LoginController extends Controller
 
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function isLogin(Request $request){
         $user = Auth::user();
         if($user){

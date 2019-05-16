@@ -2,6 +2,8 @@
   "private": true,
   "main": "index.js",
   "scripts": {
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
     "electron": "electron .",
     "build": "electron-packager . System",
     "dev": "npm run development",
@@ -12,20 +14,33 @@
     "prod": "npm run production",
     "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
+  "build": {
+    "appId": "System",
+    "mac": {
+      "category": "First category"
+    }
+  },
   "dependencies": {
-    "amcharts3": "^3.21.13",
-    "yarn-upgrade-all": "^0.3.0"
+    "amcharts3": "^3.21.14",
+    "serial-number": "^1.3.0",
+    "vue-barcode-scanner": "^0.6.0",
+    "yarn-upgrade-all": "^0.5.0"
   },
   "devDependencies": {
     "axios": "^0.18.0",
     "cross-env": "^5.2.0",
-    "electron": "^2.0.5",
-    "electron-packager": "^12.1.0",
-    "laravel-mix": "^2.1.11",
-    "lodash": "^4.17.10",
-    "vue": "^2.5.16",
-    "vue-router": "^3.0.1",
-    "vuetify": "^1.1.8",
-    "vuex": "^3.0.1"
+    "electron": "^4.1.4",
+    "electron-builder": "^20.39.0",
+    "electron-packager": "^13.1.1",
+    "laravel-mix": "^4.0.15",
+    "lodash": "^4.17.11",
+    "resolve-url-loader": "2.3.2",
+    "sass": "^1.17.4",
+    "sass-loader": "7.*",
+    "vue": "^2.6.10",
+    "vue-router": "^3.0.2",
+    "vue-template-compiler": "^2.6.10",
+    "vuetify": "^1.5.9",
+    "vuex": "^3.1.0"
   }
 }
