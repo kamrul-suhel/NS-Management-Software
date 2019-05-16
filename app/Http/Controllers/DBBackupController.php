@@ -36,7 +36,7 @@ class DBBackupController extends Controller
     {
         try {
             // start the backup process
-            Artisan::call('backup:run', ['--only-db' => 'true']);
+            Artisan::call('backup:run', ['--only-db' => 'true', '--disable-notifications' => 'true']);
             $output = Artisan::output();
             // log the results
             Log::info("Backpack\BackupManager -- new backup started from admin interface \r\n" . $output);
