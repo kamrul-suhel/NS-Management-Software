@@ -30,6 +30,8 @@ class ProductBuyerTransactionController extends ApiController
     public function store(Request $request, Customer $customer)
     {
         $transactionId = 0;
+        $products = json_decode($request->products, true);
+        return response()->json($products);
         $transaction = DB::transaction(function () use ($request, $customer, &$transactionId) {
             $attach_product = [];
             $unique_id = $this->getUniqueId();
