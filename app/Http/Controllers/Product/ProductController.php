@@ -244,9 +244,9 @@ class ProductController extends ApiController
                 foreach ($currCompany['serials'] as $currSerial) {
                     $serial = [];
                     $serial['is_sold'] = 0;
-                    $serial['color'] = $currSerial['color'];
+                    $serial['color'] = isset($currSerial['color']) ? $currSerial['color'] : '';
                     $serial['barcode'] = $currSerial['barcode'];
-                    $serial['imei'] = $currSerial['imei'];
+                    $serial['imei'] = isset($currSerial['imei']) ? $currSerial['imei'] : '';
                     $serial['product_warranty'] = $currCompany['product_warranty'];
                     $serial['company_id'] = $currCompany['selectedCompany']['id'];
                     $productSerialsWithCompany[] = $serial;
