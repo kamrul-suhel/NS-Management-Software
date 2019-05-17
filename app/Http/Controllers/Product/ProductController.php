@@ -80,12 +80,15 @@ class ProductController extends ApiController
         $selectedProduct = new Product();
         if ($request->has('code') && $request->code !== 1) {
             $code = $request->code;
-            $selectedProduct = $selectedProduct->with('serials')
+            $selectedProduct = $selectedProduct->with(['serials' => function ($query) use ($code) {
+                $query->where('barcode', $code)
+                    ->orWhere('imei', $code)
+                ->where('is_sold', 0);
+            }])
                 ->whereHas('serials', function ($query) use ($code) {
-                    $query->where('barcode', $code)
-                        ->orWhere('imei', $code);
+                    $query->where('barcode', $code)->orWhere('imei', $code);
                     $query->where('is_sold', 0);
-                })->first();
+                })->get();
         }
 
         $data = collect([
