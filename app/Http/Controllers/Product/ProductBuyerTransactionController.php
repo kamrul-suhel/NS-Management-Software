@@ -34,6 +34,8 @@ class ProductBuyerTransactionController extends ApiController
             $attach_product = [];
             $unique_id = $this->getUniqueId();
 
+            return json_decode($request->products, true);
+
             $type = '';
             switch($request->payment_status) {
                 case '1':
