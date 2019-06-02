@@ -47,6 +47,11 @@ Route::post('customer/{customer_id}/due/transactions', 'Customer\CustomerDueCont
 
 
 /*
+*  Product Serial route
+*/
+Route::resource('product_serials', 'Product\ProductSerialController', ['only' => ['destroy']]);
+
+/*
 *  Transition route
 */
 
