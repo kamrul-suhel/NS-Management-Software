@@ -22,4 +22,8 @@ class ProductSerial extends Model
     public function product(){
         return $this->belongsTo(Product::class);
     }
+
+    public function company(){
+        return $this->belongsTo('App\Company', 'company_id', 'id');
+    }
 }
