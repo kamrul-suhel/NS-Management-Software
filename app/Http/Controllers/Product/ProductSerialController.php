@@ -12,7 +12,6 @@ class ProductSerialController extends Controller
 
     public function destroy($id){
         $productSerial = ProductSerial::findOrFail($id);
-        return response()->json($productSerial);
         $productSerial->delete();
     }
 }
