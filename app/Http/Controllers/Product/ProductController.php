@@ -31,8 +31,7 @@ class ProductController extends ApiController
             if ($allSerial === 'true') {
                 $quary->where('is_sold', 0);
             }
-        }])
-            ->with('companies');
+        }]);
         if ($shopId) {
             $products = $products->where('store_id', $shopId);
         }
@@ -128,48 +127,7 @@ class ProductController extends ApiController
         //change this when auth is set
         $product['seller_id'] = $request->seller_id;
 
-        $product['is_barcode'] = $request->product_type;
-
         $product = Product::create($product);
-
-        // Product serials key with company
-        $totalCompanies = json_decode($request->totalCompanies, true);
-        $productSerialsWithCompany = [];
-        $productCompany = [];
-        foreach ($totalCompanies as $currCompany) {
-            $company = [];
-            $company['company_id'] = $currCompany['selectedCompany']['id'];
-            $company['product_quantity'] = $currCompany['quantity'];
-
-            $productCompany[] = $company;
-            if ($currCompany['serials'] && !empty($currCompany['serials'])) {
-                foreach ($currCompany['serials'] as $currSerial) {
-                    $serial = [];
-                    $serial['is_sold'] = 0;
-                    $serial['color'] = isset($currSerial['color']) ? $currSerial['color'] : null;
-                    $serial['barcode'] = isset($currSerial['barcode']) ? $currSerial['barcode'] : null;
-                    $serial['imei'] = isset($currSerial['imei']) ? $currSerial['imei'] : null;
-                    $serial['product_warranty'] = $currCompany['product_warranty'];
-                    $serial['company_id'] = $currCompany['selectedCompany']['id'];
-                    $productSerialsWithCompany[] = $serial;
-                }
-            } else {
-                $serial = [];
-                $serial['is_sold'] = 0;
-                $serial['color'] = '';
-                $serial['barcode'] = '';
-                $serial['imei'] = '';
-                $serial['product_warranty'] = $currCompany['product_warranty'];
-                $serial['company_id'] = $currCompany['selectedCompany']['id'];
-                $productSerialsWithCompany[] = $serial;
-            }
-        }
-
-        // Save product company.
-        $product->companies()->attach($productCompany);
-
-        // Save Product serial
-        $product->serials()->createMany($productSerialsWithCompany);
 
         // If product has category then it will link with category in pivot table
         if ($request->has('categories')) {
@@ -191,7 +149,7 @@ class ProductController extends ApiController
      */
     public function show(Product $product)
     {
-        $product = Product::with(['companies','serials.company'])
+        $product = Product::with(['companies','categories','serials.company'])
             ->findOrFail($product->id);
         return $this->showOne($product, 201);
     }
@@ -221,50 +179,18 @@ class ProductController extends ApiController
             'name',
             'description',
             'sale_price',
+            'purchase_price',
+            'status'
         ]));
 
-        $totalQuantity = $product->quantity + $request->quantity;
-        $product->quantity = $totalQuantity;
-
-        if($totalQuantity > 0){
-            $product->status = Product::ABAILABLE_PRODUCT;
-        }
-
-        // Product serials key with company
-        $totalCompanies = json_decode($request->totalCompanies, true);
-        $productSerialsWithCompany = [];
-        $productCompany = [];
-        foreach ($totalCompanies as $currCompany) {
-            $company = [];
-            $company['company_id'] = $currCompany['selectedCompany']['id'];
-            $company['product_quantity'] = $currCompany['quantity'];
-
-            $productCompany[] = $company;
-            if ($currCompany['serials'] && !empty($currCompany['serials'])) {
-                foreach ($currCompany['serials'] as $currSerial) {
-                    $serial = [];
-                    $serial['is_sold'] = 0;
-                    $serial['color'] = isset($currSerial['color']) ? $currSerial['color'] : '';
-                    $serial['barcode'] = $currSerial['barcode'];
-                    $serial['imei'] = isset($currSerial['imei']) ? $currSerial['imei'] : '';
-                    $serial['product_warranty'] = $currCompany['product_warranty'];
-                    $serial['company_id'] = $currCompany['selectedCompany']['id'];
-                    $productSerialsWithCompany[] = $serial;
-                }
-            } else {
-                $serial = [];
-                $serial['is_sold'] = 0;
-                $serial['color'] = '';
-                $serial['barcode'] = '';
-                $serial['imei'] = '';
-                $serial['product_warranty'] = $currCompany['product_warranty'];
-                $serial['company_id'] = $currCompany['selectedCompany']['id'];
-                $productSerialsWithCompany[] = $serial;
+        // If product has category then it will link with category in pivot table
+        if ($request->has('categories')) {
+            $categoriesId = [];
+            foreach (json_decode($request->categories) as $category) {
+                $categoriesId[] = $category->value;
             }
+            $product->categories()->sync($categoriesId);
         }
-
-        $companies = $product->companies()->syncWithoutDetaching($productCompany);
-        $serial = $product->serials()->createMany($productSerialsWithCompany);
 
         $product->save();
         return $this->showOne($product);

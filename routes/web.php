@@ -55,98 +55,9 @@ Route::get('/categories', function(){
 });
 
 
-/**
- * Transaction route
- */
-Route::get('/transaction', function(){
-	return view('welcome');
-});
 
-/**
- * Sales return
- */
-Route::get('/sale-return', function(){
-    return view('welcome');
-});
-
-Route::get('/account/balance', function(){
-    return view('welcome');
-});
-
-Route::resource('customers', 'Customer\CustomerController')->only(['store', 'index', 'update']);
-Route::resource('customers.transactions', 'Customer\CustomerTransitionController')->only(['index']);
 
 Route::resource('shops', 'ShopController')->only(['index', 'update', 'show','store']);
-
-Route::get('transaction/{id}/print', 'Transaction\TransactionController@showPrint');
-Route::get('transaction/{id}/edit', 'Transaction\TransactionController@edit');
-Route::get('transaction/create', 'Transaction\TransactionController@create');
-Route::post('transaction/{id}/edit', 'Transaction\TransactionController@edit');
-
-
-
-/**
- * Expense frontend route
- */
-
-Route::get('expense', 'Expense\ExpenseController@index')->name('expense.show');
-Route::get('expensecategories', 'ExpenseCategory\ExpenseCategoryController@index')->name('expense.category.show');
-
-
-/**
- * Company frontend route
- */
-
-Route::get('company', 'Company\CompanyController@index')->name('company');
-
-Route::get('companytransaction', 'Company\CompanyController@index')->name('company');
-
-
-
-/**
-* Account frontend route
-*/
-Route::get('account/expense', function(){
-    return view('welcome');
-});
-
-Route::get('account/transaction', function(){
-    return view('welcome');
-});
-
-
-/*
- *
- * Customer Due route
- *
- */
-
-Route::get('transaction/due/create', 'Customer\CustomerDueController@index');
-
-Route::get('account/customer', function(){
-   return view('welcome');
-});
-
-Route::get('banks', function(){
-    return view('welcome');
-});
-
-Route::get('banks/{id}/accounts', function(){
-    return view('welcome');
-});
-
-Route::get('banks/{bankId}/accounts/{accountId}/transactions', function(){
-    return view('welcome');
-});
-
-/*
- * ************************************************
- * Database backup process
- * ************************************************
- */
-Route::get('backup/create', 'DBBackupController@create');
-
-
 
 /*
  *
