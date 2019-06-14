@@ -36,7 +36,9 @@ class Transaction extends Model
         'special_discount',
         'total',
         'invoice_number',
-        'type'
+        'type',
+        'status',
+        'approved_by'
     ];
 
     protected $hidden =[

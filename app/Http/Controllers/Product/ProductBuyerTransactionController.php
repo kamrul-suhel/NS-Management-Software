@@ -10,6 +10,7 @@ use App\Product;
 use App\ProductSerial;
 use App\Transaction;
 use App\Customer;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -30,7 +31,16 @@ class ProductBuyerTransactionController extends ApiController
     public function store(Request $request, Customer $customer)
     {
         $transactionId = 0;
-        $transaction = DB::transaction(function () use ($request, $customer, &$transactionId) {
+        $user = User::findOrFail($request->seller_id);
+        $status = null;
+
+        if($user->role === 'admin'){
+            $status = 1;
+        }else{
+            $status = 0;
+        }
+
+        $transaction = DB::transaction(function () use ($request, $customer, $status, &$transactionId) {
             $attach_product = [];
             $unique_id = $this->getUniqueId();
 
@@ -53,6 +63,8 @@ class ProductBuyerTransactionController extends ApiController
                     $type = null;
             }
 
+            // If user role is admin then status 1 or 0 to make admin approval
+
             $transaction = Transaction::create([
                 'customer_id' => $customer->id,
                 'seller_id' => $request->seller_id,
@@ -61,6 +73,7 @@ class ProductBuyerTransactionController extends ApiController
                 'discount_amount' => $request->discount,
                 'special_discount' => $request->special_discount,
                 'total' => $request->total + $request->service_charge,
+                'status' => $status, // base on login change status
                 'payment_status' => $request->payment_status,
                 'type' => $type,
                 'payment_due' => $request->payment_due ? $request->payment_due : 0,

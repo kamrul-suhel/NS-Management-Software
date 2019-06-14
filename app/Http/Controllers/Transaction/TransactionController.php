@@ -13,6 +13,7 @@ use App\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends ApiController
 {
@@ -250,6 +251,13 @@ class TransactionController extends ApiController
 
             $transaction->payment_status = Transaction::getPaymentStatus($request->payment_type);
 
+            $transaction->save();
+        }
+
+        // Change Transaction status and approved_by
+        if($request->has('status')){
+            $transaction->status = $request->status;
+            $transaction->approved_by = $request->user_id;
             $transaction->save();
         }
 

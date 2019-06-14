@@ -30,6 +30,9 @@ class TransactionAccountingController extends Controller
         // Transaction exclude pending
         $transactions = $transactions->where('payment_status', '!=', '4');
 
+        // Only admin approved will count
+        $transactions = $transactions->where('status', 1);
+
         if ($request->select['abbr'] === 'TDT') {
             $transactions = $transactions->where('created_at', '>', Carbon::now()->startOfDay())
                 ->where('created_at', '<', Carbon::now()->endOfDay());
