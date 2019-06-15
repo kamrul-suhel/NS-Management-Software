@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Bank;
 
 use App\Account;
+use App\AccountTransaction;
 use App\Bank;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -18,8 +19,29 @@ class AccountController extends Controller
     {
         //
         $accounts = Account::where('bank_id', $bank->id)
-            ->orderBy('id', 'desc')->get();
-        return response()->json($accounts);
+            ->orderBy('id', 'desc')
+            ->get();
+
+        // Get all transition for all accounts
+        $balance = AccountTransaction::select('amount')
+            ->leftJoin('accounts', 'account_transactions.account_id', '=', 'accounts.id')
+            ->where('accounts.bank_id', $bank->id)
+            ->whereIn('payment_type', [2,3,5]);
+
+        $withdraw = AccountTransaction::select('amount')
+            ->leftJoin('accounts', 'account_transactions.account_id', '=', 'accounts.id')
+            ->whereIn('payment_type', [1,4]);
+
+        $balance = $balance->get()->sum('amount');
+        $withdraw = $withdraw->get()->sum('amount');
+        $result = [
+            'accounts' => $accounts,
+            'balance' => $balance,
+            'withdraw' => $withdraw
+        ];
+
+
+        return response()->json($result);
     }
 
     /**

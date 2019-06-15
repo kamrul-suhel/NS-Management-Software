@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Bank;
 
+use App\AccountTransaction;
 use App\Bank;
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
@@ -23,7 +24,22 @@ class BankController extends ApiController
         //
         $banks = Bank::all();
 
-        return $this->showAll($banks);
+        // Get all transition for all accounts
+        $balance = AccountTransaction::select('amount')
+            ->whereIn('payment_type', [2,3,5]);
+
+        $withdraw = AccountTransaction::select('amount')
+            ->whereIn('payment_type', [1,4]);
+
+        $balance = $balance->get()->sum('amount');
+        $withdraw = $withdraw->get()->sum('amount');
+        $result = [
+            'banks' => $banks,
+            'balance' => $balance,
+            'withdraw' => $withdraw
+        ];
+
+        return response()->json($result);
     }
 
     /**

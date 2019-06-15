@@ -32,18 +32,26 @@ class AccountTransactionController extends Controller
             }
         }
 
-        // For separate bank account page
         $balance = AccountTransaction::select('amount')
             ->where('account_id', $account->id)
-            ->whereIn('payment_type', [2,3,5])
-            ->get()
-            ->sum('amount');
+            ->whereIn('payment_type', [2,3,5]);
 
         $withdraw = AccountTransaction::select('amount')
             ->where('account_id', $account->id)
-            ->whereIn('payment_type', [1,4])
-            ->get()
-            ->sum('amount');
+            ->whereIn('payment_type', [1,4]);
+
+        // For bank page
+        if($request->has('page') && $request->page === 'bank'){
+            // For separate bank account page
+
+        }else{
+            $balance = $balance->where('account_id', $account->id);
+            $withdraw = $withdraw->where('account_id', $account->id);
+        }
+
+        $balance = $balance->get()->sum('amount');
+        $withdraw = $withdraw->get()->sum('amount');
+
 
         $transactions = AccountTransaction::where('account_id', $account->id)
             ->orderBy('id', 'DESC')
