@@ -14,4 +14,8 @@ class Account extends Model
         'name',
         'account_number'
     ];
+
+    public function transactions(){
+        return $this->hasMany('App\AccountTransaction', 'account_id');
+    }
 }

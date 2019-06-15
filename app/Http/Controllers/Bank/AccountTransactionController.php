@@ -18,7 +18,7 @@ class AccountTransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request,Bank $bank, Account $account)
     {
         if($request->has('page') && $request->page == 'account_transaction'){
             if($request->payment_type == 'company'){
@@ -31,7 +31,8 @@ class AccountTransactionController extends Controller
                 return response()->json($transactions);
             }
         }
-        $transactions = AccountTransaction::orderBy('id', 'DESC')
+        $transactions = AccountTransaction::where('account_id', $account->id)
+            ->orderBy('id', 'DESC')
             ->get();
 
         return response()->json($transactions);
