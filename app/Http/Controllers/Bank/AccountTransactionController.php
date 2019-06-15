@@ -52,6 +52,7 @@ class AccountTransactionController extends Controller
         $balance = $balance->get()->sum('amount');
         $withdraw = $withdraw->get()->sum('amount');
 
+        $balance = $balance - $withdraw;
 
         $transactions = AccountTransaction::where('account_id', $account->id)
             ->orderBy('id', 'DESC')

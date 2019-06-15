@@ -34,6 +34,7 @@ class AccountController extends Controller
 
         $balance = $balance->get()->sum('amount');
         $withdraw = $withdraw->get()->sum('amount');
+        $balance = $balance - $withdraw;
         $result = [
             'accounts' => $accounts,
             'balance' => $balance,

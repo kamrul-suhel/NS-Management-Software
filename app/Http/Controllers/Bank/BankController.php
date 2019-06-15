@@ -33,6 +33,7 @@ class BankController extends ApiController
 
         $balance = $balance->get()->sum('amount');
         $withdraw = $withdraw->get()->sum('amount');
+        $balance = $balance - $withdraw;
         $result = [
             'banks' => $banks,
             'balance' => $balance,
