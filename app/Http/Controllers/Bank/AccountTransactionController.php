@@ -31,11 +31,31 @@ class AccountTransactionController extends Controller
                 return response()->json($transactions);
             }
         }
+
+        // For separate bank account page
+        $balance = AccountTransaction::select('amount')
+            ->where('account_id', $account->id)
+            ->whereIn('payment_type', [2,3,5])
+            ->get()
+            ->sum('amount');
+
+        $withdraw = AccountTransaction::select('amount')
+            ->where('account_id', $account->id)
+            ->whereIn('payment_type', [1,4])
+            ->get()
+            ->sum('amount');
+
         $transactions = AccountTransaction::where('account_id', $account->id)
             ->orderBy('id', 'DESC')
             ->get();
 
-        return response()->json($transactions);
+        $result = [
+            'balance' => $balance,
+            'withdraw' => $withdraw,
+            'transactions' => $transactions
+        ];
+
+        return response()->json($result);
     }
 
     /**
