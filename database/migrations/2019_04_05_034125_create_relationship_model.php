@@ -42,5 +42,16 @@ class CreateRelationshipModel extends Migration
      */
     public function down()
     {
+        Schema::table('sales_return', function (Blueprint $table) {
+           $table->dropForeign(['transaction_id']);
+           $table->dropForeign(['store_id']);
+           $table->dropForeign(['seller_id']);
+        });
+
+        Schema::table('sale_return_line', function(Blueprint $table){
+            $table->dropForeign(['sale_return_id']);
+            $table->dropForeign(['product_id']);
+            $table->dropForeign(['product_serial_id']);
+        });
     }
 }

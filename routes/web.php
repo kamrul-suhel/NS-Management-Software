@@ -98,6 +98,13 @@ Route::get('expensecategories', 'ExpenseCategory\ExpenseCategoryController@index
  */
 
 Route::get('company', 'Company\CompanyController@index')->name('company');
+Route::get('company/transition/add', function(){
+    return view('welcome');
+});
+
+Route::get('company/transition/edit', function(){
+    return view('welcome');
+});
 
 Route::get('companytransaction', 'Company\CompanyController@index')->name('company');
 

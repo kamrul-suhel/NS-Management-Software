@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Company;
 
+use App\Account;
 use App\Company;
 use App\CompanyTransaction;
 use App\Traits\ApiResponser;
+use BankAccount;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -22,9 +24,11 @@ class CompanyTransactionController extends Controller
         if($request->ajax()){
             $transactions = CompanyTransaction::with('company')->get();
             $companies = Company::select(['id', 'name'])->get();
+            $accounts = Account::all();
             $data = [
                 'companies' => $companies,
-                'transactions' => $transactions
+                'transactions' => $transactions,
+                'accounts' => $accounts
             ];
             return $this->successResponse($data, 200);
         }
