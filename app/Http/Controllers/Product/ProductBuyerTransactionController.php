@@ -34,6 +34,9 @@ class ProductBuyerTransactionController extends ApiController
         $user = User::findOrFail($request->seller_id);
         $status = null;
 
+        $products = json_decode($request->products, true);
+        return response()->json($products);
+
         if($user->role === 'admin'){
             $status = 1;
         }else{
