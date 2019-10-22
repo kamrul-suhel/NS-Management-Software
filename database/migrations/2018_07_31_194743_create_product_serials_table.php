@@ -15,9 +15,9 @@ class CreateProductSerialsTable extends Migration
     {
         Schema::create('product_serials', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('product_id');
-            $table->integer('company_id');
-            $table->integer('transaction_id')->nullable();
+            $table->integer('product_id')->unsigned()->index();
+            $table->integer('company_id')->unsigned()->index();
+            $table->integer('transaction_id')->nullable()->unsigned()->index();
             $table->string('color', 50)->nullable()->index();
             $table->string('barcode',120)->nullable()->index();
             $table->string('imei',120)->nullable()->index();
