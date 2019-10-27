@@ -14,11 +14,11 @@ class CreateInvestsTable extends Migration
     public function up()
     {
         Schema::create('invests', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('title')->index();
             $table->text('description')->nullable();
             $table->float('total')->index();
-            $table->integer('category_id')->unsigned()->index();
+            $table->unsignedBigInteger('category_id');
             $table->timestamps();
         });
     }

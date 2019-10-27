@@ -146,6 +146,10 @@ Route::get('banks/{bankId}/accounts/{accountId}/transactions', function(){
     return view('welcome');
 });
 
+Route::get('sale-assistance/create', function(){
+    return view('welcome');
+});
+
 /*
  * ************************************************
  * Database backup process

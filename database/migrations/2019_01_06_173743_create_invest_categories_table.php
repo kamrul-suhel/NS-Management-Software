@@ -14,7 +14,7 @@ class CreateInvestCategoriesTable extends Migration
     public function up()
     {
         Schema::create('invest_categories', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('title')->index();
             $table->timestamps();
         });

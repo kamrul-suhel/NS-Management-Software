@@ -18,9 +18,7 @@ class AddStatusTransitionsTable extends Migration
                 ->index()
                 ->default(1)
                 ->after('total');
-            $table->integer('approved_by')
-                ->index()
-                ->unsigned()
+            $table->unsignedBigInteger('approved_by')
                 ->default(NULL)
                 ->nullable()
                 ->after('status');

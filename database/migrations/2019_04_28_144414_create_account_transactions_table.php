@@ -14,10 +14,10 @@ class CreateAccountTransactionsTable extends Migration
     public function up()
     {
         Schema::create('account_transactions', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('account_id')->index()->unsigned()->notNull();
-            $table->integer('transaction_id')->unsigned()->index()->nullable()->default(null);
-            $table->integer('company_id')->unsigned()->index()->nullable()->default(null);
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('account_id')->notNull();
+            $table->unsignedBigInteger('transaction_id')->nullable()->default(null);
+            $table->unsignedBigInteger('company_id')->nullable()->default(null);
             $table->tinyInteger('status')->index()->default(1);
             $table->tinyInteger('payment_type')->index();
             $table->double('amount')->index();

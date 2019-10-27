@@ -14,10 +14,10 @@ class CreateProductSerialsTable extends Migration
     public function up()
     {
         Schema::create('product_serials', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('product_id')->unsigned()->index();
-            $table->integer('company_id')->unsigned()->index();
-            $table->integer('transaction_id')->nullable()->unsigned()->index();
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('transaction_id')->nullable();
             $table->string('color', 50)->nullable()->index();
             $table->string('barcode',120)->nullable()->index();
             $table->string('imei',120)->nullable()->index();

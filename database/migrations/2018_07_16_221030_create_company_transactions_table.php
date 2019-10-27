@@ -14,9 +14,9 @@ class CreateCompanyTransactionsTable extends Migration
     public function up()
     {
         Schema::create('company_transactions', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('store_id')->index()->unsigned();
-            $table->integer('company_id')->unsigned()->index();
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('store_id');
+            $table->unsignedBigInteger('company_id');
             $table->string('payment_type')->index();
             $table->string('reference')->index();
             $table->string('remarks')->nullable();

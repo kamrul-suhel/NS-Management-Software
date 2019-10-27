@@ -14,10 +14,10 @@ class CreateSaleReturnLineTable extends Migration
     public function up()
     {
         Schema::create('sale_return_line', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('sale_return_id')->index()->unsigned();
-            $table->integer('product_id')->index()->unsigned();
-            $table->integer('product_serial_id')->index()->unsigned()->nullable();
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('sale_return_id');
+            $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('product_serial_id')->nullable();
             $table->integer('quantity')->index();
             $table->timestamps();
         });

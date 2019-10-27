@@ -14,10 +14,10 @@ class CreateSaleReturnTable extends Migration
     public function up()
     {
         Schema::create('sales_return', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('store_id')->index()->unsigned();
-            $table->integer('seller_id')->index()->unsigned();
-            $table->integer('transaction_id')->index()->unsigned();
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('store_id');
+            $table->unsignedBigInteger('seller_id');
+            $table->unsignedBigInteger('transaction_id');
             $table->double('total_sale_price');
             $table->double('total_purchase_price');
             $table->text('note')->nullable();

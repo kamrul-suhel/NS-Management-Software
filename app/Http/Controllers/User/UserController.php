@@ -62,6 +62,7 @@ class UserController extends ApiController
         $password = bcrypt($request->password);
         $user = new User();
         $user->name = $request->name;
+        $request->has('storeId') ? $user->store_id = $request->storeId : null;
         $user->email = $request->email;
         $user->password = $password;
         $user->verification_token = null;
@@ -113,6 +114,8 @@ class UserController extends ApiController
             $user->verified = User::VERIFIED_USER;
             $user->email = $request->email;
         }
+
+        $request->has('storeId') ? $user->store_id = $request->storeId : null;
 
         if($request->has('password')){
             $user->password = bcrypt($request->password);

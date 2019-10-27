@@ -14,9 +14,9 @@ class AddCompanyProduct extends Migration
     public function up()
     {
         Schema::create('company_product', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('company_id')->index()->unsigned();
-            $table->integer('product_id')->index()->unsigned();
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('product_id');
             $table->integer('product_quantity')->nullable()->unsigned();
             $table->float('product_feet')->nullable()->unsigned();
             $table->timestamps();

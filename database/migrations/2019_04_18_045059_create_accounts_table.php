@@ -14,9 +14,9 @@ class CreateAccountsTable extends Migration
     public function up()
     {
         Schema::create('accounts', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->tinyInteger('status')->index()->default(1);
-            $table->integer('bank_id')->index()->unsigned()->notNull();
+            $table->unsignedBigInteger('bank_id')->notNull();
             $table->string('name','100')->index();
             $table->string('account_number', 20)->unique()->index()->notNull();
             $table->timestamps();

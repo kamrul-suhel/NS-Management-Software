@@ -21,6 +21,7 @@ class User extends Authenticatable
 
     const ADMIN_USER = 'admin';
     const REGULAR_USER = 'staff';
+    const REGULAR_SALE_USER = 'sale';
 
     protected $table = 'users';
 

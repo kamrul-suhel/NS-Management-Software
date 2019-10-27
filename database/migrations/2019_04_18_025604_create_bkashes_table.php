@@ -14,8 +14,8 @@ class CreateBkashesTable extends Migration
     public function up()
     {
         Schema::create('bkashes', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('transaction_id')->unsigned()->index()->notNull();
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('transaction_id')->notNull();
             $table->string('phone_number', '20')->index();
             $table->float('amount')->unsigned()->notNull();
             $table->tinyInteger('status')->unsigned()->default(0)->index();

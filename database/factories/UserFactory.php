@@ -32,7 +32,7 @@ $factory->define(User::class, function (Faker $faker) {
         'remember_token' => str_random(10),
         'verified' => $verified = $faker->randomElement([User::VERIFIED_USER, User::UNVERIFIED_USER]),
         'verification_token' => $verified == User::VERIFIED_USER ? null : User::generateVerificationCode(),
-        'role' => $faker->randomElement([User::ADMIN_USER, User::REGULAR_USER])
+        'role' => $faker->randomElement([User::ADMIN_USER, User::REGULAR_USER,User::REGULAR_SALE_USER])
     ];
 });
 

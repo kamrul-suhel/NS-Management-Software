@@ -14,9 +14,9 @@ class CreateProductTransactionTable extends Migration
     public function up()
     {
         Schema::create('product_transaction', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('product_id')->unsigned();
-            $table->integer('transaction_id')->unsigned();
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('transaction_id')->unsigned();
             $table->float('sale_quantity')->unsigned()->nullable();
             $table->float('sale_feet')->unsigned()->nullable();
             $table->integer('discount_percentage')->nullable();

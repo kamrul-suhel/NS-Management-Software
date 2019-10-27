@@ -15,9 +15,9 @@ class CreateProductsTable extends Migration
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('store_id')->index()->unsigned();
-            $table->string('name');
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('store_id');
+            $table->string('name')->index();
             $table->string('description', 1000)->nullable();
             $table->integer('quantity')->unsigned();
             $table->decimal('sale_price')->unsigned()->nullable();
@@ -25,7 +25,7 @@ class CreateProductsTable extends Migration
             $table->string('status')->default(Product::UNAVAILABLE_PRODUCT);
             $table->string('image');
             $table->string('is_barcode', 20)->nullable()->index();
-            $table->integer('seller_id')->unsigned();
+            $table->unsignedBigInteger('seller_id');
             $table->timestamps();
             $table->softDeletes();
 

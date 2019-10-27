@@ -14,9 +14,9 @@ class CreateCustomerDuesTable extends Migration
     public function up()
     {
         Schema::create('customer_dues', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('customer_id')->unsigned()->index();
-            $table->integer('transaction_id')->unsigned()->index()->nullable();
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('customer_id');
+            $table->unsignedBigInteger('transaction_id')->nullable();
             $table->float('paid')->unsigned();
             $table->float('due');
             $table->timestamps();

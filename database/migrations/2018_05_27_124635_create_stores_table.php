@@ -14,7 +14,7 @@ class CreateStoresTable extends Migration
     public function up()
     {
         Schema::create('stores', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('name', 100)->nullable();
             $table->string('address', 120)->nullable();
             $table->string('email', 40)->nullable()->index();
@@ -23,7 +23,7 @@ class CreateStoresTable extends Migration
             $table->string('mobile', 40)->nullable();
             $table->string('fax', 40)->nullable();
             $table->string('website', 100)->nullable();
-            $table->string('logo', 100);
+            $table->text('logo', 100)->nullable();
             $table->timestamps();
         });
     }
