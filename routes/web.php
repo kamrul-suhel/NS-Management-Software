@@ -150,6 +150,10 @@ Route::get('sale-assistance/create', function(){
     return view('welcome');
 });
 
+Route::get('sale-assistance/update', function(){
+    return view('welcome');
+});
+
 /*
  * ************************************************
  * Database backup process

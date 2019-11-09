@@ -155,3 +155,15 @@ Route::get('bankaccounts', 'Bank\AccountController@getAllAccount');
  * ************************************************
  */
 Route::resource('banks.accounts.accountTransactions', 'Bank\AccountTransactionController', ['only'=> ['index','store', 'update','destroy']]);
+
+
+/*
+ * ************************************************
+ * Sale assistant route go here
+ * ************************************************
+ */
+//Route::resource('SaleAssistance.saleAssistant', 'SaleAssistance\SaleAssistanceController', ['only'=> ['index','store', 'update','destroy']]);
+
+Route::get('/sale-assistant/product', 'SaleAssistance\SaleAssistanceController@getScannedProduct');
+Route::post('/sale-assistant/create', 'SaleAssistance\SaleAssistanceController@createSaleAssistant');
+Route::get('/sale-assistant/products', 'SaleAssistance\SaleAssistanceController@getSaleAssistantProducts');

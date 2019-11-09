@@ -26,9 +26,14 @@ class UserController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
+        if($request->has('type')){
+            $users = User::where('role', $request->type)
+                ->get();
+        }else{
+            $users = User::all();
+        }
         return $this->showAll($users);
     }
 
