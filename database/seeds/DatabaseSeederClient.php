@@ -53,7 +53,7 @@ class DatabaseSeederClient extends Seeder
         $productsQuantity = 20;
         $transactionQuantity = 200;
 
-        factory(Store::class, 1)->create();
+        factory(Store::class, 2)->create();
 
         $categoryRoot = Category::create([
             'name' => 'category 1',
@@ -67,7 +67,7 @@ class DatabaseSeederClient extends Seeder
 
         $categoryRoot->children()->create([
             'name' => 'category 2',
-            'store_id' => 1,
+            'store_id' => Store::all()->random()->id,
             'description' => 'Category description',
             'parent_id'   => 1,
             'lft'          => 2,
@@ -75,45 +75,49 @@ class DatabaseSeederClient extends Seeder
             'depth'         => 1
         ]);
 
-//        $categoryRoot->children()->create([
-//            'name' => 'category 3',
-//            'description' => 'Category description',
-//            'parent_id'   => 1,
-//            'lft'          => 4,
-//            'rgt'           => 5,
-//            'depth'         => 1
-//        ]);
-//
-//        $categoryRoot->children()->create([
-//            'name' => 'category 4',
-//            'description' => 'Category description',
-//            'parent_id'   => 1,
-//            'lft'          => 6,
-//            'rgt'           => 7,
-//            'depth'         => 1
-//        ]);
-//
-//        $categoryRoot->children()->create([
-//            'name' => 'category 5',
-//            'description' => 'Category description',
-//            'parent_id'   => 1,
-//            'lft'          => 8,
-//            'rgt'           => 9,
-//            'depth'         => 1
-//        ]);
-//
-//        $categoryRoot->children()->create([
-//            'name' => 'category 6',
-//            'description' => 'Category description',
-//            'name' => 'category 2',
-//            'description' => 'Category description',
-//            'parent_id'   => 1,
-//            'lft'          => 10,
-//            'rgt'           => 11,
-//            'depth'         => 1
-//        ]);
+        $categoryRoot->children()->create([
+            'name' => 'category 3',
+            'store_id' => Store::all()->random()->id,
+            'description' => 'Category description',
+            'parent_id'   => 1,
+            'lft'          => 4,
+            'rgt'           => 5,
+            'depth'         => 1
+        ]);
 
-//        factory(Category::class, $categoriesQuantity)->create()->each(function($category){
+        $categoryRoot->children()->create([
+            'name' => 'category 4',
+            'store_id' => Store::all()->random()->id,
+            'description' => 'Category description',
+            'parent_id'   => 1,
+            'lft'          => 6,
+            'rgt'           => 7,
+            'depth'         => 1
+        ]);
+
+        $categoryRoot->children()->create([
+            'name' => 'category 5',
+            'store_id' => Store::all()->random()->id,
+            'description' => 'Category description',
+            'parent_id'   => 1,
+            'lft'          => 8,
+            'rgt'           => 9,
+            'depth'         => 1
+        ]);
+
+        $categoryRoot->children()->create([
+            'name' => 'category 6',
+            'store_id' => Store::all()->random()->id,
+            'description' => 'Category description',
+            'parent_id'   => 1,
+            'lft'          => 10,
+            'rgt'           => 11,
+            'depth'         => 1
+        ]);
+
+//        factory(Category::class, $categoriesQuantity)
+//            ->create()
+//            ->each(function($category){
 //            $root = Category::root();
 //            if($category->id == 1){
 //                $category->makeRoot();
