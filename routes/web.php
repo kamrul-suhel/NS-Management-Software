@@ -74,6 +74,10 @@ Route::get('/account/balance', function(){
 });
 
 Route::resource('customers', 'Customer\CustomerController')->only(['store', 'index', 'update']);
+Route::get('customers/ledger', function(){
+    return view('welcome');
+});
+
 Route::resource('customers.transactions', 'Customer\CustomerTransitionController')->only(['index']);
 
 Route::resource('shops', 'ShopController')->only(['index', 'update', 'show','store']);

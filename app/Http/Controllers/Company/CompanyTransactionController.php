@@ -25,10 +25,20 @@ class CompanyTransactionController extends Controller
             $transactions = CompanyTransaction::with('company')->get();
             $companies = Company::select(['id', 'name'])->get();
             $accounts = Account::all();
+
+            // All Transitions
+            $allTransition = [];
+            if($request->has('companyId')){
+                $companyId = $request->companyId;
+                $allTransition = CompanyTransaction::where('company_id', $companyId)
+                    ->get();
+            }
+
             $data = [
                 'companies' => $companies,
                 'transactions' => $transactions,
-                'accounts' => $accounts
+                'accounts' => $accounts,
+                'allTransition' => $allTransition
             ];
             return $this->successResponse($data, 200);
         }

@@ -116,6 +116,10 @@ class Transaction extends Model
          return $this->hasOne('App\AccountTransaction', 'transaction_id', 'id');
      }
 
+     public function due(){
+         return $this->hasMany('App\CustomerDue', 'transaction_id', 'id');
+     }
+
     /**
      * @param $status
      * @return int

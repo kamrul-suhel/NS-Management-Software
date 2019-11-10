@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Company;
 
 use App\Company;
+use App\CompanyTransaction;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -20,7 +21,10 @@ class CompanyController extends Controller
         //
 
         if($request->ajax()){
-			$companies = Company::with('transactions')->orderBy('id', 'DESC')->get();
+			$companies = Company::with('transactions')
+                ->orderBy('id', 'DESC')
+                ->get();
+
 			$companiesTransaction = Company::with('transactions')
 				->get()
 				->pluck('transactions')
@@ -29,10 +33,20 @@ class CompanyController extends Controller
 					return $product->sum('balance');
 				});
 
+			// All Transitions
+            $allTransition = [];
+			if($request->has('companyId')){
+			    $companyId = $request->companyId;
+                $allTransition = CompanyTransaction::where('company_id', $companyId)
+                    ->get();
+            }
+
+
         	$data = [
         		'companies' => $companies,
 				'totalCompany' => $companies->count(),
-				'companyTransaction'	=> $companiesTransaction
+				'companyTransaction'	=> $companiesTransaction,
+                'allTransition' => $allTransition
 			];
             return $this->successResponse($data, 200);
         }

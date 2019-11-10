@@ -18,11 +18,15 @@ class CustomerTransitionController extends ApiController
     public function index(Customer $customer)
     {
         $transactions = Customer::where('id', $customer->id)
-            ->with('transitions.products')
+            ->with([
+                'transitions.products',
+                'transitions.due'
+            ])
             ->orderBy('id', 'desc')
             ->get()
             ->pluck('transitions')
             ->collapse();
+
             $total_transition = $transactions->count();
             $total = number_format($transactions->sum('total'), '2','.',',');
             $due = number_format($transactions->sum('payment_due'), '2','.',',');
