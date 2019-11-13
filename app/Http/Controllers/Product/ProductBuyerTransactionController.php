@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Product;
 
 use App\AccountTransaction;
 use App\Bkash;
+use App\CustomerLedger;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Customer\CustomerDueController;
 use App\Product;
@@ -149,7 +150,40 @@ class ProductBuyerTransactionController extends ApiController
             }
 
 
-            $transaction->products()->sync($attach_product);
+            $transaction->products()
+                ->sync($attach_product);
+
+
+
+            // Get customer last ledger information
+            //
+
+            $prevBalance = 0;
+            $customerLastLedger = CustomerLedger::where('id', $customer->id)
+                ->orderBy('created_at','DESC')
+                ->first();
+
+            if($customerLastLedger){
+                $prevBalance = $customerLastLedger->balance;
+            }
+
+            $debit = $request->paid;
+            $credit = $request->payment_due;
+
+            $balance = ($prevBalance + $request->total + $request->service_charge) - $debit;
+
+            // Create customer ledger
+            $customerLedger = new CustomerLedger();
+            $customerLedger->customer_id = $customer->id;
+            $customerLedger->particular = 'New sale';
+            $customerLedger->remark = 'New sale';
+            $customerLedger->reference = 'New sale';
+            $customerLedger->debit = $debit;
+            $customerLedger->credit = $credit;
+            $customerLedger->balance = $balance;
+
+            $customerLedger->save();
+
             return $transaction;
         });
 

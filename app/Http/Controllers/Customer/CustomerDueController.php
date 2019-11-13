@@ -74,6 +74,7 @@ class CustomerDueController extends Controller
         $customer = Customer::findOrfail($request->customer_id);
         $customerLedger = new CustomerLedger();
         $paid = $request->paid;
+        $totalPaid = $request->paid;
         $given = $request->given;
 
         // Reduce amount from transition
@@ -107,7 +108,7 @@ class CustomerDueController extends Controller
             $prevBalance = $balance->balance;
         }
 
-        $balance = $prevBalance - $paid + $given;
+        $balance = $prevBalance - $totalPaid + $given;
 
         $customerLedger->customer_id = $customer->id;
         $customerLedger->particular = $request->particular;
