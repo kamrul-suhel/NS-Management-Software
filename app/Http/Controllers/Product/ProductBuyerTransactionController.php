@@ -168,16 +168,17 @@ class ProductBuyerTransactionController extends ApiController
             }
 
             $debit = $request->paid;
-            $credit = $request->payment_due;
+            $credit = $request->total + $request->service_charge;
 
-            $balance = ($prevBalance + $request->total + $request->service_charge) - $debit;
+            $balance = ($prevBalance + $credit) - $debit;
 
             // Create customer ledger
             $customerLedger = new CustomerLedger();
             $customerLedger->customer_id = $customer->id;
-            $customerLedger->particular = 'New sale';
-            $customerLedger->remark = 'New sale';
-            $customerLedger->reference = 'New sale';
+            $customerLedger->transition_id = $transaction->id;
+            $customerLedger->particular = 'Sales';
+            $customerLedger->remark = '';
+            $customerLedger->reference = $unique_id;
             $customerLedger->debit = $debit;
             $customerLedger->credit = $credit;
             $customerLedger->balance = $balance;

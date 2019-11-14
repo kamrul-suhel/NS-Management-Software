@@ -108,7 +108,7 @@ class CustomerDueController extends Controller
             $prevBalance = $balance->balance;
         }
 
-        $balance = $prevBalance - $totalPaid + $given;
+        $balance = ($prevBalance - $totalPaid) + $given;
 
         $customerLedger->customer_id = $customer->id;
         $customerLedger->particular = $request->particular;

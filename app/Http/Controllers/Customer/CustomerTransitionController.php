@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Customer;
+use App\CustomerLedger;
 use App\Http\Controllers\ApiController;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
@@ -17,26 +18,19 @@ class CustomerTransitionController extends ApiController
      */
     public function index(Customer $customer)
     {
-        $transactions = Customer::where('id', $customer->id)
-            ->with([
-                'transitions.products',
-                'transitions.due'
-            ])
-            ->orderBy('id', 'desc')
-            ->get()
-            ->pluck('transitions')
-            ->collapse();
+        $transactions = CustomerLedger::where('customer_id',$customer->id)
+            ->get();
 
-            $total_transition = $transactions->count();
-            $total = number_format($transactions->sum('total'), '2','.',',');
-            $due = number_format($transactions->sum('payment_due'), '2','.',',');
-
-//        $last_transition = $transactions->sortBy('id')->last();
+            $totalTransition = $transactions->count();
+            $debit = (int) $transactions->sum('debit');
+            $credit = (int) $transactions->sum('credit');
+            $balance = (int) ($credit - $debit);
 
         $data = [
-            'total' => $total,
-            'due'   => $due,
-            'total_transactions' => $total_transition,
+            'credit' => number_format($credit, '2',',',','),
+            'debit' => number_format($debit, '2', ',', ','),
+            'balance'   => number_format($balance, '2', ',', ','),
+            'total_transactions' => $totalTransition,
             'transactions' => $transactions
         ];
         return $this->successResponse($data, 200);
