@@ -159,8 +159,8 @@ class ProductBuyerTransactionController extends ApiController
             //
 
             $prevBalance = 0;
-            $customerLastLedger = CustomerLedger::where('id', $customer->id)
-                ->orderBy('created_at','DESC')
+            $customerLastLedger = CustomerLedger::where('customer_id', $customer->id)
+                ->orderBy('id','DESC')
                 ->first();
 
             if($customerLastLedger){
