@@ -19,6 +19,7 @@ class CustomerTransitionController extends ApiController
     public function index(Customer $customer)
     {
         $transactions = CustomerLedger::where('customer_id',$customer->id)
+            ->orderBy('id', 'ASC')
             ->get();
 
             $totalTransition = $transactions->count();
