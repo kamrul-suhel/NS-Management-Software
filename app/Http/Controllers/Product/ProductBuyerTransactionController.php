@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Product;
 
 use App\AccountTransaction;
 use App\Bkash;
+use App\CustomerDue;
 use App\CustomerLedger;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Customer\CustomerDueController;
 use App\Product;
 use App\ProductSerial;
+use App\SaleAssistant;
 use App\Transaction;
 use App\Customer;
 use App\User;
@@ -44,16 +46,20 @@ class ProductBuyerTransactionController extends ApiController
         $transaction = DB::transaction(function () use ($request, $customer, $status, &$transactionId) {
             $attach_product = [];
             $unique_id = $this->getUniqueId();
+            $debit = 0;
 
             $type = '';
             switch($request->payment_status) {
                 case '1':
+                    $debit = $request->total;
                     $type = 'paid';
                     break;
                 case '2':
+                    $debit = $request->paid;
                     $type = 'due-paid';
                     break;
                 case '3':
+                    $debit = $request->paid;
                     $type = 'half-paid';
                     break;
                 case '4':
@@ -125,6 +131,7 @@ class ProductBuyerTransactionController extends ApiController
             }
 
             $products = json_decode($request->products, true);
+            $productSerialId = 0;
 
             foreach ($products as $product) {
                 // check if has selected serials
@@ -136,6 +143,10 @@ class ProductBuyerTransactionController extends ApiController
                         $serial->is_sold = 1;
                         $serial->transaction_id = $transaction->id;
                         $serial->update();
+
+                        if($request->has('staffId')){
+                            $productSerialId = $serial->id;
+                        }
                     }
                 }
 
@@ -167,7 +178,6 @@ class ProductBuyerTransactionController extends ApiController
                 $prevBalance = $customerLastLedger->balance;
             }
 
-            $debit = $request->paid;
             $credit = $request->total + $request->service_charge;
 
             $balance = ($prevBalance + $credit) - $debit;
@@ -184,6 +194,15 @@ class ProductBuyerTransactionController extends ApiController
             $customerLedger->balance = $balance;
 
             $customerLedger->save();
+
+            // If sale assistant transition the run this code
+            if($request->has('staffId')){
+                $saleAssistant = SaleAssistant::where('user_id', $request->staffId)
+                    ->where('product_serial_id', $productSerialId)
+                    ->first();
+                $saleAssistant->transition_id = $transaction->id;
+                $saleAssistant->is_sold = 1;
+            }
 
             return $transaction;
         });

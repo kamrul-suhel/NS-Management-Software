@@ -158,6 +158,14 @@ Route::get('sale-assistance/update', function(){
     return view('welcome');
 });
 
+Route::get('/sale-assistance/{userId}/sale/{productSerialId}', function(){
+    return view('welcome');
+});
+
+Route::get('/sale-assistance/{userId}/sale/{productSerialId}/{id}', function(){
+    return view('welcome');
+});
+
 /*
  * ************************************************
  * Database backup process

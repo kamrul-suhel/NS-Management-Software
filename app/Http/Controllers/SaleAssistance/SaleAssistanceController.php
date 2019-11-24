@@ -12,13 +12,16 @@ use App\Http\Controllers\Controller;
 class SaleAssistanceController extends Controller
 {
     use ApiResponser;
+
     //
 
-    public function index(){
+    public function index()
+    {
 
     }
 
-    public function getScannedProduct(Request $request){
+    public function getScannedProduct(Request $request)
+    {
 
         $code = $request->code;
 
@@ -31,7 +34,7 @@ class SaleAssistanceController extends Controller
             'product_serials.is_sold'
         )
             ->leftJoin('product_serials', 'products.id', '=', 'product_serials.product_id')
-            ->where('barcode', 'LIKE', "%".$code."%")
+            ->where('barcode', 'LIKE', "%" . $code . "%")
             ->first();
 
         return response()->json($productSerial);
@@ -41,12 +44,13 @@ class SaleAssistanceController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function createSaleAssistant(Request $request){
+    public function createSaleAssistant(Request $request)
+    {
         $userId = $request->userId;
         $serials = $request->serial;
 
-        if(count($serials) > 0){
-            foreach($serials as $serial){
+        if (count($serials) > 0) {
+            foreach ($serials as $serial) {
                 $saleAssistant = new SaleAssistant();
                 $saleAssistant->user_id = $userId;
                 $saleAssistant->product_serial_id = $serial;
@@ -58,7 +62,8 @@ class SaleAssistanceController extends Controller
     }
 
 
-    public function getSaleAssistantProducts(Request $request){
+    public function getSaleAssistantProducts(Request $request)
+    {
         $date = $request->date;
         $userId = $request->userId;
 
@@ -76,9 +81,13 @@ class SaleAssistanceController extends Controller
         )
             ->leftJoin('product_serials', 'products.id', '=', 'product_serials.product_id')
             ->leftJoin('sale_assistants', 'product_serials.id', '=', 'sale_assistants.product_serial_id')
-            ->where('sale_assistants.user_id', $userId)
-            ->whereDate('sale_assistants.created_at', $date)
-            ->get();
+            ->where('sale_assistants.user_id', $userId);
+
+        if ($request->date != 'null') {
+            $productSerial = $productSerial->whereDate('sale_assistants.created_at', $date);
+        }
+
+        $productSerial = $productSerial->get();
 
         return response()->json($productSerial);
     }

@@ -66,6 +66,8 @@ class CompanyTransactionController extends Controller
             }
             continue;
         }
+
+
         $data['reference'] = $string;
         $companyTransaction = CompanyTransaction::create($data)->id;
         if($companyTransaction){
