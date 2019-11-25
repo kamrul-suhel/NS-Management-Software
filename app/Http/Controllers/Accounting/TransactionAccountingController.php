@@ -216,10 +216,10 @@ class TransactionAccountingController extends Controller
         $companyTotalDue = $company->sum('credit');
 
 
-        $totalProfit = $salePrice - $purchasePrice + $totalServices;
+        $totalProfit = ($salePrice - $purchasePrice) + $totalServices;
         $totalExpenses = $expenses->sum('amount');
 
-        $profitAfter = $totalProfit - $totalExpenses - $discount;
+        $profitAfter = ($totalProfit - $totalExpenses) - $discount;
         $totalProfitAfterDue = $totalProfit - $paymentDue;
         $cash = $total - $paymentDue - $totalExpenses - $companyDebit - $totalBkash;
 
