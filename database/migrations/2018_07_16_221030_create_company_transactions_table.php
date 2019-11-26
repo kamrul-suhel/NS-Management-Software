@@ -17,7 +17,7 @@ class CreateCompanyTransactionsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('store_id');
             $table->unsignedBigInteger('company_id');
-            $table->string('payment_type')->index();
+            $table->string('payment_type', 30)->index();
             $table->string('reference')->index();
             $table->string('remarks')->nullable();
             $table->double('debit')->unsigned();

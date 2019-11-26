@@ -35,10 +35,16 @@ class CompanyController extends Controller
 
 			// All Transitions
             $allTransition = [];
-			if($request->has('companyId')){
+            $companyBalance = 0;
+			if($request->has('companyId') && !empty($request->companyId)){
 			    $companyId = $request->companyId;
                 $allTransition = CompanyTransaction::where('company_id', $companyId)
                     ->get();
+
+                $lastTransaction = CompanyTransaction::where('company_id', $companyId)
+                    ->orderBy('created_at', 'DESC')
+                    ->first();
+                $companyBalance = $lastTransaction->balance;
             }
 
 
@@ -46,7 +52,8 @@ class CompanyController extends Controller
         		'companies' => $companies,
 				'totalCompany' => $companies->count(),
 				'companyTransaction'	=> $companiesTransaction,
-                'allTransition' => $allTransition
+                'allTransition' => $allTransition,
+                'balance' => $companyBalance
 			];
             return $this->successResponse($data, 200);
         }

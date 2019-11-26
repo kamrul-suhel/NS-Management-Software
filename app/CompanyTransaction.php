@@ -13,9 +13,9 @@ class CompanyTransaction extends Model
     //
 
     protected $fillable = [
-      'company_id',
-      'payment_type',
-      'reference',
+        'company_id',
+        'payment_type',
+        'reference',
         'remarks',
         'debit',
         'credit',
@@ -24,7 +24,8 @@ class CompanyTransaction extends Model
         'store_id'
     ];
 
-    public function company(){
+    public function company()
+    {
         return $this->belongsTo(Company::class);
     }
 
