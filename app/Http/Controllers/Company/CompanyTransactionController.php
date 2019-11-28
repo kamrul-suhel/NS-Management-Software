@@ -82,7 +82,6 @@ class CompanyTransactionController extends Controller
                 ->where('id', $companyTransaction)->first();
             return $this->successResponse($newCompanyTransaction, 200);
         }
-        dd($request->all());
     }
 
     /**
@@ -117,7 +116,13 @@ class CompanyTransactionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $companyTransition = CompanyTransaction::findOrFail($id);
+        $companyTransition->manuel_date = $request->manuel_date;
+        $companyTransition->payment_type = $request->payment_type;
+        $companyTransition->remarkS = $request->remarks;
+        $companyTransition->save();
+
+        return response()->json(['success' => true]);
     }
 
     /**
