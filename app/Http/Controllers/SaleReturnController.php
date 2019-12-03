@@ -6,6 +6,7 @@ use App\Product;
 use App\ProductSerial;
 use App\SaleReturn;
 use App\SaleReturnLine;
+use App\Transaction;
 use Illuminate\Http\Request;
 
 class SaleReturnController extends Controller
@@ -53,6 +54,11 @@ class SaleReturnController extends Controller
             $request->has('note') ? $saleReturn->note = $request->note : null;
 
             $saleReturn->save();
+
+            // Now change transaction status to return = 3
+            $transaction = Transaction::findOrFail($request->transaction_id);
+            $transaction->status = Transaction::TRANSACTION_STATUS_RETURN;
+            $transaction->save();
 
             if($saleReturn){
                 $products = collect($request->products);

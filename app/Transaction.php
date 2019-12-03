@@ -15,6 +15,7 @@ class Transaction extends Model
     //Transaction product
     const TRANSICTION_STATUS_OK = 1;
     const TRANSACTION_STATUS_DUE = 2;
+    const TRANSACTION_STATUS_RETURN = 3;
 
     const PAYMENT_PAID = 1;
     const PAYMENT_DUE = 2;
