@@ -256,9 +256,15 @@ class TransactionController extends ApiController
 
         // Change Transaction status and approved_by
         if($request->has('status')){
+
+            // If return then do not update this record
+            if($transaction->status === Transaction::TRANSACTION_STATUS_RETURN){
+                return;
+            }
             $transaction->status = $request->status;
             $transaction->approved_by = $request->user_id;
             $transaction->save();
+
         }
 
         return response()->json($transaction);
