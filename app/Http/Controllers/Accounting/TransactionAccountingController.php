@@ -24,7 +24,7 @@ class TransactionAccountingController extends Controller
         $transactions = Transaction::with(['products', 'customer']);
         $expenses = new Expense();
         $companyTransaction = new CompanyTransaction();
-        $salesReturn = SaleReturn::select('total_sale_price', 'total_purchase_price');
+//        $salesReturn = SaleReturn::select('total_sale_price', 'total_purchase_price');
         $bkash = Bkash::where('status', 0);
 
         // Transaction exclude pending
@@ -43,8 +43,8 @@ class TransactionAccountingController extends Controller
             $companyTransaction = $companyTransaction->where('created_at', '>', Carbon::now()->startOfDay())
                 ->where('created_at', '<', Carbon::now()->endOfDay());
 
-            $salesReturn = $salesReturn->where('created_at', '>', Carbon::now()->startOfDay())
-                ->where('created_at', '<', Carbon::now()->endOfDay());
+//            $salesReturn = $salesReturn->where('created_at', '>', Carbon::now()->startOfDay())
+//                ->where('created_at', '<', Carbon::now()->endOfDay());
 
             $bkash = $bkash->where('created_at', '>', Carbon::now()->startOfDay())
                 ->where('created_at', '<', Carbon::now()->endOfDay());
@@ -56,7 +56,7 @@ class TransactionAccountingController extends Controller
 
             $companyTransaction = $companyTransaction->where('created_at', '>', Carbon::yesterday());
 
-            $salesReturn = $salesReturn->where('created_at', '>', Carbon::yesterday());
+//            $salesReturn = $salesReturn->where('created_at', '>', Carbon::yesterday());
 
             $bkash = $bkash->where('created_at', '>', Carbon::yesterday());
         }
@@ -66,7 +66,7 @@ class TransactionAccountingController extends Controller
             $expenses = $expenses->where('created_at', '>', Carbon::now()->startOfWeek());
             $companyTransaction = $companyTransaction->where('created_at', '>', Carbon::now()->startOfWeek());
 
-            $salesReturn = $salesReturn->where('created_at', '>', Carbon::now()->startOfWeek());
+//            $salesReturn = $salesReturn->where('created_at', '>', Carbon::now()->startOfWeek());
             $bkash = $bkash->where('created_at', '>', Carbon::now()->startOfWeek());
         }
         if ($request->select['abbr'] === 'LWT') {
@@ -80,7 +80,7 @@ class TransactionAccountingController extends Controller
 
             $companyTransaction = $companyTransaction->whereBetween('created_at', [$agoDate, $endDate]);
 
-            $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
+//            $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
 
             $bkash = $bkash->whereBetween('created_at', [$agoDate, $endDate]);
         }
@@ -95,7 +95,7 @@ class TransactionAccountingController extends Controller
 
             $companyTransaction = $companyTransaction->whereBetween('created_at', [$agoDate, $endDate]);
 
-            $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
+//            $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
             $bkash = $bkash->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
@@ -105,7 +105,7 @@ class TransactionAccountingController extends Controller
 
             $companyTransaction = $companyTransaction->whereMonth('created_at', Carbon::now()->subMonth()->month);
 
-            $salesReturn = $salesReturn->whereMonth('created_at', Carbon::now()->subMonth()->month);
+//            $salesReturn = $salesReturn->whereMonth('created_at', Carbon::now()->subMonth()->month);
             $bkash = $bkash->whereMonth('created_at', Carbon::now()->subMonth()->month);
         }
 
@@ -118,7 +118,7 @@ class TransactionAccountingController extends Controller
             $expenses = $expenses->whereBetween('created_at', [$agoDate, $endDate]);
 
             $companyTransaction = $companyTransaction->whereBetween('created_at', [$agoDate, $endDate]);
-            $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
+//            $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
             $bkash = $bkash->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
@@ -129,7 +129,7 @@ class TransactionAccountingController extends Controller
             $expenses = $expenses->whereBetween('created_at', [$begainDate, $endDate]);
 
             $companyTransaction = $companyTransaction->whereBetween('created_at', [$begainDate, $endDate]);
-            $salesReturn = $salesReturn->whereBetween('created_at', [$begainDate, $endDate]);
+//            $salesReturn = $salesReturn->whereBetween('created_at', [$begainDate, $endDate]);
             $bkash = $bkash->whereBetween('created_at', [$begainDate, $endDate]);
         }
 
@@ -140,7 +140,7 @@ class TransactionAccountingController extends Controller
             $expenses = $expenses->whereBetween('created_at', [$agoDate, $endDate]);
 
             $companyTransaction = $companyTransaction->whereBetween('created_at', [$agoDate, $endDate]);
-            $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
+//            $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
             $bkash = $bkash->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
@@ -154,7 +154,7 @@ class TransactionAccountingController extends Controller
 
         $request->has('store_id') ? $companyTransaction->where('store_id', $request->store_id) : '';
 
-        $request->has('store_id') ? $salesReturn->where('store_id', $request->store_id) : '';
+//        $request->has('store_id') ? $salesReturn->where('store_id', $request->store_id) : '';
 
         $transactions = $transactions->orderBy('created_at', 'desc')
             ->get();
@@ -165,10 +165,10 @@ class TransactionAccountingController extends Controller
         	return $transaction->total + $transaction->service_charge;
 		});
 
-        $totalSalePrice = $salesReturn->sum('total_sale_price');
-        $totalPurchasePrice = $salesReturn->sum('total_purchase_price');
+//        $totalSalePrice = $salesReturn->sum('total_sale_price');
+//        $totalPurchasePrice = $salesReturn->sum('total_purchase_price');
 
-        $total = $total - $totalPurchasePrice;
+        $total = $total;
 
         $totalServices = $transactions->sum('service_charge');
         $paymentDue = $transactions->sum('payment_due');
