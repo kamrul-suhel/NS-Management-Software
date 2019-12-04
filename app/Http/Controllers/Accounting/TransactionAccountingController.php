@@ -229,6 +229,7 @@ class TransactionAccountingController extends Controller
         // Get all transitions
         $totalTransitions = DB::table('transactions')
             ->select(DB::raw('sum(total - payment_due) as total_transaction'))
+            ->where('status', 1)
             ->whereNull('deleted_at')
             ->first();
 
