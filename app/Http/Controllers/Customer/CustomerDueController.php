@@ -73,9 +73,9 @@ class CustomerDueController extends Controller
     {
         $customer = Customer::findOrfail($request->customer_id);
         $customerLedger = new CustomerLedger();
-        $paid = $request->given;
-        $totalPaid = $request->given;
-        $given = $request->paid;
+
+        $debit = $request->debit;
+        $credit = $request->credit;
 
         // Reduce amount from transition
         $transitions = Transaction::where('customer_id', $customer->id)
@@ -84,7 +84,7 @@ class CustomerDueController extends Controller
 
         if($transitions){
             foreach($transitions as $transition ){
-                $paid = $transition->payment_due - $paid;
+                $paid = $transition->payment_due - $credit;
 
                 if($paid <= 0){
                     $transition->payment_due = 0;
@@ -107,14 +107,14 @@ class CustomerDueController extends Controller
             $prevBalance = $balance->balance;
         }
 
-        $balance = ($prevBalance - $totalPaid) + $given;
+        $balance = ($prevBalance + $debit) - $credit;
 
         $customerLedger->customer_id = $customer->id;
         $customerLedger->particular = $request->particular;
         $customerLedger->remark = $request->remark;
         $customerLedger->reference = $request->reference;
-        $customerLedger->debit = $request->given;
-        $customerLedger->credit = $request->paid;
+        $customerLedger->debit = $debit;
+        $customerLedger->credit = $credit;
         $customerLedger->balance = $balance;
 
         $customerLedger->save();
