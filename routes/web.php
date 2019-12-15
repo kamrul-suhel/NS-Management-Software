@@ -110,6 +110,10 @@ Route::get('company/transition/add', function(){
     return view('welcome');
 });
 
+Route::get('company/return/add', function(){
+    return view('welcome');
+});
+
 Route::get('company/transition/edit', function(){
     return view('welcome');
 });

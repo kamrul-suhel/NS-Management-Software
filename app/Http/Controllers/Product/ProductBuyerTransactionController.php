@@ -180,7 +180,7 @@ class ProductBuyerTransactionController extends ApiController
 
             $debit = $request->total + $request->service_charge;
 
-            $balance = ($prevBalance + $credit) - $debit;
+            $balance = ($prevBalance + $debit) - $credit;
 
             // Create customer ledger
             $customerLedger = new CustomerLedger();
