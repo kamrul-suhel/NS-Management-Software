@@ -22,6 +22,8 @@ class CustomerTransitionController extends ApiController
             ->orderBy('id', 'ASC')
             ->get();
 
+        $lastTransaction = $transactions->last();
+
             $totalTransition = $transactions->count();
             $debit = (int) $transactions->sum('debit');
             $credit = (int) $transactions->sum('credit');
@@ -32,7 +34,8 @@ class CustomerTransitionController extends ApiController
             'debit' => number_format($debit, '2', ',', ','),
             'balance'   => number_format($balance, '2', ',', ','),
             'total_transactions' => $totalTransition,
-            'transactions' => $transactions
+            'transactions' => $transactions,
+            'last_ledger' => $lastTransaction
         ];
         return $this->successResponse($data, 200);
     }

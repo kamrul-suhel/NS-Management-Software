@@ -35,7 +35,19 @@ class CustomerLedgerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $ledger = new CustomerLedger();
+        $ledger->customer_id = $request->customer_id;
+        $ledger->credit = $request->credit;
+        $ledger->debit = $request->debit;
+        $ledger->balance = $request->balance;
+        $ledger->particular = $request->particular;
+        $ledger->reference = $request->reference;
+        $ledger->remark = $request->remark;
+        $ledger->save();
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 
     /**

@@ -46,20 +46,20 @@ class ProductBuyerTransactionController extends ApiController
         $transaction = DB::transaction(function () use ($request, $customer, $status, &$transactionId) {
             $attach_product = [];
             $unique_id = $this->getUniqueId();
-            $debit = 0;
+            $credit = 0;
 
             $type = '';
             switch($request->payment_status) {
                 case '1':
-                    $debit = $request->total;
+                    $credit = $request->total;
                     $type = 'paid';
                     break;
                 case '2':
-                    $debit = $request->paid;
+                    $credit = $request->paid;
                     $type = 'due-paid';
                     break;
                 case '3':
-                    $debit = $request->paid;
+                    $credit = $request->paid;
                     $type = 'half-paid';
                     break;
                 case '4':
@@ -178,7 +178,7 @@ class ProductBuyerTransactionController extends ApiController
                 $prevBalance = $customerLastLedger->balance;
             }
 
-            $credit = $request->total + $request->service_charge;
+            $debit = $request->total + $request->service_charge;
 
             $balance = ($prevBalance + $credit) - $debit;
 

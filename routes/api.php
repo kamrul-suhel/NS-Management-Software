@@ -45,6 +45,10 @@ Route::resource('products.categories','Product\ProductCategoryController',['exce
 Route::resource('customers.transactions','Product\ProductBuyerTransactionController',['only' => ['store']]);
 Route::post('customer/{customer_id}/due/transactions', 'Customer\CustomerDueController@store')->name('customer.due.transaction');
 
+/**
+ * Customer Ledger route
+ */
+Route::post('customerledger/create', 'CustomerLedgerController@store');
 
 /*
 *  Product Serial route
