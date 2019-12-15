@@ -95,7 +95,6 @@ class CustomerDueController extends Controller
                     $transition->save();
                     $paid = abs($paid);
                 }
-
             }
         }
 
