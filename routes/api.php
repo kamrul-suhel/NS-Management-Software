@@ -101,6 +101,8 @@ Route::resource('company', 'Company\CompanyController', ['except' => ['edit', 'c
 Route::get('selectedcompany/{id}', 'Company\CompanyTransactionController@selectedCompany')->name('selected_company');
 Route::get('productcompany', 'Company\CompanyController@productCompany')->name('product_company');
 Route::resource('ctransaction', 'Company\CompanyTransactionController', ['except' => ['edit', 'create', 'show']]);
+Route::get('companies/{id}/product', 'Company\CompanyProductController@list');
+Route::get('companies/product/{id}', 'Company\CompanyProductController@single');
 
 /*
 *  User route

@@ -50,7 +50,7 @@ return [
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
-            'strict' => true,
+            'strict' => false,
             'engine' => null,
             'dump' => [
                 'dump_binary_path' => '/usr/local/opt/mysql@5.7/bin', // only the path, so without `mysqldump` or `pg_dump`
