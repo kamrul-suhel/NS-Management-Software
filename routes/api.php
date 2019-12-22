@@ -103,6 +103,8 @@ Route::get('productcompany', 'Company\CompanyController@productCompany')->name('
 Route::resource('ctransaction', 'Company\CompanyTransactionController', ['except' => ['edit', 'create', 'show']]);
 Route::get('companies/{id}/product', 'Company\CompanyProductController@list');
 Route::get('companies/product/{id}', 'Company\CompanyProductController@single');
+Route::post('companies/return', 'Company\CompanyReturnStoreController@store');
+Route::get('companies/return/{companyId}', 'Company\CompanyReturnListController@list');
 
 /*
 *  User route

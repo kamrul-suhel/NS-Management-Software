@@ -114,6 +114,10 @@ Route::get('company/return/add', function(){
     return view('welcome');
 });
 
+Route::get('company/return/list', function(){
+    return view('welcome');
+});
+
 Route::get('company/transition/edit', function(){
     return view('welcome');
 });
