@@ -273,7 +273,7 @@ class TransactionAccountingController extends Controller
             ->first();
 
         // Current balance
-        $currentBalance = $totalTransitions->total_transaction - $totalExpanse - $companyTotalDebit;
+        $currentBalance = ($totalTransitions->total_transaction - $totalExpanse - $companyTotalDebit) - $bankAccountTransactionFromCashIn;
 
         $products = Product::where('store_id', $request->store_id)
             ->get();
