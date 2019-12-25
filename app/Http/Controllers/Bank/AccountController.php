@@ -45,6 +45,20 @@ class AccountController extends Controller
         return response()->json($result);
     }
 
+    public function list(){
+        $accounts = Account::select(
+            'accounts.*',
+            'banks.name as bank_name'
+        )
+            ->leftJoin('banks', 'banks.id', '=', 'accounts.bank_id')
+            ->where('status', 1)
+            ->get();
+
+        return response()->json([
+            'accounts' => $accounts
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -124,7 +138,14 @@ class AccountController extends Controller
     }
 
     public function getAllAccount(){
-        $accounts = Account::select('id', 'name')->orderBy('name')->get();
+        $accounts = Account::select(
+            'accounts.*',
+            'banks.name as bank_name'
+        )
+            ->leftJoin('banks', 'banks.id', '=', 'accounts.bank_id')
+            ->where('accounts.status', 1)
+            ->orderBy('name')
+            ->get();
         return response()->json($accounts);
     }
 

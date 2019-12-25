@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Accounting;
 
+use App\AccountTransaction;
 use App\Bkash;
 use App\CompanyTransaction;
 use App\Expense;
@@ -21,6 +22,8 @@ class TransactionAccountingController extends Controller
 
     public function index(Request $request)
     {
+        $bankAccountTransaction = new AccountTransaction();
+
         $transactions = Transaction::with(['products', 'customer']);
         $expenses = new Expense();
         $companyTransaction = new CompanyTransaction();
@@ -48,6 +51,9 @@ class TransactionAccountingController extends Controller
 
             $bkash = $bkash->where('created_at', '>', Carbon::now()->startOfDay())
                 ->where('created_at', '<', Carbon::now()->endOfDay());
+
+            $bankAccountTransaction = $bankAccountTransaction->where('created_at', '>', Carbon::now()->startOfDay())
+                ->where('created_at', '<', Carbon::now()->endOfDay());
         }
 
         if ($request->select['abbr'] === 'YDT') {
@@ -59,6 +65,8 @@ class TransactionAccountingController extends Controller
 //            $salesReturn = $salesReturn->where('created_at', '>', Carbon::yesterday());
 
             $bkash = $bkash->where('created_at', '>', Carbon::yesterday());
+
+            $bankAccountTransaction = $bankAccountTransaction->where('created_at', '>', Carbon::yesterday());
         }
 
         if ($request->select['abbr'] === 'TWT') {
@@ -68,6 +76,8 @@ class TransactionAccountingController extends Controller
 
 //            $salesReturn = $salesReturn->where('created_at', '>', Carbon::now()->startOfWeek());
             $bkash = $bkash->where('created_at', '>', Carbon::now()->startOfWeek());
+
+            $bankAccountTransaction = $bankAccountTransaction->where('created_at', '>', Carbon::now()->startOfWeek());
         }
         if ($request->select['abbr'] === 'LWT') {
             $currentDate = Carbon::now();
@@ -83,6 +93,8 @@ class TransactionAccountingController extends Controller
 //            $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
 
             $bkash = $bkash->whereBetween('created_at', [$agoDate, $endDate]);
+
+            $bankAccountTransaction = $bankAccountTransaction->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
         if ($request->select['abbr'] === 'TMT') {
@@ -97,6 +109,8 @@ class TransactionAccountingController extends Controller
 
 //            $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
             $bkash = $bkash->whereBetween('created_at', [$agoDate, $endDate]);
+
+            $bankAccountTransaction = $bankAccountTransaction->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
         if ($request->select['abbr'] === 'LMT') {
@@ -107,6 +121,8 @@ class TransactionAccountingController extends Controller
 
 //            $salesReturn = $salesReturn->whereMonth('created_at', Carbon::now()->subMonth()->month);
             $bkash = $bkash->whereMonth('created_at', Carbon::now()->subMonth()->month);
+
+            $bankAccountTransaction = $bankAccountTransaction->whereMonth('created_at', Carbon::now()->subMonth()->month);
         }
 
         if ($request->select['abbr'] === 'TYT') {
@@ -120,6 +136,8 @@ class TransactionAccountingController extends Controller
             $companyTransaction = $companyTransaction->whereBetween('created_at', [$agoDate, $endDate]);
 //            $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
             $bkash = $bkash->whereBetween('created_at', [$agoDate, $endDate]);
+
+            $bankAccountTransaction = $bankAccountTransaction->whereBetween('created_at', [$agoDate, $endDate]);
         }
 
         if ($request->customdate) {
@@ -131,6 +149,8 @@ class TransactionAccountingController extends Controller
             $companyTransaction = $companyTransaction->whereBetween('created_at', [$begainDate, $endDate]);
 //            $salesReturn = $salesReturn->whereBetween('created_at', [$begainDate, $endDate]);
             $bkash = $bkash->whereBetween('created_at', [$begainDate, $endDate]);
+
+            $bankAccountTransaction = $bankAccountTransaction->whereBetween('created_at', [$begainDate, $endDate]);
         }
 
         if ($request->customdate && $request->customrangerate) {
@@ -142,7 +162,20 @@ class TransactionAccountingController extends Controller
             $companyTransaction = $companyTransaction->whereBetween('created_at', [$agoDate, $endDate]);
 //            $salesReturn = $salesReturn->whereBetween('created_at', [$agoDate, $endDate]);
             $bkash = $bkash->whereBetween('created_at', [$agoDate, $endDate]);
+
+            $bankAccountTransaction = $bankAccountTransaction->whereBetween('created_at', [$agoDate, $endDate]);
         }
+
+        // Bank account for company payment
+        $bankAccountTransactionFromCompany = clone $bankAccountTransaction;
+        $bankAccountTransactionFromCashIn = clone $bankAccountTransaction;
+
+        $bankAccountTransactionFromCompany = $bankAccountTransactionFromCompany->where('payment_type', 1) // Company payment
+        ->sum('amount');
+
+        $bankAccountTransactionFromCashIn = $bankAccountTransactionFromCashIn->where('payment_type', 3) // Cash in
+        ->sum('amount');
+
 
         $totalBkash = $bkash->sum('amount');
 
@@ -153,6 +186,9 @@ class TransactionAccountingController extends Controller
         $request->has('store_id') ? $expenses->where('store_id', $request->store_id) : '';
 
         $request->has('store_id') ? $companyTransaction->where('store_id', $request->store_id) : '';
+
+        // remove cheque
+        $companyTransaction = $companyTransaction->whereNotIn('payment_type', ['cheque']);
 
 //        $request->has('store_id') ? $salesReturn->where('store_id', $request->store_id) : '';
 
@@ -222,6 +258,9 @@ class TransactionAccountingController extends Controller
         $profitAfter = ($totalProfit - $totalExpenses) - $discount;
         $totalProfitAfterDue = $totalProfit - $paymentDue;
         $cash = $total - $paymentDue - $totalExpenses - $companyDebit - $totalBkash;
+
+        // deduct bank cash out
+        $cash = $cash - $bankAccountTransactionFromCashIn;
 
         // Total expanse
         $totalExpanse = Expense::select('amount')->get()->sum('amount');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Company;
 
 use App\Account;
+use App\AccountTransaction;
 use App\Company;
 use App\CompanyTransaction;
 use App\Traits\ApiResponser;
@@ -63,6 +64,7 @@ class CompanyTransactionController extends Controller
     {
         //
         $data = $request->all();
+
         $string ='';
         while(true){
             $string = $this->generateRandomString();
@@ -77,6 +79,17 @@ class CompanyTransactionController extends Controller
 
         $data['reference'] = $string;
         $companyTransaction = CompanyTransaction::create($data)->id;
+
+        // If payment type is chaque then add record into bank account
+        if($request->payment_type === 'cheque'){
+            $accountTransition = new AccountTransaction();
+            $accountTransition->company_id = $request->company_id;
+            $accountTransition->account_id = $request->account_id;
+            $accountTransition->amount = $request->debit;
+            $accountTransition->payment_type = 'Company';
+            $accountTransition->reference = $request->remarks;
+            $accountTransition->save();
+        }
         if($companyTransaction){
             $newCompanyTransaction = CompanyTransaction::with('company')
                 ->where('id', $companyTransaction)->first();
