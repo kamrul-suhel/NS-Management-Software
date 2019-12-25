@@ -307,6 +307,4 @@ class TransactionAccountingController extends Controller
 
         return $this->successResponse($data, 200);
     }
-
-
 }
