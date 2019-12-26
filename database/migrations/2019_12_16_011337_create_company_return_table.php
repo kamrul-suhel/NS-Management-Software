@@ -16,8 +16,8 @@ class CreateCompanyReturnTable extends Migration
         Schema::create('company_return', function (Blueprint $table) {
             $table->increments('id');
             $table->bigInteger('product_id')->index();
-            $table->bigInteger('company_id')->index();
             $table->bigInteger('product_serial_id')->nullable()->index();
+            $table->bigInteger('company_id')->index();
             $table->smallInteger('quantity');
             $table->string('note')->nullable();
             $table->timestamps();

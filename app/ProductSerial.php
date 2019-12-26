@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductSerial extends Model
 {
+    CONST PRODUCT_NOT_SOLD = 0;
+    const PRODUCT_SOLD = 1;
+    CONST PRODUCT_COMPANY_RETURN = 2;
+    CONST PRODUCT_MISSING = 3;
     //
     use SoftDeletes;
 

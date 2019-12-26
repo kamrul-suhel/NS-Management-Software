@@ -23,6 +23,9 @@ Route::resource('buyers.sellers','Buyer\BuyerSellerController',['only' => ['inde
 Route::resource('buyers.categories','Buyer\BuyerCategoryController',['only' => ['index']]);
 Route::resource('buyers.products','Buyer\BuyerProductController',['only' => ['index']]);
 
+Route::post('product/missing/add', 'Product\ProductMissingStoreController@store');
+Route::get('product/missing/list', 'Product\ProductMissingListController@list');
+
 
 /*
 *  Category route
