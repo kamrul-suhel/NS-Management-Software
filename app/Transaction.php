@@ -39,7 +39,8 @@ class Transaction extends Model
         'invoice_number',
         'type',
         'status',
-        'approved_by'
+        'approved_by',
+        'retail_price'
     ];
 
     protected $hidden =[

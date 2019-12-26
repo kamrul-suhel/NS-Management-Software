@@ -79,7 +79,8 @@ class ProductBuyerTransactionController extends ApiController
                 'invoice_number' => $unique_id,
                 'discount_amount' => $request->discount,
                 'special_discount' => $request->special_discount,
-                'total' => $request->total + $request->service_charge,
+                'total' => $request->total + $request->service_charge + $request->retail_price,
+                'retail_price' => $request->retail_price,
                 'status' => $status, // base on login change status
                 'payment_status' => $request->payment_status,
                 'type' => $type,
@@ -134,7 +135,6 @@ class ProductBuyerTransactionController extends ApiController
             $productSerialId = 0;
 
             foreach ($products as $product) {
-                // check if has selected serials
                 // check if has selected serials
                 if ($product['serials']) {
                     // Find the serials key
