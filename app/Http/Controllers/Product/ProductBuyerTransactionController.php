@@ -178,7 +178,7 @@ class ProductBuyerTransactionController extends ApiController
                 $prevBalance = $customerLastLedger->balance;
             }
 
-            $debit = $request->total + $request->service_charge;
+            $debit = $request->total + $request->service_charge + $request->retail_price;
 
             $balance = ($prevBalance + $debit) - $credit;
 
