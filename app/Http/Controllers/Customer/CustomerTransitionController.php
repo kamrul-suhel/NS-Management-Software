@@ -19,15 +19,15 @@ class CustomerTransitionController extends ApiController
     public function index(Customer $customer)
     {
         $transactions = CustomerLedger::where('customer_id',$customer->id)
-            ->orderBy('id', 'ASC')
+            ->orderBy('id', 'DESC')
             ->get();
 
-        $lastTransaction = $transactions->last();
+        $lastTransaction = $transactions->first();
 
             $totalTransition = $transactions->count();
             $debit = (int) $transactions->sum('debit');
             $credit = (int) $transactions->sum('credit');
-            $balance = (int) ($credit - $debit);
+            $balance = (int) ($debit - $credit);
 
         $data = [
             'credit' => number_format($credit, '2',',',','),

@@ -139,6 +139,9 @@ class ProductBuyerTransactionController extends ApiController
                 if ($product['serials']) {
                     // Find the serials key
                     foreach ($product['serials'] as $serial) {
+                        if(!isset($serial['id'])){
+                            continue;
+                        }
                         $serial = ProductSerial::findOrFail($serial['id']);
                         $serial->is_sold = 1;
                         $serial->transaction_id = $transaction->id;
