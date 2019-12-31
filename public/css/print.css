@@ -76,6 +76,15 @@
     color: #000;
   }
 
+  .transaction-print .v-card {
+    box-shadow: none;
+  }
+
+  .transaction-print.full-width {
+    width: 8.3in;
+    height: 11.2in;
+  }
+
   .transaction-print .print-btn {
     display: none;
   }

@@ -132,7 +132,7 @@ Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenContro
  */
 
 Route::resource('customers', 'Customer\CustomerController');
-
+Route::get('customers/{id}/ledger/{storeId}', 'Customer\CustomerLedgerPrint@list');
 
 
 /*

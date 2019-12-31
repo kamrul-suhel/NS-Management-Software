@@ -86,6 +86,10 @@ Route::get('customers/ledger/create', function(){
 
 Route::resource('customers.transactions', 'Customer\CustomerTransitionController')->only(['index']);
 
+Route::get('customers/{id}/print/{storeId}', function(){
+    return view('welcome');
+});
+
 Route::resource('shops', 'ShopController')->only(['index', 'update', 'show','store']);
 
 Route::get('transaction/{id}/print', 'Transaction\TransactionController@showPrint');
