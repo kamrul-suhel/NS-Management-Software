@@ -178,3 +178,13 @@ Route::resource('banks.accounts.accountTransactions', 'Bank\AccountTransactionCo
 Route::get('/sale-assistant/product', 'SaleAssistance\SaleAssistanceController@getScannedProduct');
 Route::post('/sale-assistant/create', 'SaleAssistance\SaleAssistanceController@createSaleAssistant');
 Route::get('/sale-assistant/products', 'SaleAssistance\SaleAssistanceController@getSaleAssistantProducts');
+
+
+/*
+*  Cash route
+*/
+
+Route::get('cash', 'Cash\CashListController@list');
+Route::post('cash', 'Cash\CashStoreController@store');
+Route::patch('cash/{id}', 'Cash\CashStoreController@update');
+Route::delete('cash/{id}', 'Cash\CashDestroyController@destroy');

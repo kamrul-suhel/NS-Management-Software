@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Accounting;
 
 use App\AccountTransaction;
 use App\Bkash;
+use App\Cash;
 use App\CompanyTransaction;
 use App\Expense;
 use App\Product;
@@ -259,8 +260,12 @@ class TransactionAccountingController extends Controller
         $totalProfitAfterDue = $totalProfit - $paymentDue;
         $cash = $total - $paymentDue - $totalExpenses - $companyDebit - $totalBkash;
 
+        // Cash manipulation
+        $cashAdd = Cash::where('type', 1)->sum('amount');
+        $canMinus = Cash::where('type', 2)->sum('amount');
+
         // deduct bank cash out
-        $cash = $cash - $bankAccountTransactionFromCashIn;
+        $cash = ($cash - $bankAccountTransactionFromCashIn) + ($cashAdd - $canMinus);
 
         // Total expanse
         $totalExpanse = Expense::select('amount')->get()->sum('amount');

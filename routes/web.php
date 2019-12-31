@@ -196,3 +196,11 @@ Route::get('backup/create', 'DBBackupController@create');
  */
 
 Route::get('/user', 'User\UserController@show');
+
+/*
+ *
+ * Cash route
+ *
+ */
+
+Route::get('/cash', 'User\UserController@show');
