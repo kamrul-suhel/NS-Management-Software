@@ -99,6 +99,7 @@ Route::resource('shops', 'ShopController')->only(['index', 'update', 'show','sto
 Route::get('transaction/{id}/print', 'Transaction\TransactionController@showPrint');
 Route::get('transaction/{id}/edit', 'Transaction\TransactionController@edit');
 Route::get('transaction/create', 'Transaction\TransactionController@create');
+Route::get('transaction/create/manual', 'Transaction\TransactionController@create');
 Route::post('transaction/{id}/edit', 'Transaction\TransactionController@edit');
 
 
