@@ -34,7 +34,8 @@ class SaleAssistanceController extends Controller
             'product_serials.is_sold'
         )
             ->leftJoin('product_serials', 'products.id', '=', 'product_serials.product_id')
-            ->where('barcode', 'LIKE', "%" . $code . "%")
+            ->where('product_serials.barcode', 'LIKE', "%" . $code . "%")
+            ->whereNull('product_serials.deleted_at')
             ->first();
 
         return response()->json($productSerial);
